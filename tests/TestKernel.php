@@ -52,7 +52,7 @@ class TestKernel extends Kernel
 
         $container->loadFromExtension('event_distributor', [
             'parent_directory' => realpath(__DIR__ . '/Fixtures/Event'),
-            'parent_namespace' => 'DM\\EventDistributorBundle\\Tests\\Fixtures\\Event',
+            'parent_namespace' => 'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Event',
         ]);
 
         $container->loadFromExtension('framework', [
@@ -69,11 +69,11 @@ class TestKernel extends Kernel
                 'auto_generate_proxy_classes' => true,
                 'auto_mapping' => true,
                 'mappings' => [
-                    'DM\\EventDistributorBundle\\Tests\\Fixtures\\' => [
+                    'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\' => [
                         'is_bundle' => false,
                         'type' => 'annotation',
                         'dir' => '%kernel.project_dir%/tests/Fixtures/Entity',
-                        'prefix' => 'DM\\EventDistributorBundle\\Tests\\Fixtures\\',
+                        'prefix' => 'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\',
                         'alias' => 'app',
                     ],
                 ],
