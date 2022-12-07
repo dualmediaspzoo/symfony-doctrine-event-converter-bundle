@@ -41,7 +41,7 @@
         "pedrotroller/php-cs-custom-fixer": "^2",
         "phpunit/phpunit": "^9.5",
         "vimeo/psalm": "^4.10",
-        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan": "^1",
         "symfony/phpunit-bridge": "^4.4|^5.4",
         "matthiasnoback/symfony-dependency-injection-test": "^4."
     }
