@@ -21,7 +21,7 @@ class DispatchingSubscriber implements EventSubscriber
      *
      * @var array[]
      *
-     * @psalm-var array<string, array<class-string<EntityInterface>, non-empty-list<class-string<AbstractEntityEvent>>>>
+     * @psalm-var non-empty-array<string, array<class-string<EntityInterface>, non-empty-list<class-string<AbstractEntityEvent>>>>
      */
     private array $mainEventList = [
         Events::postPersist => [], Events::postUpdate => [], Events::postRemove => [],
@@ -98,10 +98,10 @@ class DispatchingSubscriber implements EventSubscriber
 
         foreach ($entities as $class) {
             if (!isset($this->mainEventList[$event][$class])) {
-                $this->mainEventList[$event][$class] = [];
+                $this->mainEventList[$event][$class] = []; // @phpstan-ignore-line
             }
 
-            $this->mainEventList[$event][$class][] = $eventClass;
+            $this->mainEventList[$event][$class][] = $eventClass; // @phpstan-ignore-line
         }
     }
 
@@ -161,10 +161,10 @@ class DispatchingSubscriber implements EventSubscriber
             }
 
             if (!isset($this->subEventList[$entity][$priority][$eventClass])) {
-                $this->subEventList[$entity][$priority][$eventClass] = [];
+                $this->subEventList[$entity][$priority][$eventClass] = []; // @phpstan-ignore-line
             }
 
-            $this->subEventList[$entity][$priority][$eventClass][] = new SubEvent($allMode, $fieldList, $requirements, $types);
+            $this->subEventList[$entity][$priority][$eventClass][] = new SubEvent($allMode, $fieldList, $requirements, $types); // @phpstan-ignore-line
         }
     }
 
