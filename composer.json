@@ -1,0 +1,48 @@
+{
+    "name": "dm/symfony-doctrine-event-converter-bundle",
+    "description": "A symfony bundle for creating symfony events out of doctrine changes",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "DM\\DoctrineEventDistributorBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DM\\DoctrineEventDistributorBundle\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pkly",
+            "homepage": "https://github.com/pkly",
+            "role": "Author"
+        },
+        {
+            "name": "Bartosz Urbaniak <barturb>",
+            "homepage": "https://github.com/barturb",
+            "role": "Bug fixes and general help"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.1",
+        "doctrine/doctrine-bundle": "^1.12|^2.0",
+        "doctrine/orm": "^2|^3",
+        "symfony/framework-bundle": "^4.4|^5.4",
+        "symfony/event-dispatcher": "^4.4|^5.4",
+        "symfony/property-access": "^4.4|^5.4",
+        "symfony/http-kernel": "^4.4|^5.4"
+    },
+    "require-dev": {
+        "dama/doctrine-test-bundle": "^6",
+        "doctrine/doctrine-fixtures-bundle": "^3",
+        "friendsofphp/php-cs-fixer": "^3",
+        "pedrotroller/php-cs-custom-fixer": "^2",
+        "phpunit/phpunit": "^9.5",
+        "vimeo/psalm": "^4.10",
+        "phpstan/phpstan": "^0.12",
+        "symfony/phpunit-bridge": "^4.4|^5.4",
+        "matthiasnoback/symfony-dependency-injection-test": "^4."
+    }
+}

@@ -1,0 +1,6 @@
+parameters:
+  reportUnmatchedIgnoredErrors: false
+  checkGenericClassInNonGenericObjectType: false
+  level: 4
+  paths:
+    - src
