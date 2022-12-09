@@ -44,5 +44,11 @@
         "phpstan/phpstan": "^1",
         "symfony/phpunit-bridge": "^4.4|^5.4",
         "matthiasnoback/symfony-dependency-injection-test": "^4."
+    },
+    "extra": {
+        "symfony": {
+            "require": "5.4.*",
+            "allow-contrib": false
+        }
     }
 }

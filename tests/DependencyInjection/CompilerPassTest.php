@@ -174,7 +174,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
     ): void {
         $this->setParameter(
             'event_distributor.parent_namespace',
-            'DM\\EventDistributorBundle\\Tests\\Fixtures\\Error\\'.$namespace
+            'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Error\\'.$namespace
         );
         $this->setParameter(
             'event_distributor.parent_directory',

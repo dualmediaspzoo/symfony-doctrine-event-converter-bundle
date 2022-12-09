@@ -8,6 +8,9 @@ use DM\DoctrineEventDistributorBundle\Exception\Proxy\NotProxyClassException;
 use DM\DoctrineEventDistributorBundle\Exception\Proxy\TargetClassFinalException;
 use DM\DoctrineEventDistributorBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
 
+/**
+ * Loosely based on Doctrine's EntityGenerator
+ */
 class Generator
 {
     public const PROXY_NS = 'DM\\DoctrineEventDistributorProxy';
@@ -98,11 +101,9 @@ EOF;
         }
 
         $proxy = strtr(self::TEMPLATE, $parameters);
-        $tmpFileName = $fileName . '.' . uniqid('', true);
 
-        file_put_contents($tmpFileName, $proxy);
-        @chmod($tmpFileName, 0664);
-        rename($tmpFileName, $fileName);
+        file_put_contents($fileName, $proxy);
+        @chmod($fileName, 0664);
 
         return $fqcn;
     }
