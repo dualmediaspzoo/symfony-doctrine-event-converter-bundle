@@ -57,6 +57,7 @@ class TestKernel extends Kernel
 
         $container->loadFromExtension('framework', [
             'test' => true,
+            'secret' => 'OpenSecret',
         ]);
 
         $container->loadFromExtension('doctrine', [
