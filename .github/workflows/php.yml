@@ -19,18 +19,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}-${{ matrix.symfony-version }}-${{ matrix.php-version }}
 
-      - name: Setup flex
-        uses: php-actions/composer@v6
+      - name: PHP Setup
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: ${{ matrix.php-version }}
-          command: global require --no-progress --no-scripts --no-plugins symfony/flex
+          php-version: ${{ matrix.php-version }}
+          ini-values: pcov.directory=.
+          coverage: pcov
+          tools: composer
 
-      - uses: php-actions/composer@v6
+      - name: Setup flex
+        run: |
+          composer global require --no-progress --no-scripts --no-plugins symfony/flex
+
+      - name: Install
         env:
           SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
-        with:
-          php_version: ${{ matrix.php-version }}
-          command: install --no-interaction --no-scripts --ansi --no-progress --prefer-dist
+        run: |
+          composer install --no-interaction --no-scripts --ansi --no-progress --prefer-dist
 
   phpstan:
     strategy:
@@ -61,6 +66,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           ini-values: pcov.directory=.
           coverage: pcov
+          tools: composer
 
       - name: PHPStan
         run: |
@@ -95,6 +101,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           ini-values: pcov.directory=.
           coverage: pcov
+          tools: composer
 
       - name: PHP-CS-Fixer
         run: |
@@ -128,6 +135,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           ini-values: pcov.directory=.
           coverage: pcov
+          tools: composer
 
       - name: PHPUnit
         run: |
