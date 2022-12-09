@@ -50,10 +50,5 @@
             "require": "5.4.*",
             "allow-contrib": false
         }
-    },
-    "config": {
-        "allow-plugins": {
-            "symfony/flex": true
-        }
     }
 }
