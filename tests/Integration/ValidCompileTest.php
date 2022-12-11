@@ -2,12 +2,13 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\Integration;
 
-use DM\DoctrineEventDistributorBundle\EventDistributorBundle;
+use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityEvent;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemEvent;
+use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\SomeOtherEvent;
 use DM\DoctrineEventDistributorBundle\Tests\KernelTestCase;
 use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityPostUpdateEvent;
 use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityPrePersistEvent;
@@ -51,9 +52,10 @@ class ValidCompileTest extends KernelTestCase
             'PreUpdate Event should have been generated'
         );
 
+        /** @see SomeOtherEvent */
         $finder = new Finder();
         $finder
-            ->in(static::$container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.EventDistributorBundle::CACHE_DIRECTORY)
+            ->in(static::$container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.DoctrineEventConverterBundle::CACHE_DIRECTORY)
             ->name('*SomeOther*Event*.php')
             ->files();
 

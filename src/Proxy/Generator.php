@@ -31,25 +31,19 @@ EOF;
         'Event class for event <event>',
     ];
 
-    private string $proxyDirectory;
-
     public function __construct(
-        string $proxyDirectory
+        private readonly string $proxyDirectory
     ) {
-        $this->proxyDirectory = $proxyDirectory;
     }
 
     /**
      * @template T of AbstractEntityEvent
-     * @param string $class
      *
-     * @psalm-param class-string<T> $class
-     *
+     * @param class-string<T> $class
      * @param string $eventName
-     * @param string[] $interfaces
+     * @param list<string> $interfaces
      *
-     * @return string
-     * @psalm-return class-string<T>
+     * @return class-string<T>
      *
      * @throws TargetClassFinalException
      * @throws TargetClassNamingSchemeInvalidException
@@ -85,6 +79,10 @@ EOF;
 
         $doc = self::DOC_TEMPLATE;
 
+        /**
+         * @var class-string<T> $fqcn
+         * @noinspection PhpRedundantVariableDocTypeInspection
+         */
         $fqcn = $namespace . '\\' . $classNew;
         $fileName = $this->proxyDirectory . DIRECTORY_SEPARATOR . str_replace('\\', '', mb_substr($fqcn, mb_strlen(self::PROXY_NS))) . '.php';
 
@@ -158,7 +156,7 @@ EOF;
     public function resolveFilePath(
         string $class
     ): string {
-        if (0 !== strpos($class, self::PROXY_NS)) {
+        if (!str_starts_with($class, self::PROXY_NS)) {
             throw NotProxyClassException::new([$class]);
         }
 

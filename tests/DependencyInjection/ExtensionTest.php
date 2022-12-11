@@ -2,7 +2,8 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\DependencyInjection;
 
-use DM\DoctrineEventDistributorBundle\DependencyInjection\EventDistributorExtension;
+use DM\DoctrineEventDistributorBundle\DependencyInjection\DoctrineEventConverterExtension;
+use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
 class ExtensionTest extends AbstractExtensionTestCase
@@ -10,7 +11,7 @@ class ExtensionTest extends AbstractExtensionTestCase
     protected function getContainerExtensions(): array
     {
         return [
-            new EventDistributorExtension(),
+            new DoctrineEventConverterExtension(),
         ];
     }
 
@@ -25,12 +26,12 @@ class ExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter(
-            'event_distributor.parent_directory',
+            DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_directory',
             '%kernel.project_dir%/src/*'
         );
 
         $this->assertContainerBuilderHasParameter(
-            'event_distributor.parent_namespace',
+            DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace',
             'App'
         );
     }
@@ -43,12 +44,12 @@ class ExtensionTest extends AbstractExtensionTestCase
         ]);
 
         $this->assertContainerBuilderHasParameter(
-            'event_distributor.parent_directory',
+            DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_directory',
             __DIR__
         );
 
         $this->assertContainerBuilderHasParameter(
-            'event_distributor.parent_namespace',
+            DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace',
             'TestNamespace'
         );
     }

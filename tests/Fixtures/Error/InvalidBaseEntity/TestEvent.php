@@ -2,20 +2,19 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\InvalidBaseEntity;
 
-use DM\DoctrineEventDistributorBundle\Annotation\PreUpdateEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PreUpdateEvent;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\InvalidEntity;
+use JetBrains\PhpStorm\Pure;
 
-/**
- * @PreUpdateEvent()
- */
+#[PreUpdateEvent]
 class TestEvent extends AbstractEntityEvent
 {
     /**
-     * @return string|null
      * @psalm-pure
      */
-    public static function getEntityClass(): ?string
+    #[Pure]
+    public static function getEntityClass(): string|null
     {
         return InvalidEntity::class;
     }

@@ -11,12 +11,10 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class DispatchEvent extends Event
 {
-    private AbstractEntityEvent $event;
 
     public function __construct(
-        AbstractEntityEvent $event
+        private readonly AbstractEntityEvent $event
     ) {
-        $this->event = $event;
     }
 
     public function getEvent(): AbstractEntityEvent

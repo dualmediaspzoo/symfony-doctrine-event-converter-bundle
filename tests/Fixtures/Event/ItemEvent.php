@@ -2,30 +2,32 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event;
 
-use DM\DoctrineEventDistributorBundle\Annotation\PostPersistEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PostRemoveEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PostUpdateEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PrePersistEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PreRemoveEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PreUpdateEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostRemoveEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostUpdateEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PreRemoveEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PreUpdateEvent;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use JetBrains\PhpStorm\Pure;
 
 /**
- * @PrePersistEvent()
- * @PostPersistEvent()
- * @PreUpdateEvent()
- * @PostUpdateEvent()
- * @PreRemoveEvent()
- * @PostRemoveEvent()
+ * @extends AbstractEntityEvent<Item>
  */
+#[PrePersistEvent]
+#[PostPersistEvent]
+#[PreUpdateEvent]
+#[PostUpdateEvent]
+#[PreRemoveEvent]
+#[PostRemoveEvent]
 abstract class ItemEvent extends AbstractEntityEvent
 {
     /**
-     * @return string|null
      * @psalm-pure
      */
-    public static function getEntityClass(): ?string
+    #[Pure]
+    public static function getEntityClass(): string|null
     {
         return Item::class;
     }

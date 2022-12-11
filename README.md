@@ -55,7 +55,7 @@ class Item implements EntityInterface
 mark this class with your appropriate event annotation, either one of the base ones or SubEvent
 
 ```php
-use DM\DoctrineEventDistributorBundle\Annotation\PrePersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 
 /**

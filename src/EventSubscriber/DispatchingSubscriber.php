@@ -11,6 +11,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -19,9 +20,7 @@ class DispatchingSubscriber implements EventSubscriber
     /**
      * List of events to be dispatched after entity changes.
      *
-     * @var array[]
-     *
-     * @psalm-var non-empty-array<string, array<class-string<EntityInterface>, non-empty-list<class-string<AbstractEntityEvent>>>>
+     * @var non-empty-array<string, array<class-string<EntityInterface>, non-empty-list<class-string<AbstractEntityEvent>>>>
      */
     private array $mainEventList = [
         Events::postPersist => [], Events::postUpdate => [], Events::postRemove => [],
@@ -29,9 +28,7 @@ class DispatchingSubscriber implements EventSubscriber
     ];
 
     /**
-     * @var array[][][]
-     *
-     * @psalm-var array<class-string<EntityInterface>, array<int, array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>>>>
+     * @var array<class-string<EntityInterface>, array<int, array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>>>>
      */
     private array $subEventList = [];
 
@@ -40,20 +37,16 @@ class DispatchingSubscriber implements EventSubscriber
     /**
      * ID cache for removed entities so their ids can be temporarily remembered.
      *
-     * @var array
-     * @psalm-var array<string, string|int>
+     * @var array<string, string|int>
      */
     private array $removeIdCache = [];
 
     /**
      * Entity change sets.
      *
-     * @var array<string, array<string,array<int,mixed>>>
+     * @var array<string, array<string, array<int, mixed>|PersistentCollection>>
      */
     private array $updateObjectCache = [];
-
-    private EventDispatcherInterface $eventDispatcher;
-    private PropertyAccessor $propertyAccess;
 
     public function getSubscribedEvents(): array
     {
@@ -68,19 +61,16 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     public function __construct(
-        EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly PropertyAccessor $propertyAccess = new PropertyAccessor()
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->propertyAccess = new PropertyAccessor();
     }
 
     /**
      * Registers an event for use later by the dispatcher
      *
-     * @param string $eventClass
-     * @psalm-param class-string<AbstractEntityEvent> $eventClass
-     * @param string[] $entities
-     * @psalm-param non-empty-list<class-string<EntityInterface>> $entities
+     * @param class-string<AbstractEntityEvent> $eventClass
+     * @param non-empty-list<class-string<EntityInterface>> $entities
      * @param string $event
      *
      * @return void
@@ -109,14 +99,9 @@ class DispatchingSubscriber implements EventSubscriber
      * Gets the list of for an entity and specified Doctrine {@see Events}
      *
      * @param string $type
-     * @psalm-param Events::postPersist|Events::postUpdate|Events::postRemove|Events::prePersist|Events::preUpdate|Events::preRemove $type
-     * @param string $entity
-     * @psalm-param class-string<EntityInterface> $entity
+     * @param class-string<EntityInterface> $entity
      *
-     * @return string[]
-     * @psalm-return list<class-string<AbstractEntityEvent>>
-     *
-     * @psalm-immutable
+     * @return list<class-string<AbstractEntityEvent>>
      */
     public function getEvents(
         string $type,
@@ -128,14 +113,12 @@ class DispatchingSubscriber implements EventSubscriber
     /**
      * Registers a sub event for use later by the dispatcher
      *
-     * @param string $eventClass
-     * @psalm-param class-string<AbstractEntityEvent> $eventClass
-     * @param string[] $entities
-     * @psalm-param non-empty-list<class-string<EntityInterface>> $entities
+     * @param class-string<AbstractEntityEvent> $eventClass
+     * @param non-empty-list<class-string<EntityInterface>> $entities
      * @param bool $allMode
-     * @param array $fieldList
-     * @param array $requirements
-     * @param array $types
+     * @param array<string, null|array{0: mixed, 1?: mixed}> $fieldList
+     * @param array<string, mixed> $requirements
+     * @param list<string> $types
      * @param int $priority higher means the event will be checked/fired faster
      *
      * @return void
@@ -171,13 +154,9 @@ class DispatchingSubscriber implements EventSubscriber
     /**
      * Gets the list of SubEvents for an entity
      *
-     * @param string $entity
-     * @psalm-param class-string<EntityInterface> $entity
+     * @param class-string<EntityInterface> $entity
      *
-     * @return array
-     * @psalm-return array<int, array<class-string<AbstractEntityEvent>, list<SubEvent>>>
-     *
-     * @psalm-immutable
+     * @return array<int, array<class-string<AbstractEntityEvent>, list<SubEvent>>>
      */
     public function getSubEvents(
         string $entity
@@ -186,8 +165,9 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @internal
      * @param LifecycleEventArgs $args
+     *
+     * @internal
      */
     public function prePersist(
         LifecycleEventArgs $args
@@ -198,8 +178,9 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @internal
      * @param LifecycleEventArgs $args
+     *
+     * @internal
      */
     public function postPersist(
         LifecycleEventArgs $args
@@ -208,24 +189,24 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @internal
      * @param PreUpdateEventArgs $args
+     *
+     * @internal
      */
     public function preUpdate(
         PreUpdateEventArgs $args
     ): void {
         $changes = [];
         if ($args->getObject() instanceof EntityInterface) {
-            /** This errors on some doctrine combinations in CI */
-            /** @psalm-suppress InvalidPropertyAssignmentValue */
             $changes = $this->updateObjectCache[spl_object_hash($args->getObject())] = $args->getEntityChangeSet();
         }
         $this->preRunEvents(Events::preUpdate, $args->getObject(), null, $changes);
     }
 
     /**
-     * @internal
      * @param LifecycleEventArgs $args
+     *
+     * @internal
      */
     public function postUpdate(
         LifecycleEventArgs $args
@@ -237,21 +218,23 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @internal
      * @param LifecycleEventArgs $args
+     *
+     * @internal
      */
     public function preRemove(
         LifecycleEventArgs $args
     ): void {
         if ($args->getObject() instanceof EntityInterface) {
-            $this->removeIdCache[spl_object_hash($args->getObject())] = $args->getObject()->getId();
+            $this->removeIdCache[spl_object_hash($args->getObject())] = $args->getObject()->getId(); // @phpstan-ignore-line
         }
         $this->preRunEvents(Events::preRemove, $args->getObject());
     }
 
     /**
-     * @internal
      * @param LifecycleEventArgs $args
+     *
+     * @internal
      */
     public function postRemove(
         LifecycleEventArgs $args
@@ -266,16 +249,14 @@ class DispatchingSubscriber implements EventSubscriber
 
     /**
      * @param string $event
-     * @param object|EntityInterface $obj
+     * @param object $obj
      * @param int|string|null $id
-     * @param array $changes
-     *
-     * @return void
+     * @param array<string, array<int, mixed>|PersistentCollection> $changes
      */
     private function preRunEvents(
         string $event,
-        $obj,
-        $id = null,
+        object $obj,
+        int|string|null $id = null,
         array $changes = []
     ): void {
         $events = $this->mainEventList[$event];
@@ -284,16 +265,21 @@ class DispatchingSubscriber implements EventSubscriber
             return;
         }
 
+        /**
+         * As no non-EntityInterface object can exist in the mainEventList, we don't need to validate type in theory
+         *
+         * @noinspection PhpParamsInspection
+         * @phpstan-ignore-next-line
+         */
         $this->runEvents($event, $events[$class], $obj, $id, $changes);
     }
 
     /**
      * @param string $type
-     * @param array $events
-     * @psalm-param class-string[] $events
+     * @param non-empty-list<class-string<AbstractEntityEvent>> $events
      * @param EntityInterface $obj
      * @param int|string|null $id
-     * @param array $changes
+     * @param array<string, array<int, mixed>|PersistentCollection> $changes
      *
      * @return void
      */
@@ -301,7 +287,7 @@ class DispatchingSubscriber implements EventSubscriber
         string $type,
         array $events,
         EntityInterface $obj,
-        $id = null,
+        int|string|null $id = null,
         array $changes = []
     ): void {
         foreach ($events as $eventClass) {
@@ -323,7 +309,7 @@ class DispatchingSubscriber implements EventSubscriber
 
     private function runSubEvents(
         AbstractEntityEvent $event
-    ) {
+    ): void {
         $entity = $event->getEntity();
         $class = ClassUtils::getClass($entity);
 
@@ -339,7 +325,7 @@ class DispatchingSubscriber implements EventSubscriber
                         continue; // Create event only for selected event types e.g. added, removed
                     }
 
-                    if (!$this->validateSubEvent($event->getChanges(), $model, $entity, $event->getEventType())) {
+                    if (!$this->validateSubEvent($event->getChanges(), $model, $entity, $event->getEventType())) { // @phpstan-ignore-line
                         continue;
                     }
 
@@ -361,6 +347,13 @@ class DispatchingSubscriber implements EventSubscriber
         }
     }
 
+    /**
+     * @param array<string, array<int, mixed>> $eventChanges
+     * @param SubEvent $model
+     * @param EntityInterface $entity
+     * @param string $event
+     * @return bool
+     */
     private function validateSubEvent(
         array $eventChanges,
         SubEvent $model,
@@ -396,7 +389,7 @@ class DispatchingSubscriber implements EventSubscriber
                 if (1 === $count) {
                     $validFields[$field] = $fields[1] === $modelWantedState[0];
                 } elseif (2 === $count) {
-                    $validFields[$field] = $fields[0] === $modelWantedState[0] && $fields[1] === $modelWantedState[1];
+                    $validFields[$field] = $fields[0] === $modelWantedState[0] && $fields[1] === ($modelWantedState[1] ?? null);
                 }
             }
 
@@ -412,7 +405,7 @@ class DispatchingSubscriber implements EventSubscriber
                 if ($this->propertyAccess->getValue($entity, $fieldName) !== $value) {
                     return false;
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable) {
                 return false;
             }
         }
