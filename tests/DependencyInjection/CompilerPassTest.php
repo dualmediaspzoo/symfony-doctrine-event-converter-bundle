@@ -3,8 +3,8 @@
 namespace DM\DoctrineEventDistributorBundle\Tests\DependencyInjection;
 
 use DM\DoctrineEventDistributorBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
+use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\EntityInterfaceMissingException;

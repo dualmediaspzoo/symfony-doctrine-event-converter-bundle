@@ -10,6 +10,14 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class DoctrineEventConverterExtension extends SymfonyExtension
 {
+    /**
+     * @param array<string, mixed> $configs
+     * @param ContainerBuilder $container
+     *
+     * @throws \Exception
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType
+     */
     public function load(
         array $configs,
         ContainerBuilder $container

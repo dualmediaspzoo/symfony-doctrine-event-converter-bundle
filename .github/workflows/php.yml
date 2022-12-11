@@ -103,7 +103,7 @@ jobs:
 
       - name: Psalm
         run: |
-          vendor/bin/psalm --ansi --no-progress
+          vendor/bin/psalm --no-progress
 
   php-cs-fixer:
     strategy:
