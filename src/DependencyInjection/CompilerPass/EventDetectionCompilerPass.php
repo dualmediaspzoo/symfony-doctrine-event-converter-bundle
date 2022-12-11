@@ -188,6 +188,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         /** @var class-string<AbstractEntityEvent> $class */
         foreach ($subEvents as $class => $annotations) {
             foreach ($annotations as $annotation) {
+                /** @psalm-suppress InvalidArgument */
                 if (!array_key_exists($class, $events)) {
                     $events[$class] = [];
                 }
