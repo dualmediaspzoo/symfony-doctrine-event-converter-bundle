@@ -1,10 +1,10 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\UnknownEventType;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\UnknownEventType;
 
-use DM\DoctrineEventDistributorBundle\Attributes\SubEvent;
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventDistributorBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
 use JetBrains\PhpStorm\Pure;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-use DM\DoctrineEventDistributorBundle\Tests\TestKernel;
+use DualMedia\DoctrineEventDistributorBundle\Tests\TestKernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;

@@ -1,6 +1,6 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Event;
+namespace DualMedia\DoctrineEventDistributorBundle\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

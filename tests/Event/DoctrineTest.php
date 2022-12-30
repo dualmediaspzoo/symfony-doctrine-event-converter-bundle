@@ -1,16 +1,16 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Event;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Event;
 
-use DM\DoctrineEventDistributorBundle\Event\DispatchEvent;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
-use DM\DoctrineEventDistributorBundle\Tests\KernelTestCase;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostPersistEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostRemoveEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostUpdateEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
+use DualMedia\DoctrineEventDistributorBundle\Event\DispatchEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventDistributorBundle\Tests\KernelTestCase;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostPersistEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostRemoveEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostUpdateEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
 
 class DoctrineTest extends KernelTestCase
 {

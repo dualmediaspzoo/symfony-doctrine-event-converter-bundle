@@ -1,19 +1,19 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Proxy;
+namespace DualMedia\DoctrineEventDistributorBundle\Proxy;
 
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\Exception\Proxy\DirectoryNotWritable;
-use DM\DoctrineEventDistributorBundle\Exception\Proxy\NotProxyClassException;
-use DM\DoctrineEventDistributorBundle\Exception\Proxy\TargetClassFinalException;
-use DM\DoctrineEventDistributorBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
+use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Exception\Proxy\DirectoryNotWritable;
+use DualMedia\DoctrineEventDistributorBundle\Exception\Proxy\NotProxyClassException;
+use DualMedia\DoctrineEventDistributorBundle\Exception\Proxy\TargetClassFinalException;
+use DualMedia\DoctrineEventDistributorBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
 
 /**
  * Loosely based on Doctrine's EntityGenerator
  */
 class Generator
 {
-    public const PROXY_NS = 'DM\\DoctrineEventDistributorProxy';
+    public const PROXY_NS = 'DualMedia\\DoctrineEventDistributorProxy';
 
     public const TEMPLATE = <<<EOF
 <?php

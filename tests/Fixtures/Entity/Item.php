@@ -1,37 +1,27 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity;
 
-use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
+use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class Item implements EntityInterface
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="smallint")
-     */
-    private $status;
+    #[ORM\Column(type: 'smallint')]
+    private ?int $status = null;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function getStatus(): int
+    public function getStatus(): ?int
     {
         return $this->status;
     }

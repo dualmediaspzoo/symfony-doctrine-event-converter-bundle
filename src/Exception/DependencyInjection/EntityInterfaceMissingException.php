@@ -1,9 +1,9 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Exception\DependencyInjection;
+namespace DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection;
 
-use DM\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
-use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 
 /**
  * Thrown during compiler pass processing if a class does not implement {@link EntityInterface}

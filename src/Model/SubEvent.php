@@ -1,6 +1,6 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Model;
+namespace DualMedia\DoctrineEventDistributorBundle\Model;
 
 use Doctrine\ORM\Events;
 use JetBrains\PhpStorm\Immutable;

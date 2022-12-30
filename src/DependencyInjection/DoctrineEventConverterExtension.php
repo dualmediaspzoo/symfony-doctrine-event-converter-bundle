@@ -1,8 +1,8 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\DependencyInjection;
+namespace DualMedia\DoctrineEventDistributorBundle\DependencyInjection;
 
-use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
+use DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension as SymfonyExtension;

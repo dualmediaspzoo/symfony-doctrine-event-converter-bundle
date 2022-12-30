@@ -1,16 +1,16 @@
 {
-    "name": "dm/symfony-doctrine-event-converter-bundle",
+    "name": "dualmedia/symfony-doctrine-event-converter-bundle",
     "description": "A symfony bundle for creating symfony events out of doctrine changes",
     "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "DM\\DoctrineEventDistributorBundle\\": "src/"
+            "DualMedia\\DoctrineEventDistributorBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DM\\DoctrineEventDistributorBundle\\Tests\\": "tests/"
+            "DualMedia\\DoctrineEventDistributorBundle\\Tests\\": "tests/"
         }
     },
     "authors": [

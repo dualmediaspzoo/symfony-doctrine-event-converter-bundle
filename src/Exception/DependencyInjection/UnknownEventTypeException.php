@@ -1,8 +1,8 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Exception\DependencyInjection;
+namespace DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection;
 
-use DM\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
 
 final class UnknownEventTypeException extends AbstractEventDistributorException
 {
