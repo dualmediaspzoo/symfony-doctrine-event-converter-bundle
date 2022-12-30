@@ -209,6 +209,9 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                     /** @var Event $missing */
                     $missing = new $annotationClass();
+                    /**
+                     * @psalm-suppress InvalidPropertyAssignmentValue
+                     */
                     $missing->entity = $annotation->entity; // @phpstan-ignore-line
                     $events[$class][] = $missing;
                 }
