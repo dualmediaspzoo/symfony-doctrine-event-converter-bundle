@@ -1,11 +1,11 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event;
 
-use DM\DoctrineEventDistributorBundle\Attributes\SubEvent;
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventDistributorBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
 use JetBrains\PhpStorm\Pure;
 
 /**

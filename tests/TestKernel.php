@@ -1,11 +1,11 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests;
 
 use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
-use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
+use DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -45,7 +45,7 @@ class TestKernel extends Kernel
 
         $container->extension(DoctrineEventConverterBundle::CONFIGURATION_ROOT, [
             'parent_directory' => realpath(__DIR__ . '/Fixtures/Event'),
-            'parent_namespace' => 'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Event',
+            'parent_namespace' => 'DualMedia\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Event',
         ]);
 
         $container->extension('framework', [
@@ -63,11 +63,11 @@ class TestKernel extends Kernel
                 'auto_generate_proxy_classes' => true,
                 'auto_mapping' => true,
                 'mappings' => [
-                    'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\' => [
+                    'DualMedia\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\' => [
                         'is_bundle' => false,
-                        'type' => 'annotation',
+                        'type' => 'attribute',
                         'dir' => '%kernel.project_dir%/tests/Fixtures/Entity',
-                        'prefix' => 'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\',
+                        'prefix' => 'DualMedia\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\',
                         'alias' => 'app',
                     ],
                 ],

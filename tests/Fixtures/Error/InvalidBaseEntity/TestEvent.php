@@ -1,10 +1,10 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\InvalidBaseEntity;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\InvalidBaseEntity;
 
-use DM\DoctrineEventDistributorBundle\Attributes\PreUpdateEvent;
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\InvalidEntity;
+use DualMedia\DoctrineEventDistributorBundle\Attributes\PreUpdateEvent;
+use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\InvalidEntity;
 use JetBrains\PhpStorm\Pure;
 
 #[PreUpdateEvent]

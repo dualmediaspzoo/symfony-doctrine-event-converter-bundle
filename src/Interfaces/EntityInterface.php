@@ -1,8 +1,8 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Interfaces;
+namespace DualMedia\DoctrineEventDistributorBundle\Interfaces;
 
-use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
+use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 
 /**
  * Simple interface to enforce an id getter

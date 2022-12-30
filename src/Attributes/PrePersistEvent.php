@@ -1,6 +1,6 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Attributes;
+namespace DualMedia\DoctrineEventDistributorBundle\Attributes;
 
 use Doctrine\ORM\Events;
 

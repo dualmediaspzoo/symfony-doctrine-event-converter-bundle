@@ -1,17 +1,17 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\EventSubscriber;
+namespace DualMedia\DoctrineEventDistributorBundle\EventSubscriber;
 
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\Event\DispatchEvent;
-use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
-use DM\DoctrineEventDistributorBundle\Model\SubEvent;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\PersistentCollection;
+use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Event\DispatchEvent;
+use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventDistributorBundle\Model\SubEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

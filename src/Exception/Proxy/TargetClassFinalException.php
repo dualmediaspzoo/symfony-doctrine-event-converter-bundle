@@ -1,9 +1,9 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Exception\Proxy;
+namespace DualMedia\DoctrineEventDistributorBundle\Exception\Proxy;
 
-use DM\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
-use DM\DoctrineEventDistributorBundle\Proxy\Generator;
+use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventDistributorBundle\Proxy\Generator;
 
 /**
  * Thrown if a class passed to {@link Generator} is final

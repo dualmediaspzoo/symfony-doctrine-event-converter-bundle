@@ -14,7 +14,7 @@ All of the hard work is already done, just declare your entities, implement `Ent
 
 ```php
 use Doctrine\ORM\Mapping as ORM;
-use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 
  #[ORM\Entity]
 class Item implements EntityInterface
@@ -51,8 +51,8 @@ class Item implements EntityInterface
 mark this class with your appropriate event annotation, either one of the base ones or SubEvent
 
 ```php
-use DM\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
-use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
+use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 
 #[PrePersistEvent]
 abstract class ItemEvent extends AbstractEntityEvent

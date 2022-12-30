@@ -1,44 +1,26 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity;
 
-use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
+use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class ComplexEntity implements EntityInterface
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(type="smallint")
-     */
-    private $status;
+    #[ORM\Column(type: 'smallint')]
+    private ?int $status = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=64)
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 64)]
+    private ?string $name = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=64)
-     */
-    private $unimportant;
+    #[ORM\Column(type: 'string', length: 64)]
+    private ?string $unimportant = null;
 
     public function getId()
     {

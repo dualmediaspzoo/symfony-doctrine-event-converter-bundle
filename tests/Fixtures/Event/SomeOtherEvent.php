@@ -1,6 +1,6 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

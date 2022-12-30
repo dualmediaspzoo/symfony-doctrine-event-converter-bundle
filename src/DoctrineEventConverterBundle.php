@@ -1,9 +1,9 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle;
+namespace DualMedia\DoctrineEventDistributorBundle;
 
-use DM\DoctrineEventDistributorBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
-use DM\DoctrineEventDistributorBundle\Proxy\Generator;
+use DualMedia\DoctrineEventDistributorBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
+use DualMedia\DoctrineEventDistributorBundle\Proxy\Generator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

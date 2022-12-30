@@ -1,26 +1,26 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Tests\Integration;
+namespace DualMedia\DoctrineEventDistributorBundle\Tests\Integration;
 
-use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
-use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityEvent;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemEvent;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\SomeOtherEvent;
-use DM\DoctrineEventDistributorBundle\Tests\KernelTestCase;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityPostUpdateEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityPrePersistEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityStatusChangedEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityStatusChangedPrePersistEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostPersistEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostRemoveEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostUpdateEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
-use DM\DoctrineEventDistributorProxy\DM\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
+use DualMedia\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\SomeOtherEvent;
+use DualMedia\DoctrineEventDistributorBundle\Tests\KernelTestCase;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityPostUpdateEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityPrePersistEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityStatusChangedEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ComplexEntityStatusChangedPrePersistEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostPersistEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostRemoveEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostUpdateEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
+use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
 use Symfony\Component\Finder\Finder;
 
 class ValidCompileTest extends KernelTestCase

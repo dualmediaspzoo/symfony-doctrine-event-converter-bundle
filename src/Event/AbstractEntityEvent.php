@@ -1,9 +1,9 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Event;
+namespace DualMedia\DoctrineEventDistributorBundle\Event;
 
-use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Contracts\EventDispatcher\Event;
 

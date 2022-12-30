@@ -1,8 +1,8 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Exception\Proxy;
+namespace DualMedia\DoctrineEventDistributorBundle\Exception\Proxy;
 
-use DM\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
 
 /**
  * Thrown if a proxy directory is not writable
