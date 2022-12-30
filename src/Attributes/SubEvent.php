@@ -1,6 +1,6 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Annotation;
+namespace DM\DoctrineEventDistributorBundle\Attributes;
 
 use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
 use Doctrine\ORM\Events;
@@ -9,10 +9,8 @@ use Doctrine\ORM\Events;
  * Responsible for registering sub events for {@link DispatchingSubscriber} with appropriate options
  *
  * <span style="color: yellow">WARNING:</span> You must specify the {@link SubEvent::$label} and one of {@link SubEvent::$fields} or {@link SubEvent::$requirements
- *
- * @Annotation
- * @Target({"CLASS"})
  */
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class SubEvent
 {
     /**
@@ -20,15 +18,13 @@ class SubEvent
      *
      * If this annotation is placed on an event class called "FooBarEvent" and the label is "StatusChanged" then
      * the final short name of the class will be "FooBarStatusChangedEvent"
-     *
-     * @var string|null
      */
-    public ?string $label;
-    
+    public string $label;
+
     /**
-     * @var string|string[]
+     * @var string|list<string>|null
      */
-    public $entity;
+    public string|array|null $entity;
 
     /**
      * List of fields to be used for searching for changes.
@@ -53,10 +49,9 @@ class SubEvent
      *
      * means "When field 'price' changes from 0.15 to 0.30"
      *
-     * @var mixed (string|array)
-     * @psalm-var string|array<array-key, string|array{0: mixed, 1?: mixed}|null>
+     * @var string|array<array-key, string|array{0: mixed, 1?: mixed}|null>|null
      */
-    public $fields;
+    public string|array|null $fields;
 
     /**
      * If all fields are required to fire event
@@ -72,14 +67,17 @@ class SubEvent
      * Accessed via property accessor in event object.
      *
      * <span style="color: yellow">WARNING:</span> Either this field or {@link SubEvent::$fields} is required!
+     *
+     * @var array<mixed, mixed>
      */
     public array $requirements = [];
 
     /**
      * Types of event that will cause this event to run, before even running the other checks.
      *
-     * @var string[]
-     * @psalm-var list<Events::prePersist|Events::postPersist|Events::preUpdate|Events::postUpdate|Events::preRemove|Events::postRemove>
+     * @var list<string>
+     *
+     * @see Events
      */
     public array $types = [];
 
@@ -90,15 +88,30 @@ class SubEvent
      */
     public int $priority = 0;
 
+    /**
+     * @param string $label
+     * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null>|null $fields
+     * @param string|list<string>|null $entity
+     * @param bool $allMode
+     * @param array<mixed, mixed> $requirements
+     * @param list<string> $types
+     * @param int $priority
+     */
     public function __construct(
-        array $values
+        string $label,
+        string|array|null $fields = null,
+        string|array|null $entity = null,
+        bool $allMode = true,
+        array $requirements = [],
+        array $types = [],
+        int $priority = 0
     ) {
-        $this->label = $values['value'] ?? $values['label'] ?? null;
-        $this->entity = $values['entity'] ?? null;
-        $this->fields = $values['fields'] ?? null;
-        $this->allMode = $values['allMode'] ?? true;
-        $this->requirements = $values['requirements'] ?? [];
-        $this->types = $values['types'] ?? [];
-        $this->priority = $values['priority'] ?? 0;
+        $this->label = $label;
+        $this->entity = $entity;
+        $this->fields = $fields;
+        $this->allMode = $allMode;
+        $this->requirements = $requirements;
+        $this->types = $types;
+        $this->priority = $priority;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace DM\DoctrineEventDistributorBundle\Annotation;
+namespace DM\DoctrineEventDistributorBundle\Attributes;
 
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
@@ -23,13 +23,12 @@ abstract class Event
     /**
      * This value is not required assuming you override the {@link AbstractEntityEvent::getEntityClass()} method
      *
-     * @var mixed (string|string[])
-     * @psalm-var string|non-empty-list<string>|null
+     * @var class-string|non-empty-list<class-string>|null
      */
-    public $entity = null;
+    public string|array|null $entity = null;
 
     /**
-     * @Enum({Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate, Events::preRemove, Events::postRemove})
+     * @see Events
      */
     protected string $type = Events::postPersist;
 

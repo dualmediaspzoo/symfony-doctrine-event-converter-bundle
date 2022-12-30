@@ -4,6 +4,7 @@ namespace DM\DoctrineEventDistributorBundle\Event;
 
 use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use Doctrine\ORM\Events;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -13,16 +14,17 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 abstract class AbstractEntityEvent extends Event
 {
-    /**
-     * @var string|int|null
-     */
-    protected $id = null;
+    protected string|int|null $id = null;
 
     /**
-     * @var EntityInterface
-     * @psalm-var T
+     * @var T
+     * @noinspection PhpDocFieldTypeMismatchInspection
      */
     protected EntityInterface $entity;
+
+    /**
+     * @var array<string, mixed>
+     */
     protected array $changes = [];
     protected string $eventType;
 
@@ -34,6 +36,7 @@ abstract class AbstractEntityEvent extends Event
      * @psalm-return class-string<T>|null
      * @psalm-pure
      */
+    #[Pure]
     public static function getEntityClass(): ?string
     {
         return null;
@@ -61,27 +64,27 @@ abstract class AbstractEntityEvent extends Event
     }
 
     /**
-     * @return static
+     * @param array<string, mixed> $fields
      */
     public function setChanges(
         array $fields
-    ): self {
+    ): static {
         $this->changes = $fields;
 
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getChanges(): array
     {
         return $this->changes;
     }
 
-    /**
-     * @return static
-     */
     public function setEventType(
         string $enum
-    ): self {
+    ): static {
         $this->eventType = $enum;
 
         return $this;
@@ -92,31 +95,20 @@ abstract class AbstractEntityEvent extends Event
         return $this->eventType;
     }
 
-    /**
-     * @param int|string|null $id
-     *
-     * @return static
-     */
     public function setDeletedId(
-        $id
-    ): self {
+        int|string|null $id
+    ): static {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return int|string|null
-     */
-    public function getDeletedId()
+    public function getDeletedId(): int|string|null
     {
         return $this->id;
     }
 
-    /**
-     * @return int|null|string
-     */
-    public function getEntityId()
+    public function getEntityId(): int|string|null
     {
         if (Events::postRemove === $this->getEventType()) {
             return $this->getDeletedId();

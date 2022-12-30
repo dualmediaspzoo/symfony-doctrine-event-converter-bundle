@@ -2,21 +2,20 @@
 
 namespace DM\DoctrineEventDistributorBundle\DependencyInjection\CompilerPass;
 
-use DM\DoctrineEventDistributorBundle\Annotation\Event;
-use DM\DoctrineEventDistributorBundle\Annotation\PostPersistEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PostRemoveEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PostUpdateEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PrePersistEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PreRemoveEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\PreUpdateEvent;
-use DM\DoctrineEventDistributorBundle\Annotation\SubEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\Event;
+use DM\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostRemoveEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostUpdateEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PreRemoveEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PreUpdateEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\SubEvent;
+use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\EventDistributorBundle;
 use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\NoValidEntityFoundException;
-use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventLabelMissingException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventNameCollisionException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\TargetClassFinalException;
@@ -28,7 +27,6 @@ use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use DM\DoctrineEventDistributorBundle\Interfaces\MainEventInterface;
 use DM\DoctrineEventDistributorBundle\Interfaces\SubEventInterface;
 use DM\DoctrineEventDistributorBundle\Proxy\Generator;
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Events;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -58,7 +56,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws DirectoryNotWritable
      * @throws EntityInterfaceMissingException
      * @throws NoValidEntityFoundException
-     * @throws SubEventLabelMissingException
      * @throws UnknownEventTypeException
      * @throws ProxyTargetClassFinalException
      * @throws TargetClassNamingSchemeInvalidException
@@ -68,36 +65,36 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      */
     public function process(
         ContainerBuilder $container
-    ) {
+    ): void {
         if (!$container->hasDefinition(Generator::class) ||
             !$container->has(Generator::class) ||
-            !$container->hasDefinition(DispatchingSubscriber::class) ||
-            !$container->has(Reader::class)) {
+            !$container->hasDefinition(DispatchingSubscriber::class)) {
             return;
         }
 
-        $reader = $container->get(Reader::class);
         /** @var Generator $generator */
         $generator = $container->get(Generator::class);
         $subscriber = $container->getDefinition(DispatchingSubscriber::class);
 
-        /** @var array<class-string, non-empty-list<Event>> $events */
+        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<Event>> $events */
         $events = [];
 
-        /** @var array<class-string, non-empty-list<SubEvent>> $subEvents */
+        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>> $subEvents */
         $subEvents = [];
 
         $finder = new Finder();
 
         /** @var string $path */
-        $path = $container->getParameter('event_distributor.parent_directory');
-        $namespace = $container->getParameter('event_distributor.parent_namespace');
+        $path = $container->getParameter(DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_directory');
+        /** @var string $namespace */
+        $namespace = $container->getParameter(DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace');
 
         // attempt to expand paths
         $match = [];
         preg_match_all('/%(.+)%/', $path, $match);
         if (count($match[0] ?? [])) {
             foreach ($match[0] as $i => $item) {
+                /** @var string $param */
                 $param = $container->getParameter($match[1][$i]);
                 $path = str_replace($item, $param, $path);
             }
@@ -106,26 +103,38 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         /**
          * This just lets us see if some name will be taken at any point, since SubEvents are created from a single class, they could collide
          *
-         * @var string[]
+         * @var string[] $uniqueSubEventNames
          */
         $uniqueSubEventNames = [];
 
         $nonGlobPath = rtrim($path, "*\\/");
         foreach ($finder->files()->in($path)->name('*.php') as $file) {
             $class = $namespace.'\\'.str_replace(['.php', '/'], ['', '\\'], mb_substr($file->getRealPath(), mb_strpos($file->getRealPath(), $nonGlobPath) + mb_strlen($nonGlobPath) + 1));
+            /** @var class-string $class */
             try {
-                if (false === ($annotations = $reader->getClassAnnotations($reflection = new \ReflectionClass($class)))) {
-                    continue;
+                $reflection = new \ReflectionClass($class);
+                /** @var list<Event|SubEvent> $attributes */
+                $attributes = [];
+
+                foreach ($reflection->getAttributes() as $attribute) {
+                    $instance = $attribute->newInstance();
+
+                    if ($instance instanceof Event || $instance instanceof SubEvent) {
+                        $attributes[] = $instance;
+                    }
                 }
-            } catch (\ReflectionException $e) {
+            } catch (\ReflectionException) {
                 continue;
             }
 
-            foreach ($annotations as $annotation) {
+            foreach ($attributes as $annotation) {
                 if ($annotation instanceof Event) {
                     $this->validateEventReflection($class, $reflection);
                     $this->applyEntityClass($annotation, $reflection);
-                    $this->validateEntityClass($annotation->entity, $class);
+
+                    /** @var class-string|list<class-string> $entity */
+                    $entity = $annotation->entity;
+                    $this->validateEntityClass($entity, $class);
 
                     if (!array_key_exists($class, $events)) {
                         $events[$class] = [];
@@ -135,15 +144,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                 } elseif ($annotation instanceof SubEvent) {
                     $this->validateEventReflection($class, $reflection);
                     $this->applyEntityClass($annotation, $reflection);
-                    $this->validateEntityClass($annotation->entity, $class);
 
-                    if (null === $annotation->label) {
-                        throw SubEventLabelMissingException::new([
-                            $class,
-                            implode(', ', $annotation->entity),
-                        ]);
-                    }
-
+                    /** @var class-string|list<class-string> $entity */
+                    $entity = $annotation->entity;
+                    $this->validateEntityClass($entity, $class);
                     $this->updateSubEventAnnotationFields($annotation, $class);
 
                     if (!array_key_exists($class, $subEvents)) {
@@ -153,7 +157,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $subEvents[$class][] = $annotation;
 
                     $uniq = $class.ucfirst($annotation->label);
-                    if (false !== array_search($uniq, $uniqueSubEventNames)) {
+                    if (in_array($uniq, $uniqueSubEventNames)) {
                         throw SubEventNameCollisionException::new([
                             $class,
                             $annotation->label,
@@ -165,7 +169,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             }
         }
 
-        $cacheDir = $container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.EventDistributorBundle::CACHE_DIRECTORY;
+        $cacheDir = $container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.DoctrineEventConverterBundle::CACHE_DIRECTORY; // @phpstan-ignore-line
         if (!is_dir($cacheDir) && (false === @mkdir($cacheDir, 0775, true))) {
             throw DirectoryNotWritable::new([$cacheDir]);
         }
@@ -181,8 +185,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         // we're starting with sub events because those might need an implicit creation of main events
+        /** @var class-string<AbstractEntityEvent> $class */
         foreach ($subEvents as $class => $annotations) {
             foreach ($annotations as $annotation) {
+                /** @psalm-suppress InvalidArgument */
                 if (!array_key_exists($class, $events)) {
                     $events[$class] = [];
                 }
@@ -203,7 +209,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                     /** @var Event $missing */
                     $missing = new $annotationClass();
-                    $missing->entity = $annotation->entity;
+                    /**
+                     * @psalm-suppress InvalidPropertyAssignmentValue
+                     */
+                    $missing->entity = $annotation->entity; // @phpstan-ignore-line
                     $events[$class][] = $missing;
                 }
 
@@ -226,6 +235,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         // create and add main events
+        /** @var class-string<AbstractEntityEvent> $class */
         foreach ($events as $class => $annotations) {
             foreach ($annotations as $annotation) {
                 $out = $generator->generateProxyClass(
@@ -271,28 +281,28 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws NoValidEntityFoundException
      */
     private function applyEntityClass(
-        $annotation,
+        SubEvent|Event $annotation,
         \ReflectionClass $reflection
     ): void {
         if (!is_array($annotation->entity) && !mb_strlen($annotation->entity ?? '')) {
-            if (!mb_strlen($annotation->entity = call_user_func($reflection->getName().'::getEntityClass') ?? '')) {
+            if (!mb_strlen($annotation->entity = call_user_func($reflection->getName().'::getEntityClass') ?? '')) { // @phpstan-ignore-line
                 throw NoValidEntityFoundException::new([$reflection->getName()]);
             }
         }
 
         if (!is_array($annotation->entity)) {
             /** @psalm-suppress InvalidPropertyAssignmentValue */
-            $annotation->entity = [$annotation->entity];
+            $annotation->entity = [$annotation->entity]; // @phpstan-ignore-line
         }
     }
 
     /**
-     * @param string|string[] $class
+     * @param class-string|list<class-string> $class
      *
      * @throws EntityInterfaceMissingException
      */
     private function validateEntityClass(
-        $class,
+        string|array $class,
         string $eventClass
     ): void {
         if (!is_array($class)) {
@@ -300,8 +310,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         foreach ($class as $cls) {
-            /** @psalm-suppress TypeDoesNotContainType */
-            if (is_a($cls, EntityInterface::class) || is_subclass_of($cls, EntityInterface::class)) { // fits by inheritance
+            if (is_subclass_of($cls, EntityInterface::class)) { // fits by inheritance
                 return;
             }
 

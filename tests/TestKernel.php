@@ -3,64 +3,57 @@
 namespace DM\DoctrineEventDistributorBundle\Tests;
 
 use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
-use DM\DoctrineEventDistributorBundle\EventDistributorBundle;
+use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 class TestKernel extends Kernel
 {
     use MicroKernelTrait;
 
+    /**
+     * @return list<BundleInterface>
+     */
     public function registerBundles(): array
     {
         return [
             new FrameworkBundle(),
             new DoctrineBundle(),
-            new EventDistributorBundle(),
+            new DoctrineEventConverterBundle(),
             new DoctrineFixturesBundle(),
             new DAMADoctrineTestBundle(),
         ];
     }
 
     /**
-     * 4.4 compatibility
-     *
-     * @param RoutingConfigurator $routes
+     * @noinspection PhpUnusedPrivateMethodInspection
+     * @phpstan-ignore-next-line
      */
-    protected function configureRoutes(
-        RoutingConfigurator $routes
-    ): void {
-    }
-
-    /**
-     * 4.4 compatibility
-     *
-     * @param ContainerBuilder $container
-     * @param LoaderInterface $loader
-     */
-    public function configureContainer(
-        ContainerBuilder $container,
-        LoaderInterface $loader
+    private function configureContainer(
+        ContainerConfigurator $container,
+        LoaderInterface $loader,
+        ContainerBuilder $builder
     ): void {
         $loader->load(__DIR__.'/../config/services_test.php');
 
-        $container->loadFromExtension('event_distributor', [
+        $container->extension(DoctrineEventConverterBundle::CONFIGURATION_ROOT, [
             'parent_directory' => realpath(__DIR__ . '/Fixtures/Event'),
             'parent_namespace' => 'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Event',
         ]);
 
-        $container->loadFromExtension('framework', [
+        $container->extension('framework', [
             'test' => true,
             'secret' => 'OpenSecret',
         ]);
 
-        $container->loadFromExtension('doctrine', [
+        $container->extension('doctrine', [
             'dbal' => [
                 'driver' => 'pdo_sqlite',
                 'path' => '%kernel.cache_dir%/test_db.sqlite',

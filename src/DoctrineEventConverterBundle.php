@@ -7,9 +7,11 @@ use DM\DoctrineEventDistributorBundle\Proxy\Generator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class EventDistributorBundle extends Bundle
+class DoctrineEventConverterBundle extends Bundle
 {
     public const CACHE_DIRECTORY = 'dm-smd-event-distributor-bundle';
+
+    public const CONFIGURATION_ROOT = 'doctrine_event_converter';
 
     /**
      * @var callable|null
@@ -18,7 +20,7 @@ class EventDistributorBundle extends Bundle
 
     public function build(
         ContainerBuilder $container
-    ) {
+    ): void {
         $container->addCompilerPass(new EventDetectionCompilerPass());
     }
 
@@ -41,7 +43,7 @@ class EventDistributorBundle extends Bundle
         spl_autoload_register($this->autoloader);
     }
 
-    public function shutdown()
+    public function shutdown(): void
     {
         if (null !== $this->autoloader) {
             spl_autoload_unregister($this->autoloader);

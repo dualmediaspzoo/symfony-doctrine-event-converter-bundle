@@ -2,20 +2,22 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\FinalClass;
 
-use DM\DoctrineEventDistributorBundle\Annotation\PostPersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use JetBrains\PhpStorm\Pure;
 
 /**
- * @PostPersistEvent()
+ * @extends AbstractEntityEvent<Item>
  */
+#[PostPersistEvent]
 final class TestEvent extends AbstractEntityEvent
 {
     /**
-     * @return string|null
      * @psalm-pure
      */
-    public static function getEntityClass(): ?string
+    #[Pure]
+    public static function getEntityClass(): string|null
     {
         return Item::class;
     }

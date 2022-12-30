@@ -3,13 +3,12 @@
 namespace DM\DoctrineEventDistributorBundle\Tests\DependencyInjection;
 
 use DM\DoctrineEventDistributorBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
+use DM\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DM\DoctrineEventDistributorBundle\EventDistributorBundle;
 use DM\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\NoValidEntityFoundException;
-use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventLabelMissingException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventNameCollisionException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\TargetClassFinalException;
@@ -17,10 +16,8 @@ use DM\DoctrineEventDistributorBundle\Exception\DependencyInjection\UnknownEvent
 use DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
 use DM\DoctrineEventDistributorBundle\Proxy\Generator;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\InvalidEntity;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\FinalClass\TestEvent as FinalClass;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\InvalidBaseEntity\TestEvent as InvalidBaseEntity;
-use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NoSubEventLabel\TestEvent as NoSubEventLabel;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NotExtendingAbstractEntityEvent\TestEvent as NotExtendingAbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NoValidEntity\TestEvent as NoValidEntity;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\SubEventNameCollision\TestEvent as SubEventNameCollision;
@@ -87,20 +84,6 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         $this->compile();
     }
 
-    public function testNoSubEventLabel(): void
-    {
-        $this->setDINamespace('NoSubEventLabel');
-        $this->loadRequiredServices();
-
-        $this->expectException(SubEventLabelMissingException::class);
-        $this->expectExceptionMessage(SubEventLabelMissingException::formatMessage([
-            NoSubEventLabel::class,
-            Item::class,
-        ]));
-
-        $this->compile();
-    }
-
     public function testFinalClass(): void
     {
         $this->setDINamespace('FinalClass');
@@ -161,7 +144,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         $this->container->setParameter('kernel.cache_dir', $cache = '/'.self::getAbsolutePath(__DIR__.'/../../var/cache/test'));
         $this->setDefinition(Reader::class, new Definition(AnnotationReader::class));
         $this->setDefinition(Generator::class, new Definition(Generator::class, [
-            $cache.'/'.EventDistributorBundle::CACHE_DIRECTORY,
+            $cache.'/'.DoctrineEventConverterBundle::CACHE_DIRECTORY,
         ]));
         $this->setDefinition('event_dispatcher', new Definition(EventDispatcher::class));
         $this->setDefinition(DispatchingSubscriber::class, new Definition(DispatchingSubscriber::class, [
@@ -173,11 +156,11 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         string $namespace
     ): void {
         $this->setParameter(
-            'event_distributor.parent_namespace',
+            DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace',
             'DM\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Error\\'.$namespace
         );
         $this->setParameter(
-            'event_distributor.parent_directory',
+            DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_directory',
             '/'.self::getAbsolutePath(__DIR__.'/../Fixtures/Error/'.$namespace)
         );
     }

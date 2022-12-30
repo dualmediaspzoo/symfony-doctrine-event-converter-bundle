@@ -2,20 +2,22 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\UnknownEventType;
 
-use DM\DoctrineEventDistributorBundle\Annotation\SubEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\SubEvent;
 use DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 use DM\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use JetBrains\PhpStorm\Pure;
 
 /**
- * @SubEvent("SomeEvent", types={"invalid"})
+ * @extends AbstractEntityEvent<Item>
  */
+#[SubEvent("SomeEvent", types: ["invalid"])]
 class TestEvent extends AbstractEntityEvent
 {
     /**
-     * @return string|null
      * @psalm-pure
      */
-    public static function getEntityClass(): ?string
+    #[Pure]
+    public static function getEntityClass(): string|null
     {
         return Item::class;
     }

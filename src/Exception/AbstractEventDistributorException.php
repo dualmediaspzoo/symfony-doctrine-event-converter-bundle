@@ -14,27 +14,26 @@ abstract class AbstractEventDistributorException extends \Exception
     /**
      * Returns a new exception with a preformatted message
      *
-     * @param array $arguments
+     * @param list<mixed> $arguments
      *
      * @return static
      */
     public static function new(
         array $arguments = []
-    ) {
-        // @phpstan-ignore-next-line
-        return new static(static::formatMessage($arguments));
+    ): static {
+        return new static(static::formatMessage($arguments)); // @phpstan-ignore-line
     }
 
     /**
      * Get the exception message
      *
-     * @param array $arguments
+     * @param list<mixed> $arguments
      *
      * @return string
      */
     public static function formatMessage(
         array $arguments = []
     ): string {
-        return sprintf(static::MESSAGE_TEMPLATE, ...$arguments);
+        return sprintf(static::MESSAGE_TEMPLATE, ...$arguments); // @phpstan-ignore-line
     }
 }

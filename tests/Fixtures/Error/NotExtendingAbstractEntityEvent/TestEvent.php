@@ -2,11 +2,9 @@
 
 namespace DM\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NotExtendingAbstractEntityEvent;
 
-use DM\DoctrineEventDistributorBundle\Annotation\PostPersistEvent;
+use DM\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
 
-/**
- * @PostPersistEvent()
- */
+#[PostPersistEvent]
 class TestEvent
 {
 }
