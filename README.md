@@ -15,7 +15,7 @@ Simply `composer require dualmedia/symfony-doctrine-event-converter-bundle`
 
 ## Usage
 
-1. Make a Doctrine-managed entity, that also implements the `DM\DoctrineEventDistributorBundle\Interfaces\EntityInterface`
+1. Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface`
 
 ```php
 use Doctrine\ORM\Mapping as ORM;
@@ -52,7 +52,7 @@ class Item implements EntityInterface
 }
 ```
 
-2. Create an event class (not final), and then at some point extend `DM\DoctrineEventDistributorBundle\Event\AbstractEntityEvent`, 
+2. Create an event class (not final), and then at some point extend `DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent`, 
 mark this class with your appropriate event annotation, either one of the base ones or SubEvent
 
 ```php
