@@ -8,6 +8,8 @@ jobs:
         include:
           - symfony-version: 5.4
             php-version: 8.1
+          - symfony-version: 6.2
+            php-version: 8.1
 
     runs-on: ubuntu-latest
     steps:
@@ -143,6 +145,8 @@ jobs:
       matrix:
         include:
           - symfony-version: 5.4
+            php-version: 8.1
+          - symfony-version: 6.2
             php-version: 8.1
 
     runs-on: ubuntu-latest
