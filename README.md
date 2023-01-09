@@ -13,6 +13,16 @@ All of the hard work is already done, just declare your entities, implement `Ent
 
 Simply `composer require dualmedia/symfony-doctrine-event-converter-bundle`
 
+Then add the bundle to your `config/bundles.php` file like so
+
+```php
+return [
+    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
+    // other bundles ...
+    DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle::class => ['all' => true],
+];
+```
+
 ## Usage
 
 1. Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface`

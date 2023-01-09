@@ -25,27 +25,27 @@ class KernelTestCase extends SymfonyKernelTestCase
         string $class,
         string $eventType
     ): string {
-        return static::$container->get(Generator::class)->resolveFilePath(Generator::getProxyFqcn($class, $eventType));
+        return $this->getContainer()->get(Generator::class)->resolveFilePath(Generator::getProxyFqcn($class, $eventType));
     }
 
     protected function getItemRepo(): EntityRepository
     {
-        return static::$container->get('doctrine')->getManager()->getRepository(Item::class);
+        return $this->getContainer()->get('doctrine')->getManager()->getRepository(Item::class);
     }
 
     protected function getComplexRepo(): EntityRepository
     {
-        return static::$container->get('doctrine')->getManager()->getRepository(ComplexEntity::class);
+        return $this->getContainer()->get('doctrine')->getManager()->getRepository(ComplexEntity::class);
     }
 
     protected function getManager(): ObjectManager
     {
-        return static::$container->get('doctrine')->getManager();
+        return $this->getContainer()->get('doctrine')->getManager();
     }
 
     protected function getEventDispatcher(): EventDispatcherInterface
     {
-        return static::$container->get('event_dispatcher');
+        return $this->getContainer()->get('event_dispatcher');
     }
 
     /**

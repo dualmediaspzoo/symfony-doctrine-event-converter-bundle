@@ -55,7 +55,7 @@ class ValidCompileTest extends KernelTestCase
         /** @see SomeOtherEvent */
         $finder = new Finder();
         $finder
-            ->in(static::$container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.DoctrineEventConverterBundle::CACHE_DIRECTORY)
+            ->in($this->getContainer()->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.DoctrineEventConverterBundle::CACHE_DIRECTORY)
             ->name('*SomeOther*Event*.php')
             ->files();
 
@@ -104,7 +104,7 @@ class ValidCompileTest extends KernelTestCase
      */
     public function testCorrectContainerDefinitions()
     {
-        $subscriber = self::$container->get(DispatchingSubscriber::class);
+        $subscriber = $this->getContainer()->get(DispatchingSubscriber::class);
 
         $list = [
             Events::postPersist => [
