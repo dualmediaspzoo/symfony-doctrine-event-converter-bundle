@@ -1,8 +1,8 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\DependencyInjection;
+namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection;
 
-use DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 

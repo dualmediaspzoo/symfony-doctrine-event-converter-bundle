@@ -2,7 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Doctrine\EntityFixtures;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Doctrine\EntityFixtures;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services()

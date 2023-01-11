@@ -1,8 +1,8 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection;
+namespace DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection;
 
-use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorException;
 
 final class AbstractEntityEventNotExtendedException extends AbstractEventDistributorException
 {

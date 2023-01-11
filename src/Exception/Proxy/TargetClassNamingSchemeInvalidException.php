@@ -1,8 +1,8 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Exception\Proxy;
+namespace DualMedia\DoctrineEventConverterBundle\Exception\Proxy;
 
-use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorException;
 
 /**
  * Thrown if an event class does not end with "Event" which is required for proper name generation

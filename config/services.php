@@ -2,8 +2,8 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use DualMedia\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
-use DualMedia\DoctrineEventDistributorBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use Symfony\Component\DependencyInjection\Reference;
 
 return static function (ContainerConfigurator $container) {

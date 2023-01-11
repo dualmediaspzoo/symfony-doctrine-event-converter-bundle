@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\EventSubscriber;
+namespace DualMedia\DoctrineEventConverterBundle\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
@@ -8,10 +8,10 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\PersistentCollection;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
-use DualMedia\DoctrineEventDistributorBundle\Model\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
+use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

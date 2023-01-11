@@ -1,11 +1,11 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Doctrine;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Doctrine;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 
 class EntityFixtures extends Fixture
 {

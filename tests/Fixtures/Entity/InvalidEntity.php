@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

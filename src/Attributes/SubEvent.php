@@ -1,9 +1,9 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Attributes;
+namespace DualMedia\DoctrineEventConverterBundle\Attributes;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 
 /**
  * Responsible for registering sub events for {@link DispatchingSubscriber} with appropriate options

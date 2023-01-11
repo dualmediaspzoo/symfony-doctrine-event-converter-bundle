@@ -1,10 +1,10 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\SubEventNameCollision;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\SubEventNameCollision;
 
-use DualMedia\DoctrineEventDistributorBundle\Attributes\SubEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use JetBrains\PhpStorm\Pure;
 
 /**

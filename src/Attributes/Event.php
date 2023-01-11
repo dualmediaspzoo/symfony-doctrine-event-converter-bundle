@@ -1,10 +1,10 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Attributes;
+namespace DualMedia\DoctrineEventConverterBundle\Attributes;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 
 /**
  * Base class for main events, the other annotations should be used in your code

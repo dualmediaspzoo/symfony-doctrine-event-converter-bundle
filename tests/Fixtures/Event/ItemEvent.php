@@ -1,15 +1,15 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event;
 
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PostRemoveEvent;
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PostUpdateEvent;
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PreRemoveEvent;
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PreUpdateEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PostPersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PostRemoveEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PostUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PrePersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PreRemoveEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use JetBrains\PhpStorm\Pure;
 
 /**

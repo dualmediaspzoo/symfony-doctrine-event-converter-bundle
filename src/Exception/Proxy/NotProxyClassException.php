@@ -1,8 +1,8 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Exception\Proxy;
+namespace DualMedia\DoctrineEventConverterBundle\Exception\Proxy;
 
-use DualMedia\DoctrineEventDistributorBundle\Exception\AbstractEventDistributorException;
+use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorException;
 
 /**
  * Thrown when trying to get a path to a non-proxy class
