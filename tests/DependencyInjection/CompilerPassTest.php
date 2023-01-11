@@ -1,30 +1,30 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\DependencyInjection;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\DependencyInjection;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
-use DualMedia\DoctrineEventDistributorBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
-use DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\EventSubscriber\DispatchingSubscriber;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\NoValidEntityFoundException;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventNameCollisionException;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\TargetClassFinalException;
-use DualMedia\DoctrineEventDistributorBundle\Exception\DependencyInjection\UnknownEventTypeException;
-use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
-use DualMedia\DoctrineEventDistributorBundle\Proxy\Generator;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\InvalidEntity;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\FinalClass\TestEvent as FinalClass;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\InvalidBaseEntity\TestEvent as InvalidBaseEntity;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NotExtendingAbstractEntityEvent\TestEvent as NotExtendingAbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NoValidEntity\TestEvent as NoValidEntity;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\SubEventNameCollision\TestEvent as SubEventNameCollision;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\SubEventRequiredFields\TestEvent as SubEventRequiredFields;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\UnknownEventType\TestEvent as UnknownEventType;
+use DualMedia\DoctrineEventConverterBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\NoValidEntityFoundException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventNameCollisionException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetClassFinalException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
+use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\InvalidEntity;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\FinalClass\TestEvent as FinalClass;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\InvalidBaseEntity\TestEvent as InvalidBaseEntity;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\NotExtendingAbstractEntityEvent\TestEvent as NotExtendingAbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\NoValidEntity\TestEvent as NoValidEntity;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\SubEventNameCollision\TestEvent as SubEventNameCollision;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\SubEventRequiredFields\TestEvent as SubEventRequiredFields;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\UnknownEventType\TestEvent as UnknownEventType;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -157,7 +157,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
     ): void {
         $this->setParameter(
             DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace',
-            'DualMedia\\DoctrineEventDistributorBundle\\Tests\\Fixtures\\Error\\'.$namespace
+            'DualMedia\\DoctrineEventConverterBundle\\Tests\\Fixtures\\Error\\'.$namespace
         );
         $this->setParameter(
             DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_directory',

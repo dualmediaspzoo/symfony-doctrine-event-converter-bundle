@@ -1,8 +1,8 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NotExtendingAbstractEntityEvent;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\NotExtendingAbstractEntityEvent;
 
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PostPersistEvent;
 
 #[PostPersistEvent]
 class TestEvent

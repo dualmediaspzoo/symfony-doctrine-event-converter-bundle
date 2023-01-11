@@ -1,16 +1,16 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Event;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Event;
 
-use DualMedia\DoctrineEventDistributorBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
-use DualMedia\DoctrineEventDistributorBundle\Tests\KernelTestCase;
-use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostPersistEvent;
-use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostRemoveEvent;
-use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPostUpdateEvent;
-use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
-use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
-use DualMedia\DoctrineEventDistributorProxy\DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventConverterBundle\Tests\KernelTestCase;
+use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPostPersistEvent;
+use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPostRemoveEvent;
+use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPostUpdateEvent;
+use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
+use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
+use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
 
 class DoctrineTest extends KernelTestCase
 {

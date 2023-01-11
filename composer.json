@@ -5,12 +5,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "DualMedia\\DoctrineEventDistributorBundle\\": "src/"
+            "DualMedia\\DoctrineEventConverterBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DualMedia\\DoctrineEventDistributorBundle\\Tests\\": "tests/"
+            "DualMedia\\DoctrineEventConverterBundle\\Tests\\": "tests/"
         }
     },
     "authors": [

@@ -1,9 +1,9 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 
 #[ORM\Entity]
 class Item implements EntityInterface

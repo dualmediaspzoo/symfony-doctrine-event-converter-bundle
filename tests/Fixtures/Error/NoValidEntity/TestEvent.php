@@ -1,9 +1,9 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\NoValidEntity;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\NoValidEntity;
 
-use DualMedia\DoctrineEventDistributorBundle\Attributes\SubEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 
 #[SubEvent("SomeName", fields: "someField")]
 class TestEvent extends AbstractEntityEvent

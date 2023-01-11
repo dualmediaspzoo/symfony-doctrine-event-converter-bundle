@@ -1,10 +1,10 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Error\FinalClass;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\FinalClass;
 
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PostPersistEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventConverterBundle\Attributes\PostPersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use JetBrains\PhpStorm\Pure;
 
 /**

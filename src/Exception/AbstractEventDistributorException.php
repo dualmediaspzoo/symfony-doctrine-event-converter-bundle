@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Exception;
+namespace DualMedia\DoctrineEventConverterBundle\Exception;
 
 /**
  * Basic shared class for exceptions in the bundle

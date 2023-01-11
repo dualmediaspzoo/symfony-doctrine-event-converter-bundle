@@ -1,14 +1,14 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests;
+namespace DualMedia\DoctrineEventConverterBundle\Tests;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ObjectManager;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventDistributorBundle\Proxy\Generator;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\ComplexEntity;
-use DualMedia\DoctrineEventDistributorBundle\Tests\Fixtures\Entity\Item;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
+use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
+use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as SymfonyKernelTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

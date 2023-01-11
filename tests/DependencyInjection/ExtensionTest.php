@@ -1,9 +1,9 @@
 <?php
 
-namespace DualMedia\DoctrineEventDistributorBundle\Tests\DependencyInjection;
+namespace DualMedia\DoctrineEventConverterBundle\Tests\DependencyInjection;
 
-use DualMedia\DoctrineEventDistributorBundle\DependencyInjection\DoctrineEventConverterExtension;
-use DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle;
+use DualMedia\DoctrineEventConverterBundle\DependencyInjection\DoctrineEventConverterExtension;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
 class ExtensionTest extends AbstractExtensionTestCase
