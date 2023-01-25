@@ -42,9 +42,10 @@ abstract class AbstractEntityEvent extends Event
     }
 
     /**
-     * @param EntityInterface&T $entity
+     * @param T $entity
      *
      * @return static
+     * @noinspection PhpDocSignatureInspection
      */
     public function setEntity(
         EntityInterface $entity
