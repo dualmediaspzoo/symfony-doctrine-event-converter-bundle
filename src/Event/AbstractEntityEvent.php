@@ -32,8 +32,7 @@ abstract class AbstractEntityEvent extends Event
      * Override if you don't want to specify entities inside of annotations each time for an event
      * This will be used only if your annotations don't specify an entity or entity list outright
      *
-     * @return string|null
-     * @psalm-return class-string<T>|null
+     * @return class-string<T>|null
      * @psalm-pure
      */
     #[Pure]
@@ -43,7 +42,8 @@ abstract class AbstractEntityEvent extends Event
     }
 
     /**
-     * @psalm-param T $entity
+     * @param EntityInterface&T $entity
+     *
      * @return static
      */
     public function setEntity(
@@ -55,8 +55,7 @@ abstract class AbstractEntityEvent extends Event
     }
 
     /**
-     * @return EntityInterface
-     * @psalm-return T
+     * @return T
      */
     public function getEntity(): EntityInterface
     {

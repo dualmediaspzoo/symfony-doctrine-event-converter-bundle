@@ -23,14 +23,23 @@ abstract class Event
     /**
      * This value is not required assuming you override the {@link AbstractEntityEvent::getEntityClass()} method
      *
-     * @var class-string|non-empty-list<class-string>|null
+     * @var non-empty-list<class-string>|null
      */
-    public string|array|null $entity = null;
+    public array|null $entity = null;
 
     /**
      * @see Events
      */
     protected string $type = Events::postPersist;
+
+    /**
+     * @param non-empty-list<class-string>|null $entity
+     */
+    public function __construct(
+        array|null $entity = null
+    ) {
+        $this->entity = $entity;
+    }
 
     public function getType(): string
     {

@@ -22,9 +22,9 @@ class SubEvent
     public string $label;
 
     /**
-     * @var string|list<string>|null
+     * @var non-empty-list<class-string>|null
      */
-    public string|array|null $entity;
+    public array|null $entity;
 
     /**
      * List of fields to be used for searching for changes.
@@ -91,7 +91,7 @@ class SubEvent
     /**
      * @param string $label
      * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null>|null $fields
-     * @param string|list<string>|null $entity
+     * @param non-empty-list<class-string>|null $entity
      * @param bool $allMode
      * @param array<mixed, mixed> $requirements
      * @param list<string> $types
@@ -100,7 +100,7 @@ class SubEvent
     public function __construct(
         string $label,
         string|array|null $fields = null,
-        string|array|null $entity = null,
+        array|null $entity = null,
         bool $allMode = true,
         array $requirements = [],
         array $types = [],

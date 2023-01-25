@@ -132,7 +132,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $this->validateEventReflection($class, $reflection);
                     $this->applyEntityClass($annotation, $reflection);
 
-                    /** @var class-string|list<class-string> $entity */
+                    /** @var list<class-string> $entity */
                     $entity = $annotation->entity;
                     $this->validateEntityClass($entity, $class);
 
@@ -145,7 +145,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $this->validateEventReflection($class, $reflection);
                     $this->applyEntityClass($annotation, $reflection);
 
-                    /** @var class-string|list<class-string> $entity */
+                    /** @var list<class-string> $entity */
                     $entity = $annotation->entity;
                     $this->validateEntityClass($entity, $class);
                     $this->updateSubEventAnnotationFields($annotation, $class);
@@ -284,31 +284,24 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         SubEvent|Event $annotation,
         \ReflectionClass $reflection
     ): void {
-        if (!is_array($annotation->entity) && !mb_strlen($annotation->entity ?? '')) {
-            if (!mb_strlen($annotation->entity = call_user_func($reflection->getName().'::getEntityClass') ?? '')) { // @phpstan-ignore-line
+        if (!is_array($annotation->entity)) {
+            if (!mb_strlen($class = call_user_func($reflection->getName().'::getEntityClass') ?? '')) { // @phpstan-ignore-line
                 throw NoValidEntityFoundException::new([$reflection->getName()]);
             }
-        }
-
-        if (!is_array($annotation->entity)) {
-            /** @psalm-suppress InvalidPropertyAssignmentValue */
-            $annotation->entity = [$annotation->entity]; // @phpstan-ignore-line
+            /** @var class-string $class */
+            $annotation->entity = [$class];
         }
     }
 
     /**
-     * @param class-string|list<class-string> $class
+     * @param list<class-string> $class
      *
      * @throws EntityInterfaceMissingException
      */
     private function validateEntityClass(
-        string|array $class,
+        array $class,
         string $eventClass
     ): void {
-        if (!is_array($class)) {
-            $class = [$class];
-        }
-
         foreach ($class as $cls) {
             if (is_subclass_of($cls, EntityInterface::class)) { // fits by inheritance
                 return;
