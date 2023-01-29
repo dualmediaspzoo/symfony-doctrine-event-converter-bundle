@@ -25,7 +25,8 @@ return [
 
 ## Usage
 
-1. Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface`
+### Entity
+Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface`
 
 ```php
 use Doctrine\ORM\Mapping as ORM;
@@ -62,7 +63,8 @@ class Item implements EntityInterface
 }
 ```
 
-2. Create an event class (not final), and then at some point extend `DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent`, 
+### Event
+Create an event class (not final), and then at some point extend `DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent`, 
 mark this class with your appropriate event annotation, either one of the base ones or SubEvent
 
 ```php
@@ -82,4 +84,50 @@ abstract class ItemEvent extends AbstractEntityEvent
 }
 ```
 
-3. Rebuild cache, enjoy.
+The bundle will then automatically generate proxy classes for appropriate events.
+
+Each proxy class starts with [the proxy namespace visible here](src/Proxy/Generator.php) under the `PROXY_NS` constant value.
+
+The following class name will always contain the full namespace of the parent event. This namespace is loaded via the autoloader in the bundle and should not be interacted with in ways other than subscribers and general use.
+
+### SubEvent
+
+Let's assume the following scenario: You wish to have an event fired when the status of the `Item` changes from `pending` to `complete`,
+in this case you'd add the following attribute on your `ItemEvent` (above).
+
+SubEvents can take form of checks which apply to the previous and current state of variable, or only one (from OR to).
+
+### Important
+
+Because of how Doctrine passes changes unfortunately changes to collections are not known at this time.
+
+#### From and To
+
+The following will generate an `ItemPendingToCompleteEvent` class (under the default proxy namespace).
+
+```php
+use \DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use \DualMedia\DoctrineEventConverterBundle\Model\Change;
+
+#[SubEvent("PendingToComplete", changes: [new Change('status', ItemStatusEnum::Pending, ItemStatusEnum::Complete)])]
+```
+
+Assuming of course the existence of an enum or other value which can be passed to the `Change` model.
+
+More than one change can be required at a time, or _any_ change, depending on `SubEvent::$allMode`.
+
+#### From
+
+The following will generate an `ItemFromPendingEvent`.
+
+```php
+#[SubEvent("FromPending", changes: [new Change('status', ItemStatusEnum::Pending)])]
+```
+
+#### To
+
+The following will generate an `ItemCompleteEvent`.
+
+```php
+#[SubEvent("Complete", changes: [new Change('status', to: ItemStatusEnum::Complete)])]
+```
