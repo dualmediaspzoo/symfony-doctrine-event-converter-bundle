@@ -362,10 +362,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             if ($change->from instanceof Undefined && $change->to instanceof Undefined) {
                 $out[$change->name] = null;
             } else {
-                $out[$change->name] = array_merge(
-                    $change->from instanceof Undefined ? [] : [0 => $change->from],
-                    $change->to instanceof Undefined ? [] : [1 => $change->to]
-                );
+                // we must not modify the keys of the arrays
+                $out[$change->name] =
+                    ($change->from instanceof Undefined ? [] : [0 => $change->from]) +
+                    ($change->to instanceof Undefined ? [] : [1 => $change->to]);
             }
         }
 
