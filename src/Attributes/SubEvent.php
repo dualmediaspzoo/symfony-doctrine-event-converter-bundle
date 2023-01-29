@@ -4,11 +4,12 @@ namespace DualMedia\DoctrineEventConverterBundle\Attributes;
 
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\Model\Change;
 
 /**
  * Responsible for registering sub events for {@link DispatchingSubscriber} with appropriate options
  *
- * <span style="color: yellow">WARNING:</span> You must specify the {@link SubEvent::$label} and one of {@link SubEvent::$fields} or {@link SubEvent::$requirements
+ * <span style="color: yellow">WARNING:</span> You must specify the {@link SubEvent::$label} and one of {@link SubEvent::$changes} or {@link SubEvent::$requirements
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class SubEvent
@@ -49,9 +50,10 @@ class SubEvent
      *
      * means "When field 'price' changes from 0.15 to 0.30"
      *
-     * @var string|array<array-key, string|array{0: mixed, 1?: mixed}|null>|null
+     * @var string|array<array-key, string|array{0: mixed, 1?: mixed}|null>
+     * @deprecated use {@link SubEvent::$changes} instead
      */
-    public string|array|null $fields;
+    public string|array $fields;
 
     /**
      * If all fields are required to fire event
@@ -90,21 +92,23 @@ class SubEvent
 
     /**
      * @param string $label
-     * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null>|null $fields
+     * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null> $fields
      * @param non-empty-list<class-string>|null $entity
      * @param bool $allMode
      * @param array<mixed, mixed> $requirements
      * @param list<string> $types
      * @param int $priority
+     * @param list<Change> $changes list of field changes
      */
     public function __construct(
         string $label,
-        string|array|null $fields = null,
+        string|array $fields = [],
         array|null $entity = null,
         bool $allMode = true,
         array $requirements = [],
         array $types = [],
-        int $priority = 0
+        int $priority = 0,
+        public readonly array $changes = []
     ) {
         $this->label = $label;
         $this->entity = $entity;

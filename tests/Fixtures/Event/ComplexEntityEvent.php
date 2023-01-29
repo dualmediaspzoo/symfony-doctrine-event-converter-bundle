@@ -5,6 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event;
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use JetBrains\PhpStorm\Pure;
 
@@ -13,11 +14,11 @@ use JetBrains\PhpStorm\Pure;
  *
  * @extends AbstractEntityEvent<ComplexEntity>
  */
-#[SubEvent(ComplexEntityEvent::STATUS_CHANGED, fields: "status")]
-#[SubEvent(ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST, fields: "status", types: [Events::prePersist])]
-#[SubEvent(ComplexEntityEvent::STATUS_WITH_REQUIREMENTS, fields: "status", requirements: ["unimportant" => "specific"])]
-#[SubEvent(ComplexEntityEvent::STATUS_CHANGED_15, fields: ["status" => [15]])]
-#[SubEvent(ComplexEntityEvent::STATUS_CHANGED_FROM_10_TO_15, fields: ["status" => [10, 15]])]
+#[SubEvent(ComplexEntityEvent::STATUS_CHANGED, changes: [new Change('status')])]
+#[SubEvent(ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST, types: [Events::prePersist], changes: [new Change('status')])]
+#[SubEvent(ComplexEntityEvent::STATUS_WITH_REQUIREMENTS, requirements: ["unimportant" => "specific"], changes: [new Change('status')])]
+#[SubEvent(ComplexEntityEvent::STATUS_CHANGED_15, changes: [new Change('status', to: 15)])]
+#[SubEvent(ComplexEntityEvent::STATUS_CHANGED_FROM_10_TO_15, changes: [new Change('status', 10, 15)])]
 abstract class ComplexEntityEvent extends AbstractEntityEvent
 {
     public const STATUS_CHANGED = "StatusChanged";

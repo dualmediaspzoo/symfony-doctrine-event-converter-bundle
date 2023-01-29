@@ -116,7 +116,7 @@ class DispatchingSubscriber implements EventSubscriber
      * @param class-string<AbstractEntityEvent> $eventClass
      * @param non-empty-list<class-string<EntityInterface>> $entities
      * @param bool $allMode
-     * @param array<string, null|array{0: mixed, 1?: mixed}> $fieldList
+     * @param array<string, null|array{0?: mixed, 1: mixed}> $fieldList
      * @param array<string, mixed> $requirements
      * @param list<string> $types
      * @param int $priority higher means the event will be checked/fired faster
@@ -321,7 +321,7 @@ class DispatchingSubscriber implements EventSubscriber
         foreach ($this->subEventList[$class] as $list) {
             foreach ($list as $eventClass => $models) {
                 foreach ($models as $model) {
-                    if (!in_array($event->getEventType(), $model->getTypes(), true)) {
+                    if (!in_array($event->getEventType(), $model->types, true)) {
                         continue; // Create event only for selected event types e.g. added, removed
                     }
 
@@ -335,7 +335,7 @@ class DispatchingSubscriber implements EventSubscriber
                     $subEvent->setEntity($entity)
                         ->setChanges(array_intersect_key(
                             $event->getChanges(),
-                            $model->getFieldList()
+                            $model->fieldList
                         )) // save only fields that the event requested, ignore rest
                         ->setEventType($event->getEventType());
 
@@ -361,33 +361,28 @@ class DispatchingSubscriber implements EventSubscriber
         string $event
     ): bool {
         if (in_array($event, [Events::postUpdate, Events::preUpdate], true)) {
-            if ($model->isAllMode() && count(array_diff_key($model->getFieldList(), $eventChanges))) { // Event contains keys that haven't changed
+            if ($model->allMode && count(array_diff_key($model->fieldList, $eventChanges))) { // Event contains keys that haven't changed
                 return false;
-            } elseif (!$model->isAllMode() && !count(array_intersect_key($eventChanges, $model->getFieldList()))) { // Event doesn't contain any of the required keys
+            } elseif (!$model->allMode && !count(array_intersect_key($eventChanges, $model->fieldList))) { // Event doesn't contain any of the required keys
                 return false;
             }
 
             $validFields = [];
 
             foreach ($eventChanges as $field => $fields) {
-                if (!array_key_exists($field, $model->getFieldList())) {
+                if (!array_key_exists($field, $model->fieldList)) {
                     continue;
-                } elseif (null === ($modelWantedState = $model->getFieldList()[$field])) {
+                } elseif (null === ($modelWantedState = $model->fieldList[$field])) {
                     // if you set null instead of setting null for key 0 you're dumb and #wontfix
                     $validFields[$field] = true;
                     continue;
                 }
 
-                /**
-                 * This is required because of a bug in psalm which does not correctly infer the array item count
-                 *
-                 * @var int $count
-                 * @noinspection PhpRedundantVariableDocTypeInspection
-                 */
                 $count = count($modelWantedState);
 
                 if (1 === $count) {
-                    $validFields[$field] = $fields[1] === $modelWantedState[0];
+                    $existingCounter = isset($modelWantedState[0]) ? 0 : 1;
+                    $validFields[$field] = $fields[$existingCounter] === $modelWantedState[$existingCounter];
                 } elseif (2 === $count) {
                     $validFields[$field] = $fields[0] === $modelWantedState[0] && $fields[1] === ($modelWantedState[1] ?? null);
                 }
@@ -395,12 +390,12 @@ class DispatchingSubscriber implements EventSubscriber
 
             $reduced = array_reduce($validFields, fn ($carry, $data) => $carry + ((int) $data));
 
-            if (!(!$model->isAllMode() ? $reduced > 0 : $reduced === count($model->getFieldList()))) {
+            if (!(!$model->allMode ? $reduced > 0 : $reduced === count($model->fieldList))) {
                 return false;
             }
         }
 
-        foreach ($model->getRequirements() as $fieldName => $value) {
+        foreach ($model->requirements as $fieldName => $value) {
             try {
                 if ($this->propertyAccess->getValue($entity, $fieldName) !== $value) {
                     return false;

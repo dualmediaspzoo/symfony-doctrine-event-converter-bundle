@@ -11,6 +11,7 @@ use DualMedia\DoctrineEventConverterBundle\Attributes\PrePersistEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\PreRemoveEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
@@ -222,6 +223,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $annotation->label,
                     [SubEventInterface::class]
                 );
+                /** @see DispatchingSubscriber::registerSubEvent() */
                 $subscriber->addMethodCall('registerSubEvent', [
                     $out,
                     $annotation->entity,
@@ -243,6 +245,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $annotation->getType(),
                     [MainEventInterface::class]
                 );
+                /** @see DispatchingSubscriber::registerEvent() */
                 $subscriber->addMethodCall('registerEvent', [
                     $out,
                     $annotation->entity,
@@ -333,6 +336,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             ]);
         }
 
+        // todo: update with a configuration model helper
         $subEvent->fields = is_array($subEvent->fields) ? $subEvent->fields : [$subEvent->fields];
         $out = [];
 
@@ -340,11 +344,33 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             if (is_numeric($possibleName) && is_string($possibleValues)) {
                 $out[$possibleValues] = null;
             } elseif (is_array($possibleValues)) {
-                $out[$possibleName] = $possibleValues;
+                $out[$possibleName] = 2 === count($possibleValues) ? $possibleValues : [1 => $possibleValues[0]];
             }
         }
 
-        $subEvent->fields = $out;
+        if (!empty($out)) {
+            trigger_deprecation(
+                'dualmedia/symfony-doctrine-event-converter-bundle',
+                '2.1.2',
+                'Using "%s" is deprecated, move to using "%s" instead',
+                'fields',
+                'changes'
+            );
+        }
+
+        foreach ($subEvent->changes as $change) {
+            if ($change->from instanceof Undefined && $change->to instanceof Undefined) {
+                $out[$change->name] = null;
+            } else {
+                $out[$change->name] = array_merge(
+                    $change->from instanceof Undefined ? [] : [0 => $change->from],
+                    $change->to instanceof Undefined ? [] : [1 => $change->to]
+                );
+            }
+        }
+
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
+        $subEvent->fields = $out; // @phpstan-ignore-line - update with config helper later
 
         if (empty($subEvent->fields) && empty($subEvent->requirements)) {
             throw SubEventRequiredFieldsException::new([
