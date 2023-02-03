@@ -11,6 +11,8 @@ use DualMedia\DoctrineEventConverterBundle\Attributes\PrePersistEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\PreRemoveEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\EventConfiguration;
+use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\SubEventConfiguration;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
@@ -77,10 +79,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $generator = $container->get(Generator::class);
         $subscriber = $container->getDefinition(DispatchingSubscriber::class);
 
-        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<Event>> $events */
+        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<EventConfiguration>> $events */
         $events = [];
 
-        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>> $subEvents */
+        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<SubEventConfiguration>> $subEvents */
         $subEvents = [];
 
         $finder = new Finder();
@@ -128,40 +130,48 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            foreach ($attributes as $annotation) {
-                if ($annotation instanceof Event) {
+            foreach ($attributes as $attribute) {
+                if ($attribute instanceof Event) {
                     $this->validateEventReflection($class, $reflection);
-                    $this->applyEntityClass($annotation, $reflection);
-
-                    /** @var list<class-string> $entity */
-                    $entity = $annotation->entity;
-                    $this->validateEntityClass($entity, $class);
-
+                    $entities = $this->getEntityClasses($attribute, $reflection);
+                    $this->validateEntityClasses($entities, $class);
+                    /** @var non-empty-list<class-string<EntityInterface>> $entities */
                     if (!array_key_exists($class, $events)) {
                         $events[$class] = [];
                     }
 
-                    $events[$class][] = $annotation;
-                } elseif ($annotation instanceof SubEvent) {
-                    $this->validateEventReflection($class, $reflection);
-                    $this->applyEntityClass($annotation, $reflection);
+                    $config = (new EventConfiguration())
+                        ->setEntities($entities)
+                        ->setType($attribute->getType());
 
-                    /** @var list<class-string> $entity */
-                    $entity = $annotation->entity;
-                    $this->validateEntityClass($entity, $class);
-                    $this->updateSubEventAnnotationFields($annotation, $class);
+                    $events[$class][] = $config;
+                } elseif ($attribute instanceof SubEvent) {
+                    $this->validateEventReflection($class, $reflection);
+                    $entities = $this->getEntityClasses($attribute, $reflection);
+                    $this->validateEntityClasses($entities, $class);
+                    /** @var non-empty-list<class-string<EntityInterface>> $entities */
+                    $config = (new SubEventConfiguration())
+                        ->setEntities($entities)
+                        ->setEvents($this->getSubEventTypes($attribute, $class))
+                        ->setChanges($this->getOldFields($attribute, $class)); // todo: remove call in 2.2
+                    //
+                    $config->setChanges(array_merge($config->getChanges(), $this->getChanges($attribute, $class, $config)))
+                        ->setLabel($attribute->label)
+                        ->setRequirements($attribute->requirements)
+                        ->setPriority($attribute->priority)
+                        ->setAllMode($attribute->allMode);
 
                     if (!array_key_exists($class, $subEvents)) {
                         $subEvents[$class] = [];
                     }
 
-                    $subEvents[$class][] = $annotation;
+                    $subEvents[$class][] = $config;
 
-                    $uniq = $class.ucfirst($annotation->label);
+                    $uniq = $class.ucfirst($attribute->label);
                     if (in_array($uniq, $uniqueSubEventNames)) {
                         throw SubEventNameCollisionException::new([
                             $class,
-                            $annotation->label,
+                            $attribute->label,
                         ]);
                     }
 
@@ -187,18 +197,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
         // we're starting with sub events because those might need an implicit creation of main events
         /** @var class-string<AbstractEntityEvent> $class */
-        foreach ($subEvents as $class => $annotations) {
-            foreach ($annotations as $annotation) {
+        foreach ($subEvents as $class => $configurations) {
+            foreach ($configurations as $configuration) {
                 /** @psalm-suppress InvalidArgument */
                 if (!array_key_exists($class, $events)) {
                     $events[$class] = [];
                 }
 
-                foreach ($annotation->types as $type) {
-                    $annotationClass = self::DOCTRINE_TO_ANNOTATION_MAP[$type]; // won't work otherwise lol php
+                foreach ($configuration->getEvents() as $type) {
                     $found = false;
                     for ($i = 0; $i < count($events[$class]); $i++) {
-                        if ($events[$class][$i] instanceof $annotationClass) {
+                        if ($type === $events[$class][$i]->getType()) {
                             $found = true;
                             break;
                         }
@@ -208,48 +217,44 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                         continue;
                     }
 
-                    /** @var Event $missing */
-                    $missing = new $annotationClass();
-                    /**
-                     * @psalm-suppress InvalidPropertyAssignmentValue
-                     */
-                    $missing->entity = $annotation->entity; // @phpstan-ignore-line
-                    $events[$class][] = $missing;
+                    $events[$class][] = (new EventConfiguration())
+                        ->setEntities($configuration->getEntities())
+                        ->setType($type);
                 }
 
                 // create and add sub events
                 $out = $generator->generateProxyClass(
                     $class,
-                    $annotation->label,
+                    $configuration->getLabel(),
                     [SubEventInterface::class]
                 );
                 /** @see DispatchingSubscriber::registerSubEvent() */
                 $subscriber->addMethodCall('registerSubEvent', [
                     $out,
-                    $annotation->entity,
-                    $annotation->allMode,
-                    $annotation->fields,
-                    $annotation->requirements,
-                    $annotation->types,
-                    $annotation->priority,
+                    $configuration->getEntities(),
+                    $configuration->isAllMode(),
+                    $configuration->getChanges(),
+                    $configuration->getRequirements(),
+                    $configuration->getEvents(),
+                    $configuration->getPriority(),
                 ]);
             }
         }
 
         // create and add main events
         /** @var class-string<AbstractEntityEvent> $class */
-        foreach ($events as $class => $annotations) {
-            foreach ($annotations as $annotation) {
+        foreach ($events as $class => $configurations) {
+            foreach ($configurations as $configuration) {
                 $out = $generator->generateProxyClass(
                     $class,
-                    $annotation->getType(),
+                    $configuration->getType(),
                     [MainEventInterface::class]
                 );
                 /** @see DispatchingSubscriber::registerEvent() */
                 $subscriber->addMethodCall('registerEvent', [
                     $out,
-                    $annotation->entity,
-                    $annotation->getType(),
+                    $configuration->getEntities(),
+                    $configuration->getType(),
                 ]);
             }
         }
@@ -279,33 +284,38 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param Event|SubEvent $annotation
+     * @return list<class-string>
      *
      * @throws NoValidEntityFoundException
      */
-    private function applyEntityClass(
+    private function getEntityClasses(
         SubEvent|Event $annotation,
         \ReflectionClass $reflection
-    ): void {
-        if (!is_array($annotation->entity)) {
+    ): array {
+        $entities = $annotation->entity;
+
+        if (!is_array($entities)) {
             if (!mb_strlen($class = call_user_func($reflection->getName().'::getEntityClass') ?? '')) { // @phpstan-ignore-line
                 throw NoValidEntityFoundException::new([$reflection->getName()]);
             }
+
             /** @var class-string $class */
-            $annotation->entity = [$class];
+            $entities = [$class];
         }
+
+        return $entities;
     }
 
     /**
-     * @param list<class-string> $class
+     * @param list<class-string> $classes
      *
      * @throws EntityInterfaceMissingException
      */
-    private function validateEntityClass(
-        array $class,
+    private function validateEntityClasses(
+        array $classes,
         string $eventClass
     ): void {
-        foreach ($class as $cls) {
+        foreach ($classes as $cls) {
             if (is_subclass_of($cls, EntityInterface::class)) { // fits by inheritance
                 return;
             }
@@ -315,32 +325,47 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param SubEvent $subEvent
+     * @param SubEvent $event
      * @param string $class
      *
+     * @return non-empty-list<string>
+     *
      * @throws UnknownEventTypeException
-     * @throws SubEventRequiredFieldsException
      */
-    private function updateSubEventAnnotationFields(
-        SubEvent $subEvent,
+    private function getSubEventTypes(
+        SubEvent $event,
         string $class
-    ): void {
-        if (empty($subEvent->types)) {
-            $subEvent->types = [Events::postUpdate];
+    ): array {
+        $types = $event->types;
+
+        if (empty($types)) {
+            $types = [Events::postUpdate];
         }
 
-        if (!empty($v = array_filter($subEvent->types, fn (string $s) => !array_key_exists($s, self::DOCTRINE_TO_ANNOTATION_MAP)))) {
+        if (!empty($v = array_filter($types, fn (string $s) => !array_key_exists($s, self::DOCTRINE_TO_ANNOTATION_MAP)))) {
             throw UnknownEventTypeException::new([
                 implode(', ', $v),
                 $class,
             ]);
         }
 
-        // todo: update with a configuration model helper
-        $subEvent->fields = is_array($subEvent->fields) ? $subEvent->fields : [$subEvent->fields];
+        return $types;
+    }
+
+    /**
+     * @param SubEvent $event
+     * @param string $class
+     *
+     * @return array<string, null|array{0?: mixed, 1: mixed}>
+     */
+    private function getOldFields(
+        SubEvent $event,
+        string $class
+    ): array {
+        $input = is_array($event->fields) ? $event->fields : [$event->fields];
         $out = [];
 
-        foreach ($subEvent->fields as $possibleName => $possibleValues) {
+        foreach ($input as $possibleName => $possibleValues) {
             if (is_numeric($possibleName) && is_string($possibleValues)) {
                 $out[$possibleValues] = null;
             } elseif (is_array($possibleValues)) {
@@ -352,13 +377,33 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             trigger_deprecation(
                 'dualmedia/symfony-doctrine-event-converter-bundle',
                 '2.1.2',
-                'Using "%s" is deprecated, move to using "%s" instead',
+                'Using "%s" is deprecated and will be removed in 2.2.0, move to using "%s" instead in class "%s"',
                 'fields',
-                'changes'
+                'changes',
+                $class
             );
         }
 
-        foreach ($subEvent->changes as $change) {
+        return $out;
+    }
+
+    /**
+     * @param SubEvent $event
+     * @param string $class
+     * @param SubEventConfiguration $configuration temporary parameter up for removal in 2.2
+     *
+     * @return array<string, null|array{0?: mixed, 1: mixed}>
+     *
+     * @throws SubEventRequiredFieldsException
+     */
+    private function getChanges(
+        SubEvent $event,
+        string $class,
+        SubEventConfiguration $configuration
+    ): array {
+        $out = [];
+
+        foreach ($event->changes as $change) {
             if ($change->from instanceof Undefined && $change->to instanceof Undefined) {
                 $out[$change->name] = null;
             } else {
@@ -368,15 +413,14 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     ($change->to instanceof Undefined ? [] : [1 => $change->to]);
             }
         }
-
-        /** @psalm-suppress InvalidPropertyAssignmentValue */
-        $subEvent->fields = $out; // @phpstan-ignore-line - update with config helper later
-
-        if (empty($subEvent->fields) && empty($subEvent->requirements)) {
+        /** @var array<string, null|array{0?: mixed, 1: mixed}> $out */
+        if ((empty($out) && empty($configuration->getChanges())) && empty($event->requirements)) {
             throw SubEventRequiredFieldsException::new([
-                $subEvent->label,
+                $event->label,
                 $class,
             ]);
         }
+
+        return $out;
     }
 }
