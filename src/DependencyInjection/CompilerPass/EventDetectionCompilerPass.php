@@ -153,7 +153,9 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $config = (new SubEventConfiguration())
                         ->setEntities($entities)
                         ->setEvents($this->getSubEventTypes($attribute, $class))
-                        ->setChanges(array_merge($this->getOldFields($attribute, $class), $this->getChanges($attribute, $class)))
+                        ->setChanges($this->getOldFields($attribute, $class)); // todo: remove call in 2.2
+                    //
+                    $config->setChanges(array_merge($config->getChanges(), $this->getChanges($attribute, $class, $config)))
                         ->setLabel($attribute->label)
                         ->setRequirements($attribute->requirements)
                         ->setPriority($attribute->priority)
@@ -388,6 +390,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     /**
      * @param SubEvent $event
      * @param string $class
+     * @param SubEventConfiguration $configuration temporary parameter up for removal in 2.2
      *
      * @return array<string, null|array{0?: mixed, 1: mixed}>
      *
@@ -395,7 +398,8 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      */
     private function getChanges(
         SubEvent $event,
-        string $class
+        string $class,
+        SubEventConfiguration $configuration
     ): array {
         $out = [];
 
@@ -410,7 +414,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             }
         }
         /** @var array<string, null|array{0?: mixed, 1: mixed}> $out */
-        if (empty($out) && empty($event->requirements)) {
+        if ((empty($out) && empty($configuration->getChanges())) && empty($event->requirements)) {
             throw SubEventRequiredFieldsException::new([
                 $event->label,
                 $class,
