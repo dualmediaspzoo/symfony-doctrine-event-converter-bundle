@@ -25,7 +25,7 @@ abstract class Event
      *
      * @var non-empty-list<class-string>|null
      */
-    public array|null $entity = null;
+    public readonly array|null $entity;
 
     /**
      * @see Events

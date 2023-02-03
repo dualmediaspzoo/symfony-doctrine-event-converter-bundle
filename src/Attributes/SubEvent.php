@@ -20,12 +20,12 @@ class SubEvent
      * If this annotation is placed on an event class called "FooBarEvent" and the label is "StatusChanged" then
      * the final short name of the class will be "FooBarStatusChangedEvent"
      */
-    public string $label;
+    public readonly string $label;
 
     /**
      * @var non-empty-list<class-string>|null
      */
-    public array|null $entity;
+    public readonly array|null $entity;
 
     /**
      * List of fields to be used for searching for changes.
@@ -53,7 +53,7 @@ class SubEvent
      * @var string|array<array-key, string|array{0: mixed, 1?: mixed}|null>
      * @deprecated use {@link SubEvent::$changes} instead
      */
-    public string|array $fields;
+    public readonly string|array $fields;
 
     /**
      * If all fields are required to fire event
@@ -61,7 +61,7 @@ class SubEvent
      * <span style="color: yellow">WARNING:</span> This setting is ignored if {@link SubEvent::$types} does not include either of {@link Events::postUpdate} or {@link Events::preUpdate}
      * or if the current event type is not one of the ones specified above!
      */
-    public bool $allMode = true;
+    public readonly bool $allMode;
 
     /**
      * Additional requirements for the object to have for the event to pass.
@@ -70,9 +70,9 @@ class SubEvent
      *
      * <span style="color: yellow">WARNING:</span> Either this field or {@link SubEvent::$fields} is required!
      *
-     * @var array<mixed, mixed>
+     * @var array<string, mixed>
      */
-    public array $requirements = [];
+    public readonly array $requirements;
 
     /**
      * Types of event that will cause this event to run, before even running the other checks.
@@ -81,21 +81,21 @@ class SubEvent
      *
      * @see Events
      */
-    public array $types = [];
+    public readonly array $types;
 
     /**
      * This event's priority, if higher the faster it will fire.
      *
      * Suggested values between 2048 and -2048
      */
-    public int $priority = 0;
+    public readonly int $priority;
 
     /**
      * @param string $label
      * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null> $fields
      * @param non-empty-list<class-string>|null $entity
      * @param bool $allMode
-     * @param array<mixed, mixed> $requirements
+     * @param array<string, mixed> $requirements
      * @param list<string> $types
      * @param int $priority
      * @param list<Change> $changes list of field changes
