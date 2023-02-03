@@ -136,7 +136,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $entities = $this->getEntityClasses($attribute, $reflection);
                     $this->validateEntityClasses($entities, $class);
                     /** @var non-empty-list<class-string<EntityInterface>> $entities */
-
                     if (!array_key_exists($class, $events)) {
                         $events[$class] = [];
                     }
