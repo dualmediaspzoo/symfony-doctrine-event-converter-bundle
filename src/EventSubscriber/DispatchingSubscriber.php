@@ -382,9 +382,9 @@ class DispatchingSubscriber implements EventSubscriber
 
                 if (1 === $count) {
                     $existingCounter = isset($modelWantedState[0]) ? 0 : 1;
-                    $validFields[$field] = $fields[$existingCounter] === $modelWantedState[$existingCounter];
+                    $validFields[$field] = $this->stateEquals($fields[$existingCounter], $modelWantedState[$existingCounter]);
                 } elseif (2 === $count) {
-                    $validFields[$field] = $fields[0] === $modelWantedState[0] && $fields[1] === ($modelWantedState[1] ?? null);
+                    $validFields[$field] = $this->stateEquals($fields[0], $modelWantedState[0]) && $this->stateEquals($fields[1], $modelWantedState[1] ?? null);
                 }
             }
 
@@ -406,6 +406,21 @@ class DispatchingSubscriber implements EventSubscriber
         }
 
         return true;
+    }
+
+    private function stateEquals(
+        mixed $known,
+        mixed $expected
+    ): bool {
+        if ($known === $expected) {
+            return true;
+        }
+
+        if (!($known instanceof \BackedEnum) && ($expected instanceof \BackedEnum)) {
+            return $known === $expected->value;
+        }
+
+        return false;
     }
 
     private function optimizeSubEvents(): void
