@@ -23,7 +23,8 @@ class SubEvent
         public readonly bool $allMode,
         public readonly array $fieldList,
         public readonly array $requirements,
-        public readonly array $types
+        public readonly array $types,
+        public readonly bool $afterFlush,
     ) {
     }
 }

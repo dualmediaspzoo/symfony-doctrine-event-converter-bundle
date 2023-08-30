@@ -90,6 +90,8 @@ class SubEvent
      */
     public readonly int $priority;
 
+    public readonly bool $afterFlush;
+    
     /**
      * @param string $label
      * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null> $fields
@@ -99,6 +101,7 @@ class SubEvent
      * @param list<string> $types
      * @param int $priority
      * @param list<Change> $changes list of field changes
+     * @param bool $afterFlush
      */
     public function __construct(
         string $label,
@@ -108,7 +111,8 @@ class SubEvent
         array $requirements = [],
         array $types = [],
         int $priority = 0,
-        public readonly array $changes = []
+        public readonly array $changes = [],
+        bool $afterFlush = false,
     ) {
         $this->label = $label;
         $this->entity = $entity;
@@ -117,5 +121,6 @@ class SubEvent
         $this->requirements = $requirements;
         $this->types = $types;
         $this->priority = $priority;
+        $this->afterFlush = $afterFlush;
     }
 }

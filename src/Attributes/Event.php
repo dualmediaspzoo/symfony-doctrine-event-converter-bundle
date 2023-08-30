@@ -32,17 +32,27 @@ abstract class Event
      */
     protected string $type = Events::postPersist;
 
+    public readonly bool $afterFlush;
+    
     /**
      * @param non-empty-list<class-string>|null $entity
      */
     public function __construct(
-        array|null $entity = null
+        array|null $entity = null,
+        bool $afterFlush = false,
     ) {
         $this->entity = $entity;
+        $this->afterFlush = $afterFlush;
     }
 
     public function getType(): string
     {
         return $this->type;
     }
+
+    public function isAfterFlush(): bool
+    {
+        return $this->afterFlush;
+    }
+
 }

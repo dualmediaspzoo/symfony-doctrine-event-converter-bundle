@@ -5,12 +5,14 @@ namespace DualMedia\DoctrineEventConverterBundle\EventSubscriber;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\PersistentCollection;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Model\Event;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -20,7 +22,7 @@ class DispatchingSubscriber implements EventSubscriber
     /**
      * List of events to be dispatched after entity changes.
      *
-     * @var non-empty-array<string, array<class-string<EntityInterface>, non-empty-list<class-string<AbstractEntityEvent>>>>
+     * @var non-empty-array<string, array<class-string<EntityInterface>, list<Event>>>
      */
     private array $mainEventList = [
         Events::postPersist => [], Events::postUpdate => [], Events::postRemove => [],
@@ -31,6 +33,11 @@ class DispatchingSubscriber implements EventSubscriber
      * @var array<class-string<EntityInterface>, array<int, array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>>>>
      */
     private array $subEventList = [];
+
+    /**
+     * @var list<AbstractEntityEvent>
+     */
+    private $eventsToDispatchAfterFlush = [];
 
     private bool $subEventsOptimized = false;
 
@@ -57,6 +64,7 @@ class DispatchingSubscriber implements EventSubscriber
             Events::postUpdate,
             Events::preRemove,
             Events::postRemove,
+            Events::postFlush,
         ];
     }
 
@@ -80,7 +88,8 @@ class DispatchingSubscriber implements EventSubscriber
     public function registerEvent(
         string $eventClass,
         array $entities,
-        string $event
+        string $event,
+        bool $afterFlush = false,
     ): void {
         if (!array_key_exists($event, $this->mainEventList)) {
             return;
@@ -91,7 +100,7 @@ class DispatchingSubscriber implements EventSubscriber
                 $this->mainEventList[$event][$class] = []; // @phpstan-ignore-line
             }
 
-            $this->mainEventList[$event][$class][] = $eventClass; // @phpstan-ignore-line
+            $this->mainEventList[$event][$class][] = new Event($eventClass, $afterFlush);
         }
     }
 
@@ -101,7 +110,7 @@ class DispatchingSubscriber implements EventSubscriber
      * @param string $type
      * @param class-string<EntityInterface> $entity
      *
-     * @return list<class-string<AbstractEntityEvent>>
+     * @return list<Event>
      */
     public function getEvents(
         string $type,
@@ -132,7 +141,8 @@ class DispatchingSubscriber implements EventSubscriber
         array $fieldList,
         array $requirements,
         array $types,
-        int $priority = 0
+        int $priority = 0,
+        bool $afterFlush = false,
     ): void {
         foreach ($entities as $entity) {
             if (!isset($this->subEventList[$entity])) {
@@ -146,8 +156,7 @@ class DispatchingSubscriber implements EventSubscriber
             if (!isset($this->subEventList[$entity][$priority][$eventClass])) {
                 $this->subEventList[$entity][$priority][$eventClass] = []; // @phpstan-ignore-line
             }
-
-            $this->subEventList[$entity][$priority][$eventClass][] = new SubEvent($allMode, $fieldList, $requirements, $types); // @phpstan-ignore-line
+            $this->subEventList[$entity][$priority][$eventClass][] = new SubEvent($allMode, $fieldList, $requirements, $types, $afterFlush); // @phpstan-ignore-line
         }
     }
 
@@ -178,8 +187,18 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
+     * @internal
+     */
+    public function postFlush(
+        PostFlushEventArgs $args
+    ): void {
+        foreach ($this->eventsToDispatchAfterFlush as $event) {
+            $this->eventDispatcher->dispatch($event);
+            $this->eventDispatcher->dispatch(new DispatchEvent($event));
+        }
+    }
+
+    /**
      * @internal
      */
     public function postPersist(
@@ -290,19 +309,25 @@ class DispatchingSubscriber implements EventSubscriber
         int|string|null $id = null,
         array $changes = []
     ): void {
-        foreach ($events as $eventClass) {
+        foreach ($events as $model) {
             /**
              * @var AbstractEntityEvent $event
+             * @var Event $model
              */
-            $event = (new $eventClass());
+            $event = (new $model->eventClass());
 
             $event->setEntity($obj)
                 ->setEventType($type)
                 ->setChanges($changes)
                 ->setDeletedId($id);
 
-            $this->eventDispatcher->dispatch($event);
-            $this->eventDispatcher->dispatch(new DispatchEvent($event));
+            if ($model->afterFlush) {
+                $this->eventsToDispatchAfterFlush[] = $event;
+            } else {
+                $this->eventDispatcher->dispatch($event);
+                $this->eventDispatcher->dispatch(new DispatchEvent($event));
+            }
+
             $this->runSubEvents($event);
         }
     }
@@ -339,8 +364,12 @@ class DispatchingSubscriber implements EventSubscriber
                         )) // save only fields that the event requested, ignore rest
                         ->setEventType($event->getEventType());
 
-                    $this->eventDispatcher->dispatch($subEvent);
-                    $this->eventDispatcher->dispatch(new DispatchEvent($subEvent));
+                    if ($model->afterFlush) {
+                        $this->eventsToDispatchAfterFlush[] = $subEvent;
+                    } else {
+                        $this->eventDispatcher->dispatch($subEvent);
+                        $this->eventDispatcher->dispatch(new DispatchEvent($subEvent));
+                    }
                     break;
                 }
             }
