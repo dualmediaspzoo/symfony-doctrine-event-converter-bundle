@@ -32,7 +32,7 @@ class DoctrineEventConverterBundle extends Bundle
             }
 
             /** @var Generator $generator */
-            $generator = $this->container->get(Generator::class);
+            $generator = $this->container?->get(Generator::class);
             $file = $generator->resolveFilePath($class);
 
             if (file_exists($file)) {
