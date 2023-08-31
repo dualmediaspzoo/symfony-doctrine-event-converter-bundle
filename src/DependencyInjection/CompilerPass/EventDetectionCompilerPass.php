@@ -143,7 +143,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $config = (new EventConfiguration())
                         ->setEntities($entities)
                         ->setType($attribute->getType())
-                        ->setAfterFlush($attribute->isAfterFlush());
+                        ->setAfterFlush($attribute->afterFlush);
 
                     $events[$class][] = $config;
                 } elseif ($attribute instanceof SubEvent) {

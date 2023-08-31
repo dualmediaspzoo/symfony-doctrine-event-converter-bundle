@@ -10,10 +10,10 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\PersistentCollection;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -33,11 +33,6 @@ class DispatchingSubscriber implements EventSubscriber
      * @var array<class-string<EntityInterface>, array<int, array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>>>>
      */
     private array $subEventList = [];
-
-    /**
-     * @var list<AbstractEntityEvent>
-     */
-    private $eventsToDispatchAfterFlush = [];
 
     private bool $subEventsOptimized = false;
 
@@ -69,7 +64,8 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     public function __construct(
-        private readonly EventDispatcherInterface $eventDispatcher,
+        //        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly DelayableEventDispatcher $eventDispatcher,
         private readonly PropertyAccessor $propertyAccess = new PropertyAccessor()
     ) {
     }
@@ -192,10 +188,7 @@ class DispatchingSubscriber implements EventSubscriber
     public function postFlush(
         PostFlushEventArgs $args
     ): void {
-        foreach ($this->eventsToDispatchAfterFlush as $event) {
-            $this->eventDispatcher->dispatch($event);
-            $this->eventDispatcher->dispatch(new DispatchEvent($event));
-        }
+        $this->eventDispatcher->submitDelayed();
     }
 
     /**
@@ -295,7 +288,7 @@ class DispatchingSubscriber implements EventSubscriber
 
     /**
      * @param string $type
-     * @param non-empty-list<class-string<AbstractEntityEvent>> $events
+     * @param list<Event> $events
      * @param EntityInterface $obj
      * @param int|string|null $id
      * @param array<string, array<int, mixed>|PersistentCollection> $changes
@@ -309,6 +302,9 @@ class DispatchingSubscriber implements EventSubscriber
         int|string|null $id = null,
         array $changes = []
     ): void {
+
+        //        dd('asdasd');
+
         foreach ($events as $model) {
             /**
              * @var AbstractEntityEvent $event
@@ -321,12 +317,8 @@ class DispatchingSubscriber implements EventSubscriber
                 ->setChanges($changes)
                 ->setDeletedId($id);
 
-            if ($model->afterFlush) {
-                $this->eventsToDispatchAfterFlush[] = $event;
-            } else {
-                $this->eventDispatcher->dispatch($event);
-                $this->eventDispatcher->dispatch(new DispatchEvent($event));
-            }
+            //            dd('aaaaa');
+            $this->eventDispatcher->dispatch($event, $model->afterFlush);
 
             $this->runSubEvents($event);
         }
@@ -364,12 +356,8 @@ class DispatchingSubscriber implements EventSubscriber
                         )) // save only fields that the event requested, ignore rest
                         ->setEventType($event->getEventType());
 
-                    if ($model->afterFlush) {
-                        $this->eventsToDispatchAfterFlush[] = $subEvent;
-                    } else {
-                        $this->eventDispatcher->dispatch($subEvent);
-                        $this->eventDispatcher->dispatch(new DispatchEvent($subEvent));
-                    }
+                    $this->eventDispatcher->dispatch($subEvent, $model->afterFlush);
+
                     break;
                 }
             }
@@ -413,7 +401,8 @@ class DispatchingSubscriber implements EventSubscriber
                     $existingCounter = isset($modelWantedState[0]) ? 0 : 1;
                     $validFields[$field] = $this->stateEquals($fields[$existingCounter], $modelWantedState[$existingCounter]);
                 } elseif (2 === $count) {
-                    $validFields[$field] = $this->stateEquals($fields[0], $modelWantedState[0]) && $this->stateEquals($fields[1], $modelWantedState[1] ?? null);
+                    /** @var array{0: mixed, 1: mixed} $modelWantedState */
+                    $validFields[$field] = $this->stateEquals($fields[0], $modelWantedState[0]) && $this->stateEquals($fields[1], $modelWantedState[1]);
                 }
             }
 

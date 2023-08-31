@@ -12,7 +12,10 @@ class Configuration implements ConfigurationInterface
     {
         $tree = new TreeBuilder(DoctrineEventConverterBundle::CONFIGURATION_ROOT);
 
-        // @phpstan-ignore-next-line
+        /**
+         * @psalm-suppress UndefinedMethod
+         * @phpstan-ignore-next-line
+         */
         $tree->getRootNode()
             ->children()
                 ->scalarNode('parent_directory')->defaultValue('%kernel.project_dir%/src/*')->end()
