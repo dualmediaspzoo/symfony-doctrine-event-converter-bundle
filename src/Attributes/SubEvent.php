@@ -90,8 +90,6 @@ class SubEvent
      */
     public readonly int $priority;
 
-    public readonly bool $afterFlush;
-    
     /**
      * @param string $label
      * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null> $fields
@@ -112,7 +110,7 @@ class SubEvent
         array $types = [],
         int $priority = 0,
         public readonly array $changes = [],
-        bool $afterFlush = false,
+        public readonly bool $afterFlush = false,
     ) {
         $this->label = $label;
         $this->entity = $entity;
@@ -121,6 +119,5 @@ class SubEvent
         $this->requirements = $requirements;
         $this->types = $types;
         $this->priority = $priority;
-        $this->afterFlush = $afterFlush;
     }
 }
