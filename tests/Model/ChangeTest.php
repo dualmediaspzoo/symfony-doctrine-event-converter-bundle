@@ -5,9 +5,9 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Model;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Tests\KernelTestCase;
 
-class ValidCompileTest extends KernelTestCase
+class ChangeTest extends KernelTestCase
 {
-    public function testGeneration()
+    public function test()
     {
         $change = new Change('status', 1, 2);
 
