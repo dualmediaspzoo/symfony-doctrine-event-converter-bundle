@@ -5,6 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Integration;
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\Model\Event;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ComplexEntityEvent;
@@ -109,38 +110,38 @@ class ValidCompileTest extends KernelTestCase
         $list = [
             Events::postPersist => [
                 Item::class => [
-                    ItemPostPersistEvent::class,
+                    new Event(ItemPostPersistEvent::class),
                 ],
             ],
             Events::postUpdate => [
                 Item::class => [
-                    ItemPostUpdateEvent::class,
+                    new Event(ItemPostUpdateEvent::class),
                 ],
                 ComplexEntity::class => [
-                    ComplexEntityPostUpdateEvent::class,
+                    new Event(ComplexEntityPostUpdateEvent::class),
                 ],
             ],
             Events::postRemove => [
                 Item::class => [
-                    ItemPostRemoveEvent::class,
+                    new Event(ItemPostRemoveEvent::class),
                 ],
             ],
             Events::prePersist => [
                 Item::class => [
-                    ItemPrePersistEvent::class,
+                    new Event(ItemPrePersistEvent::class),
                 ],
                 ComplexEntity::class => [
-                    ComplexEntityPrePersistEvent::class,
+                    new Event(ComplexEntityPrePersistEvent::class),
                 ],
             ],
             Events::preUpdate => [
                 Item::class => [
-                    ItemPreUpdateEvent::class,
+                    new Event(ItemPreUpdateEvent::class),
                 ],
             ],
             Events::preRemove => [
                 Item::class => [
-                    ItemPreRemoveEvent::class,
+                    new Event(ItemPreRemoveEvent::class),
                 ],
             ],
         ];
@@ -159,9 +160,19 @@ class ValidCompileTest extends KernelTestCase
         array $expected,
         array $actual
     ): void {
-        sort($expected);
-        sort($actual);
+        usort($expected, function (Event $a, Event $b) {
+            return strcmp($a->eventClass, $b->eventClass);
+        });
 
-        $this->assertSame($expected, $actual);
+        usort($actual, function (Event $a, Event $b) {
+            return strcmp($a->eventClass, $b->eventClass);
+        });
+
+        $this->assertSame(count($expected), count($actual));
+
+        for ($i = 0; $i < count($expected); $i++) {
+            $this->assertSame($expected[$i]->eventClass, $actual[$i]->eventClass);
+            $this->assertSame($expected[$i]->afterFlush, $actual[$i]->afterFlush);
+        }
     }
 }

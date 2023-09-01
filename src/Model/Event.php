@@ -16,7 +16,7 @@ class Event
 {
     public function __construct(
         public readonly string $eventClass,
-        public readonly bool $afterFlush
+        public readonly bool $afterFlush = false
     ) {
     }
 }
