@@ -67,7 +67,6 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     public function __construct(
-        //        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly DelayableEventDispatcher $eventDispatcher,
         private readonly PropertyAccessor $propertyAccess = new PropertyAccessor()
     ) {
