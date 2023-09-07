@@ -6,6 +6,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\PersistentCollection;
@@ -188,7 +189,7 @@ class DispatchingSubscriber implements EventSubscriber
      * @internal
      */
     public function preFlush(
-        PostFlushEventArgs $args
+        PreFlushEventArgs $args
     ): void {
         $this->preFlush = true;
     }
