@@ -15,7 +15,6 @@ use DualMedia\DoctrineEventConverterBundle\Model\Event;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class DispatchingSubscriber implements EventSubscriber
 {
@@ -35,6 +34,8 @@ class DispatchingSubscriber implements EventSubscriber
     private array $subEventList = [];
 
     private bool $subEventsOptimized = false;
+    private bool $preFlush = false;
+
 
     /**
      * ID cache for removed entities so their ids can be temporarily remembered.
@@ -59,6 +60,7 @@ class DispatchingSubscriber implements EventSubscriber
             Events::postUpdate,
             Events::preRemove,
             Events::postRemove,
+            Events::preFlush,
             Events::postFlush,
         ];
     }
@@ -185,10 +187,20 @@ class DispatchingSubscriber implements EventSubscriber
     /**
      * @internal
      */
+    public function preFlush(
+        PostFlushEventArgs $args
+    ): void {
+        $this->preFlush = true;
+    }
+
+    /**
+     * @internal
+     */
     public function postFlush(
         PostFlushEventArgs $args
     ): void {
         $this->eventDispatcher->submitDelayed();
+        $this->preFlush = false;
     }
 
     /**
@@ -313,6 +325,11 @@ class DispatchingSubscriber implements EventSubscriber
                 ->setEventType($type)
                 ->setChanges($changes)
                 ->setDeletedId($id);
+
+            if ($this->preFlush) {
+                $this->eventDispatcher->clearEvents();
+                $this->preFlush = false;
+            }
 
             $this->eventDispatcher->dispatch($event, $model->afterFlush);
 
