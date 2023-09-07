@@ -11,7 +11,7 @@ class DelayableEventDispatcher
     /**
      * @var list<AbstractEntityEvent>
      */
-    private $eventsToDispatchAfterFlush = [];
+    private array $eventsToDispatchAfterFlush = [];
 
     public function __construct(
         private readonly EventDispatcherInterface $eventDispatcher,
