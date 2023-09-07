@@ -41,7 +41,7 @@ class DelayableEventDispatcher
         $this->eventsToDispatchAfterFlush = [];
     }
     
-    public function clearEvents():void
+    public function clearEvents(): void
     {
         $this->eventsToDispatchAfterFlush = [];
     }
