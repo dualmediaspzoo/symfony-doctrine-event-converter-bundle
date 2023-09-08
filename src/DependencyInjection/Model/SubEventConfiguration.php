@@ -31,6 +31,8 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     private int $priority = 0;
     private bool $allMode = true;
 
+    private bool $afterFlush = false;
+
     /**
      * @return non-empty-list<string>
      */
@@ -126,4 +128,17 @@ final class SubEventConfiguration extends AbstractEventConfiguration
 
         return $this;
     }
+
+    public function isAfterFlush(): bool
+    {
+        return $this->afterFlush;
+    }
+
+    public function setAfterFlush(
+        bool $afterFlush
+    ): static {
+        $this->afterFlush = $afterFlush;
+        return $this;
+    }
+
 }

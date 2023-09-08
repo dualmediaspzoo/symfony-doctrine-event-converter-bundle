@@ -99,6 +99,7 @@ class SubEvent
      * @param list<string> $types
      * @param int $priority
      * @param list<Change> $changes list of field changes
+     * @param bool $afterFlush
      */
     public function __construct(
         string $label,
@@ -108,7 +109,8 @@ class SubEvent
         array $requirements = [],
         array $types = [],
         int $priority = 0,
-        public readonly array $changes = []
+        public readonly array $changes = [],
+        public readonly bool $afterFlush = false,
     ) {
         $this->label = $label;
         $this->entity = $entity;

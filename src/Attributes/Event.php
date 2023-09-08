@@ -36,7 +36,8 @@ abstract class Event
      * @param non-empty-list<class-string>|null $entity
      */
     public function __construct(
-        array|null $entity = null
+        array|null $entity = null,
+        public readonly bool $afterFlush = false,
     ) {
         $this->entity = $entity;
     }
@@ -45,4 +46,5 @@ abstract class Event
     {
         return $this->type;
     }
+
 }

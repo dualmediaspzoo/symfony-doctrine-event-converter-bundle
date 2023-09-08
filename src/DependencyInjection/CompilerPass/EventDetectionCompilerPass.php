@@ -142,7 +142,8 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                     $config = (new EventConfiguration())
                         ->setEntities($entities)
-                        ->setType($attribute->getType());
+                        ->setType($attribute->getType())
+                        ->setAfterFlush($attribute->afterFlush);
 
                     $events[$class][] = $config;
                 } elseif ($attribute instanceof SubEvent) {
@@ -159,7 +160,8 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                         ->setLabel($attribute->label)
                         ->setRequirements($attribute->requirements)
                         ->setPriority($attribute->priority)
-                        ->setAllMode($attribute->allMode);
+                        ->setAllMode($attribute->allMode)
+                        ->setAfterFlush($attribute->afterFlush);
 
                     if (!array_key_exists($class, $subEvents)) {
                         $subEvents[$class] = [];
@@ -237,6 +239,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $configuration->getRequirements(),
                     $configuration->getEvents(),
                     $configuration->getPriority(),
+                    $configuration->isAfterFlush(),
                 ]);
             }
         }
@@ -255,6 +258,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $out,
                     $configuration->getEntities(),
                     $configuration->getType(),
+                    $configuration->isAfterFlush(),
                 ]);
             }
         }
