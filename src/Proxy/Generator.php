@@ -22,13 +22,14 @@ namespace <namespace>;
 
 /**
 <doc> */
-final class <class> extends \<parent> <interfaces> {}
+class <class> extends \<parent> <interfaces> {}
 EOF;
 
     public const DOC_TEMPLATE = [
         'WARNING! Proxy class generated automatically, Do not modify!',
         '',
         'Event class for event <event>',
+        '@final',
     ];
 
     public function __construct(
