@@ -29,7 +29,7 @@ EOF;
         'WARNING! Proxy class generated automatically, Do not modify!',
         '',
         'Event class for event <event>',
-        '@final'
+        '@final',
     ];
 
     public function __construct(
