@@ -411,7 +411,7 @@ class DispatchingSubscriber implements EventSubscriber
                 $count = count($modelWantedState);
 
                 if (1 === $count) {
-                    $existingCounter = isset($modelWantedState[0]) ? 0 : 1;
+                    $existingCounter = array_key_exists(0, $modelWantedState) ? 0 : 1;
                     $validFields[$field] = $this->stateEquals($fields[$existingCounter], $modelWantedState[$existingCounter]);
                 } elseif (2 === $count) {
                     /** @var array{0: mixed, 1: mixed} $modelWantedState */
