@@ -43,7 +43,7 @@
         "phpunit/phpunit": "^10",
         "vimeo/psalm": "^5",
         "phpstan/phpstan": "^1",
-        "matthiasnoback/symfony-dependency-injection-test": "^4.",
+        "matthiasnoback/symfony-dependency-injection-test": "^5",
         "jetbrains/phpstorm-attributes": "^1.0",
         "pkly/phpunit-service-create-trait": "^1.0"
     },
