@@ -145,6 +145,8 @@ jobs:
           vendor/bin/php-cs-fixer fix --config ./.php-cs-fixer.dist.php --dry-run --diff --ansi
 
   test:
+    concurrency:
+      group: ${{ github.head_ref ||  github.ref }}
     strategy:
       matrix:
         include:
