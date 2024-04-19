@@ -5,7 +5,6 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\SubEventRe
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * @extends AbstractEntityEvent<Item>

@@ -10,7 +10,6 @@ use DualMedia\DoctrineEventConverterBundle\Attributes\PreRemoveEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * @extends AbstractEntityEvent<Item>
@@ -23,10 +22,6 @@ use JetBrains\PhpStorm\Pure;
 #[PostRemoveEvent]
 abstract class ItemEvent extends AbstractEntityEvent
 {
-    /**
-     * @psalm-pure
-     */
-    #[Pure]
     public static function getEntityClass(): string|null
     {
         return Item::class;
