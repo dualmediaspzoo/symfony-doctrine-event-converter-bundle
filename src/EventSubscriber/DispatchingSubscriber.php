@@ -62,9 +62,6 @@ class DispatchingSubscriber implements EventSubscriber
         ];
     }
 
-    /**
-     * @internal
-     */
     public function prePersist(
         PrePersistEventArgs $args
     ): void {
@@ -73,18 +70,12 @@ class DispatchingSubscriber implements EventSubscriber
         }
     }
 
-    /**
-     * @internal
-     */
     public function preFlush(
         PreFlushEventArgs $args
     ): void {
         $this->preFlush = true;
     }
 
-    /**
-     * @internal
-     */
     public function postFlush(
         PostFlushEventArgs $args
     ): void {
@@ -92,18 +83,12 @@ class DispatchingSubscriber implements EventSubscriber
         $this->preFlush = false;
     }
 
-    /**
-     * @internal
-     */
     public function postPersist(
         PostPersistEventArgs $args
     ): void {
         $this->process(Events::postPersist, $args->getObject());
     }
 
-    /**
-     * @internal
-     */
     public function preUpdate(
         PreUpdateEventArgs $args
     ): void {
@@ -116,9 +101,6 @@ class DispatchingSubscriber implements EventSubscriber
         $this->process(Events::preUpdate, $object, null, $changes);
     }
 
-    /**
-     * @internal
-     */
     public function postUpdate(
         PostUpdateEventArgs $args
     ): void {
@@ -130,9 +112,6 @@ class DispatchingSubscriber implements EventSubscriber
         $this->process(Events::postUpdate, $object, null, $changes);
     }
 
-    /**
-     * @internal
-     */
     public function preRemove(
         PreRemoveEventArgs $args
     ): void {
@@ -144,9 +123,6 @@ class DispatchingSubscriber implements EventSubscriber
         $this->process(Events::preRemove, $object);
     }
 
-    /**
-     * @internal
-     */
     public function postRemove(
         PostRemoveEventArgs $args
     ): void {

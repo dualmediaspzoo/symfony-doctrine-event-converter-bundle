@@ -6,6 +6,7 @@ use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
+use DualMedia\DoctrineEventConverterBundle\Service\EventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ComplexEntityEvent;
@@ -22,11 +23,12 @@ use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle
 use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPrePersistEvent;
 use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPreRemoveEvent;
 use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ItemPreUpdateEvent;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\Finder\Finder;
 
 class ValidCompileTest extends KernelTestCase
 {
-    public function testGeneration()
+    public function testGeneration(): void
     {
         $this->assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::prePersist),
@@ -80,10 +82,8 @@ class ValidCompileTest extends KernelTestCase
         );
     }
 
-    /**
-     * @depends testGeneration
-     */
-    public function testAutoload()
+    #[Depends('testGeneration')]
+    public function testAutoload(): void
     {
         // ItemEvent
         $this->assertTrue(class_exists(ItemPrePersistEvent::class));
@@ -100,12 +100,11 @@ class ValidCompileTest extends KernelTestCase
         $this->assertTrue(class_exists(ComplexEntityStatusChangedPrePersistEvent::class));
     }
 
-    /**
-     * @depends testGeneration
-     */
-    public function testCorrectContainerDefinitions()
+    #[Depends('testGeneration')]
+    public function testCorrectContainerDefinitions(): void
     {
-        $subscriber = $this->getContainer()->get(DispatchingSubscriber::class);
+        $service = $this->getContainer()->get(EventService::class);
+        /** @var EventService $service */
 
         $list = [
             Events::postPersist => [
@@ -150,7 +149,7 @@ class ValidCompileTest extends KernelTestCase
             foreach ($entityList as $entity => $events) {
                 $this->checkArrayWithoutOrderImportance(
                     $events,
-                    $subscriber->getEvents($event, $entity)
+                    $service->get($event, $entity)
                 );
             }
         }

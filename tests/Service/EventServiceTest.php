@@ -10,9 +10,13 @@ class EventServiceTest extends TestCase
 {
     use ServiceMockHelperTrait;
 
+    private EventService $service;
+
     protected function setUp(): void
     {
-        $this->service = $this->createRealMockedServiceInstance(EventService::class);
+        $this->service = $this->createRealMockedServiceInstance(EventService::class, [
+            'entries' => [],
+        ]);
     }
 
     public function test(): void
