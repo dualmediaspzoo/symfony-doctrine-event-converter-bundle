@@ -18,7 +18,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     private array $events;
 
     /**
-     * @var array<string, null|array{0?: mixed, 1: mixed}>
+     * @var array<string, null|array{0?: mixed, 1?: mixed}>
      */
     private array $changes = [];
 
@@ -54,7 +54,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     }
 
     /**
-     * @return array<string, null|array{0?: mixed, 1: mixed}>
+     * @return array<string, null|array{0?: mixed, 1?: mixed}>
      */
     public function getChanges(): array
     {
@@ -62,7 +62,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     }
 
     /**
-     * @param array<string, null|array{0?: mixed, 1: mixed}> $changes
+     * @param array<string, null|array{0?: mixed, 1?: mixed}> $changes
      */
     public function setChanges(
         array $changes
@@ -158,5 +158,4 @@ final class SubEventConfiguration extends AbstractEventConfiguration
 
         return $this;
     }
-
 }

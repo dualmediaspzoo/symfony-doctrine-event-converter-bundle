@@ -5,7 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\NoValidEnt
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 
-#[SubEvent("SomeName", fields: "someField")]
+#[SubEvent('SomeName', fields: 'someField')]
 class TestEvent extends AbstractEntityEvent
 {
 }

@@ -6,7 +6,7 @@ use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorExc
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 
 /**
- * Thrown if a class passed to {@link Generator} is final
+ * Thrown if a class passed to {@link Generator} is final.
  */
 final class TargetClassFinalException extends AbstractEventDistributorException
 {

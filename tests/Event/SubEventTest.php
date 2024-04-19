@@ -36,7 +36,7 @@ class SubEventTest extends KernelTestCase
 
         /** @var ComplexEntity $entity */
         $entity = $this->getComplexRepo()->find(1);
-        $entity->setUnimportant("new");
+        $entity->setUnimportant('new');
 
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
@@ -94,8 +94,8 @@ class SubEventTest extends KernelTestCase
 
         $entity = new ComplexEntity();
         $entity->setStatus(1)
-            ->setName("Whatever")
-            ->setUnimportant("something");
+            ->setName('Whatever')
+            ->setUnimportant('something');
 
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
@@ -126,7 +126,7 @@ class SubEventTest extends KernelTestCase
 
         /** @var ComplexEntity $entity */
         $entity = $this->getComplexRepo()->find(1);
-        $entity->setUnimportant("specific")
+        $entity->setUnimportant('specific')
             ->setStatus(16);
 
         $this->getManager()->persist($entity);

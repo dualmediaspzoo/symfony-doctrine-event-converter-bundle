@@ -32,16 +32,10 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * This test must not modify setup, as that's later tested for checking if the compiler pass will work without services
+ * This test must not modify setup, as that's later tested for checking if the compiler pass will work without services.
  */
 class CompilerPassTest extends AbstractCompilerPassTestCase
 {
-    protected function registerCompilerPass(
-        ContainerBuilder $container
-    ): void {
-        $container->addCompilerPass(new EventDetectionCompilerPass());
-    }
-
     public function testInvalidBaseEntity(): void
     {
         $this->setDINamespace('InvalidBaseEntity');
@@ -104,7 +98,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->expectException(UnknownEventTypeException::class);
         $this->expectExceptionMessage(UnknownEventTypeException::formatMessage([
-            "invalid",
+            'invalid',
             UnknownEventType::class,
         ]));
 
@@ -119,7 +113,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         $this->expectException(SubEventNameCollisionException::class);
         $this->expectExceptionMessage(SubEventNameCollisionException::formatMessage([
             SubEventNameCollision::class,
-            "ExistingName",
+            'ExistingName',
         ]));
 
         $this->compile();
@@ -132,11 +126,17 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->expectException(SubEventRequiredFieldsException::class);
         $this->expectExceptionMessage(SubEventRequiredFieldsException::formatMessage([
-            "SomeName",
+            'SomeName',
             SubEventRequiredFields::class,
         ]));
 
         $this->compile();
+    }
+
+    protected function registerCompilerPass(
+        ContainerBuilder $container
+    ): void {
+        $container->addCompilerPass(new EventDetectionCompilerPass());
     }
 
     private function loadRequiredServices(): void
@@ -171,16 +171,19 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
         $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
         $absolutes = [];
+
         foreach ($parts as $part) {
             if ('.' == $part) {
                 continue;
             }
+
             if ('..' == $part) {
                 array_pop($absolutes);
             } else {
                 $absolutes[] = $part;
             }
         }
+
         return implode(DIRECTORY_SEPARATOR, $absolutes);
     }
 }

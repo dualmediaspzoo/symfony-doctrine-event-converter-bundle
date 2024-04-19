@@ -5,7 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Exception\Proxy;
 use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorException;
 
 /**
- * Thrown when trying to get a path to a non-proxy class
+ * Thrown when trying to get a path to a non-proxy class.
  */
 final class NotProxyClassException extends AbstractEventDistributorException
 {

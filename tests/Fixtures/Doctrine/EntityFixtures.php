@@ -21,7 +21,7 @@ class EntityFixtures extends Fixture
         $entity = new ComplexEntity();
         $entity->setStatus(1)
             ->setName('MyName')
-            ->setUnimportant("old");
+            ->setUnimportant('old');
 
         $manager->persist($entity);
         $manager->flush();

@@ -14,6 +14,7 @@ class Configuration implements ConfigurationInterface
 
         /**
          * @psalm-suppress UndefinedMethod
+         *
          * @phpstan-ignore-next-line
          */
         $tree->getRootNode()

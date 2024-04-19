@@ -32,5 +32,4 @@ class DelayableEventDispatcherTest extends KernelTestCase
         $event->method('getEntityId')->willReturn(123456);
         $service->dispatch($event);
     }
-
 }

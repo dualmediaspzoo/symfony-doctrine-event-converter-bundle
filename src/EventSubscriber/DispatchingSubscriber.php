@@ -41,7 +41,6 @@ class DispatchingSubscriber implements EventSubscriber
     private bool $subEventsOptimized = false;
     private bool $preFlush = false;
 
-
     /**
      * ID cache for removed entities so their ids can be temporarily remembered.
      *
@@ -55,6 +54,12 @@ class DispatchingSubscriber implements EventSubscriber
      * @var array<string, array<string, array<int, mixed>|PersistentCollection>>
      */
     private array $updateObjectCache = [];
+
+    public function __construct(
+        private readonly DelayableEventDispatcher $eventDispatcher,
+        private readonly PropertyAccessor $propertyAccess = new PropertyAccessor()
+    ) {
+    }
 
     public function getSubscribedEvents(): array
     {
@@ -70,20 +75,11 @@ class DispatchingSubscriber implements EventSubscriber
         ];
     }
 
-    public function __construct(
-        private readonly DelayableEventDispatcher $eventDispatcher,
-        private readonly PropertyAccessor $propertyAccess = new PropertyAccessor()
-    ) {
-    }
-
     /**
-     * Registers an event for use later by the dispatcher
+     * Registers an event for use later by the dispatcher.
      *
      * @param class-string<AbstractEntityEvent> $eventClass
      * @param non-empty-list<class-string<EntityInterface>> $entities
-     * @param string $event
-     *
-     * @return void
      *
      * @internal
      */
@@ -107,9 +103,8 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * Gets the list of for an entity and specified Doctrine {@see Events}
+     * Gets the list of for an entity and specified Doctrine {@see Events}.
      *
-     * @param string $type
      * @param class-string<EntityInterface> $entity
      *
      * @return list<Event>
@@ -122,17 +117,14 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * Registers a sub event for use later by the dispatcher
+     * Registers a sub event for use later by the dispatcher.
      *
      * @param class-string<AbstractEntityEvent> $eventClass
      * @param non-empty-list<class-string<EntityInterface>> $entities
-     * @param bool $allMode
      * @param array<string, null|array{0?: mixed, 1: mixed}> $fieldList
      * @param array<string, mixed> $requirements
      * @param list<string> $types
      * @param int $priority higher means the event will be checked/fired faster
-     *
-     * @return void
      *
      * @internal
      */
@@ -163,7 +155,7 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * Gets the list of SubEvents for an entity
+     * Gets the list of SubEvents for an entity.
      *
      * @param class-string<EntityInterface> $entity
      *
@@ -274,9 +266,6 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @param string $event
-     * @param object $obj
-     * @param int|string|null $id
      * @param array<string, array<int, mixed>|PersistentCollection> $changes
      */
     private function preRunEvents(
@@ -287,27 +276,24 @@ class DispatchingSubscriber implements EventSubscriber
     ): void {
         $events = $this->mainEventList[$event];
         $class = ClassUtils::getClass($obj);
+
         if (!array_key_exists($class, $events)) {
             return;
         }
 
         /**
-         * As no non-EntityInterface object can exist in the mainEventList, we don't need to validate type in theory
+         * As no non-EntityInterface object can exist in the mainEventList, we don't need to validate type in theory.
          *
          * @noinspection PhpParamsInspection
+         *
          * @phpstan-ignore-next-line
          */
         $this->runEvents($event, $events[$class], $obj, $id, $changes);
     }
 
     /**
-     * @param string $type
      * @param list<Event> $events
-     * @param EntityInterface $obj
-     * @param int|string|null $id
      * @param array<string, array<int, mixed>|PersistentCollection> $changes
-     *
-     * @return void
      */
     private function runEvents(
         string $type,
@@ -381,10 +367,6 @@ class DispatchingSubscriber implements EventSubscriber
 
     /**
      * @param array<string, array<int, mixed>> $eventChanges
-     * @param SubEvent $model
-     * @param EntityInterface $entity
-     * @param string $event
-     * @return bool
      */
     private function validateSubEvent(
         array $eventChanges,
@@ -421,7 +403,7 @@ class DispatchingSubscriber implements EventSubscriber
                 }
             }
 
-            $reduced = array_reduce($validFields, fn ($carry, $data) => $carry + ((int) $data));
+            $reduced = array_reduce($validFields, fn ($carry, $data) => $carry + ((int)$data));
 
             if (!(!$model->allMode ? $reduced > 0 : $reduced === count($model->fieldList))) {
                 return false;

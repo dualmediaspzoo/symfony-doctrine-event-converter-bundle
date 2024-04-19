@@ -16,7 +16,6 @@ class DelayableEventDispatcher
     public function __construct(
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {
-
     }
 
     public function dispatch(
@@ -40,10 +39,9 @@ class DelayableEventDispatcher
 
         $this->eventsToDispatchAfterFlush = [];
     }
-    
+
     public function clearEvents(): void
     {
         $this->eventsToDispatchAfterFlush = [];
     }
-
 }

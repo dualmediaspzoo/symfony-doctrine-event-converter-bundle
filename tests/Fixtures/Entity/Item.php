@@ -11,17 +11,17 @@ class Item implements EntityInterface
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    private int|null $id = null;
 
     #[ORM\Column(type: 'smallint')]
-    private ?int $status = null;
+    private int|null $status = null;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): int|null
     {
         return $this->status;
     }

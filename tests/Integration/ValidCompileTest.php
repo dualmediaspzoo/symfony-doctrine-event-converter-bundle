@@ -64,19 +64,19 @@ class ValidCompileTest extends KernelTestCase
 
         $this->assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, ComplexEntityEvent::STATUS_CHANGED),
-            ComplexEntityEvent::STATUS_CHANGED." Event should have been generated"
+            ComplexEntityEvent::STATUS_CHANGED.' Event should have been generated'
         );
         $this->assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, Events::postUpdate),
-            "PostUpdate Event should have been generated implicitly"
+            'PostUpdate Event should have been generated implicitly'
         );
         $this->assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST),
-            ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST." Event should have been generated"
+            ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST.' Event should have been generated'
         );
         $this->assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, Events::prePersist),
-            "PrePersist Event should have been generated implicitly"
+            'PrePersist Event should have been generated implicitly'
         );
     }
 

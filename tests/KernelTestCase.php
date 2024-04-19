@@ -50,8 +50,6 @@ class KernelTestCase extends SymfonyKernelTestCase
 
     /**
      * @param DispatchEvent[]|AbstractEntityEvent[] $events
-     * @param array $expected
-     * @param $entity
      */
     protected function assertEntityEventList(
         array $events,
@@ -68,7 +66,7 @@ class KernelTestCase extends SymfonyKernelTestCase
         for ($i = 0; $i < count($events); $i++) {
             if ($events[$i] instanceof DispatchEvent) {
                 $this->assertSame(
-                    $events[$i-1],
+                    $events[$i - 1],
                     $events[$i]->getEvent()
                 );
                 $this->assertSame(
@@ -96,7 +94,7 @@ class KernelTestCase extends SymfonyKernelTestCase
             $this->listeners[$event][] = $this->getSimpleCallable($out);
             $this->getEventDispatcher()->addListener(
                 $event,
-                $this->listeners[$event][count($this->listeners[$event])-1]
+                $this->listeners[$event][count($this->listeners[$event]) - 1]
             );
         }
     }

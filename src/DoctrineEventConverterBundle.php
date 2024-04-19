@@ -16,7 +16,7 @@ class DoctrineEventConverterBundle extends Bundle
     /**
      * @var callable|null
      */
-    private $autoloader = null;
+    private $autoloader;
 
     public function build(
         ContainerBuilder $container

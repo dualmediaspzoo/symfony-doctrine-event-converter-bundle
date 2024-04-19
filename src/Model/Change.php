@@ -5,7 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Model;
 use JetBrains\PhpStorm\Immutable;
 
 /**
- * This object represents a database change
+ * This object represents a database change.
  *
  * If no exact changes are specified then it is assumed that _any_ change should trigger the event
  */

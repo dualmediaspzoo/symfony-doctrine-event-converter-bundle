@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\Pure;
 /**
  * @extends AbstractEntityEvent<Item>
  */
-#[SubEvent("SomeEvent", types: ["invalid"])]
+#[SubEvent('SomeEvent', types: ['invalid'])]
 class TestEvent extends AbstractEntityEvent
 {
     /**

@@ -34,6 +34,7 @@ class TestKernel extends Kernel
 
     /**
      * @noinspection PhpUnusedPrivateMethodInspection
+     *
      * @phpstan-ignore-next-line
      */
     private function configureContainer(
@@ -44,7 +45,7 @@ class TestKernel extends Kernel
         $loader->load(__DIR__.'/../config/services_test.php');
 
         $container->extension(DoctrineEventConverterBundle::CONFIGURATION_ROOT, [
-            'parent_directory' => realpath(__DIR__ . '/Fixtures/Event'),
+            'parent_directory' => realpath(__DIR__.'/Fixtures/Event'),
             'parent_namespace' => 'DualMedia\\DoctrineEventConverterBundle\\Tests\\Fixtures\\Event',
         ]);
 

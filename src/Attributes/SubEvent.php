@@ -7,7 +7,7 @@ use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 
 /**
- * Responsible for registering sub events for {@link DispatchingSubscriber} with appropriate options
+ * Responsible for registering sub events for {@link DispatchingSubscriber} with appropriate options.
  *
  * <span style="color: yellow">WARNING:</span> You must specify the {@link SubEvent::$label} and one of {@link SubEvent::$changes} or {@link SubEvent::$requirements
  */
@@ -15,7 +15,7 @@ use DualMedia\DoctrineEventConverterBundle\Model\Change;
 class SubEvent
 {
     /**
-     * Label for the SubEvent, this will be placed in the middle of the short class name
+     * Label for the SubEvent, this will be placed in the middle of the short class name.
      *
      * If this annotation is placed on an event class called "FooBarEvent" and the label is "StatusChanged" then
      * the final short name of the class will be "FooBarStatusChangedEvent"
@@ -28,7 +28,7 @@ class SubEvent
     public readonly array|null $entity;
 
     /**
-     * If all fields are required to fire event
+     * If all fields are required to fire event.
      *
      * <span style="color: yellow">WARNING:</span> This setting is ignored if {@link SubEvent::$types} does not include either of {@link Events::postUpdate} or {@link Events::preUpdate}
      * or if the current event type is not one of the ones specified above!
@@ -63,14 +63,10 @@ class SubEvent
     public readonly int $priority;
 
     /**
-     * @param string $label
      * @param non-empty-list<class-string>|null $entity
-     * @param bool $allMode
      * @param array<string, mixed> $requirements
      * @param list<string> $types
-     * @param int $priority
      * @param list<Change> $changes list of field changes
-     * @param bool $afterFlush
      */
     public function __construct(
         string $label,

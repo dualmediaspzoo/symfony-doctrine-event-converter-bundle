@@ -5,9 +5,10 @@ namespace DualMedia\DoctrineEventConverterBundle\Model;
 use JetBrains\PhpStorm\Immutable;
 
 /**
- * This class contains the basic fields required for sub events to work properly
+ * This class contains the basic fields required for sub events to work properly.
  *
  * @psalm-immutable
+ *
  * @interal
  */
 #[Immutable]

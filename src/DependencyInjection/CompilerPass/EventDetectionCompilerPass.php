@@ -39,7 +39,7 @@ use Symfony\Component\Finder\Finder;
 class EventDetectionCompilerPass implements CompilerPassInterface
 {
     /**
-     * Array of maps of the doctrine events to something we can actually find quickly
+     * Array of maps of the doctrine events to something we can actually find quickly.
      *
      * @var array<string, class-string<Event>>
      */
@@ -53,8 +53,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     ];
 
     /**
-     * @param ContainerBuilder $container
-     *
      * @throws AbstractEntityEventNotExtendedException
      * @throws TargetClassFinalException
      * @throws DirectoryNotWritable
@@ -70,9 +68,9 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     public function process(
         ContainerBuilder $container
     ): void {
-        if (!$container->hasDefinition(Generator::class) ||
-            !$container->has(Generator::class) ||
-            !$container->hasDefinition(DispatchingSubscriber::class)) {
+        if (!$container->hasDefinition(Generator::class)
+            || !$container->has(Generator::class)
+            || !$container->hasDefinition(DispatchingSubscriber::class)) {
             return;
         }
 
@@ -96,6 +94,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         // attempt to expand paths
         $match = [];
         preg_match_all('/%(.+)%/', $path, $match);
+
         if (count($match[0] ?? [])) {
             foreach ($match[0] as $i => $item) {
                 /** @var string $param */
@@ -105,15 +104,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         /**
-         * This just lets us see if some name will be taken at any point, since SubEvents are created from a single class, they could collide
+         * This just lets us see if some name will be taken at any point, since SubEvents are created from a single class, they could collide.
          *
          * @var string[] $uniqueSubEventNames
          */
         $uniqueSubEventNames = [];
 
-        $nonGlobPath = rtrim($path, "*\\/");
+        $nonGlobPath = rtrim($path, '*\\/');
+
         foreach ($finder->files()->in($path)->name('*.php') as $file) {
             $class = $namespace.'\\'.str_replace(['.php', '/'], ['', '\\'], mb_substr($file->getRealPath(), mb_strpos($file->getRealPath(), $nonGlobPath) + mb_strlen($nonGlobPath) + 1));
+
             /** @var class-string $class */
             try {
                 $reflection = new \ReflectionClass($class);
@@ -136,6 +137,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $this->validateEventReflection($class, $reflection);
                     $entities = $this->getEntityClasses($attribute, $reflection);
                     $this->validateEntityClasses($entities, $class);
+
                     /** @var non-empty-list<class-string<EntityInterface>> $entities */
                     if (!array_key_exists($class, $events)) {
                         $events[$class] = [];
@@ -170,6 +172,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $subEvents[$class][] = $config;
 
                     $uniq = $class.ucfirst($attribute->label);
+
                     if (in_array($uniq, $uniqueSubEventNames)) {
                         throw SubEventNameCollisionException::new([
                             $class,
@@ -183,6 +186,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         $cacheDir = $container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.DoctrineEventConverterBundle::CACHE_DIRECTORY; // @phpstan-ignore-line
+
         if (!is_dir($cacheDir) && (false === @mkdir($cacheDir, 0775, true))) {
             throw DirectoryNotWritable::new([$cacheDir]);
         }
@@ -192,6 +196,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         $finder = new Finder();
+
         // clear old event files for regeneration
         foreach ($finder->files()->in($cacheDir)->name('*.php') as $file) {
             unlink($file->getRealPath());
@@ -208,6 +213,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                 foreach ($configuration->getEvents() as $type) {
                     $found = false;
+
                     for ($i = 0; $i < count($events[$class]); $i++) {
                         if ($type === $events[$class][$i]->getType()) {
                             $found = true;
@@ -265,9 +271,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param string $class
-     * @param \ReflectionClass $reflection
-     *
      * @throws AbstractEntityEventNotExtendedException
      * @throws TargetClassFinalException
      */
@@ -329,9 +332,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param SubEvent $event
-     * @param string $class
-     *
      * @return non-empty-list<string>
      *
      * @throws UnknownEventTypeException
@@ -359,7 +359,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     /**
      * @param list<Change> $changes
      *
-     * @return array<string, null|array{0?: mixed, 1: mixed}>
+     * @return array<string, null|array{0?: mixed, 1?: mixed}>
      */
     private function getChanges(
         array $changes,

@@ -15,5 +15,4 @@ class ChangeTest extends KernelTestCase
         $this->assertSame(1, $change->from);
         $this->assertSame(2, $change->to);
     }
-
 }

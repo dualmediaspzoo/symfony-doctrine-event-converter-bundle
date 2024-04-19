@@ -8,13 +8,6 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
 class ExtensionTest extends AbstractExtensionTestCase
 {
-    protected function getContainerExtensions(): array
-    {
-        return [
-            new DoctrineEventConverterExtension(),
-        ];
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,5 +45,12 @@ class ExtensionTest extends AbstractExtensionTestCase
             DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace',
             'TestNamespace'
         );
+    }
+
+    protected function getContainerExtensions(): array
+    {
+        return [
+            new DoctrineEventConverterExtension(),
+        ];
     }
 }

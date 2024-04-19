@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Use this class as a base to creating EntityAware events
+ * Use this class as a base to creating EntityAware events.
  *
  * @template T of EntityInterface
  */
@@ -18,6 +18,7 @@ abstract class AbstractEntityEvent extends Event
 
     /**
      * @var T
+     *
      * @noinspection PhpDocFieldTypeMismatchInspection
      */
     protected EntityInterface $entity;
@@ -30,13 +31,14 @@ abstract class AbstractEntityEvent extends Event
 
     /**
      * Override if you don't want to specify entities inside of annotations each time for an event
-     * This will be used only if your annotations don't specify an entity or entity list outright
+     * This will be used only if your annotations don't specify an entity or entity list outright.
      *
      * @return class-string<T>|null
+     *
      * @psalm-pure
      */
     #[Pure]
-    public static function getEntityClass(): ?string
+    public static function getEntityClass(): string|null
     {
         return null;
     }
@@ -45,6 +47,7 @@ abstract class AbstractEntityEvent extends Event
      * @param T $entity
      *
      * @return static
+     *
      * @noinspection PhpDocSignatureInspection
      */
     public function setEntity(
