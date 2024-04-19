@@ -65,6 +65,8 @@ class DispatchingSubscriber implements EventSubscriber
     public function prePersist(
         PrePersistEventArgs $args
     ): void {
+        echo "DISPATCHED!!!!!!!!!!!";
+
         if ($args->getObject() instanceof EntityInterface) {
             $this->process(Events::prePersist, $args->getObject());
         }
