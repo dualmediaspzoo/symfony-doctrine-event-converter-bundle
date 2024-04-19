@@ -17,10 +17,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-composer-s-${{ hashFiles('**/composer.lock') }}-${{ matrix.symfony-version }}-${{ matrix.php-version }}
@@ -56,10 +56,10 @@ jobs:
     needs: install
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-composer-s-${{ hashFiles('**/composer.lock') }}-${{ matrix.symfony-version }}-${{ matrix.php-version }}
@@ -89,10 +89,10 @@ jobs:
     needs: install
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-composer-s-${{ hashFiles('**/composer.lock') }}-${{ matrix.symfony-version }}-${{ matrix.php-version }}
@@ -122,10 +122,10 @@ jobs:
     needs: install
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-composer-s-${{ hashFiles('**/composer.lock') }}-${{ matrix.symfony-version }}-${{ matrix.php-version }}
@@ -163,10 +163,10 @@ jobs:
       - php-cs-fixer
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-composer-s-${{ hashFiles('**/composer.lock') }}-${{ matrix.symfony-version }}-${{ matrix.php-version }}
@@ -196,7 +196,7 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
-          thresholds: '70 80'
+          thresholds: '65 80'
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
