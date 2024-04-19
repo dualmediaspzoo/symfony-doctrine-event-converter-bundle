@@ -28,34 +28,6 @@ class SubEvent
     public readonly array|null $entity;
 
     /**
-     * List of fields to be used for searching for changes.
-     *
-     * <span style="color: yellow">WARNING:</span> Either this field or {@link SubEvent::$requirements} is required!
-     *
-     * Either pass the name, names of fields, or fields with required values:
-     *
-     * For example:
-     *
-     * `fields="price"`
-     *
-     * `fields={"price"}`
-     *
-     * are the same internally and mean "When field 'price' changes"
-     *
-     * `fields={"price"={0.15}}`
-     *
-     * means "When field 'price' changes to 0.15"
-     *
-     * `fields={"price"={0.15, 0.30}}`
-     *
-     * means "When field 'price' changes from 0.15 to 0.30"
-     *
-     * @var string|array<array-key, string|array{0: mixed, 1?: mixed}|null>
-     * @deprecated use {@link SubEvent::$changes} instead
-     */
-    public readonly string|array $fields;
-
-    /**
      * If all fields are required to fire event
      *
      * <span style="color: yellow">WARNING:</span> This setting is ignored if {@link SubEvent::$types} does not include either of {@link Events::postUpdate} or {@link Events::preUpdate}
@@ -92,7 +64,6 @@ class SubEvent
 
     /**
      * @param string $label
-     * @param string|array<array-key, string|array{0: mixed, 1?: mixed}|null> $fields
      * @param non-empty-list<class-string>|null $entity
      * @param bool $allMode
      * @param array<string, mixed> $requirements
@@ -103,7 +74,6 @@ class SubEvent
      */
     public function __construct(
         string $label,
-        string|array $fields = [],
         array|null $entity = null,
         bool $allMode = true,
         array $requirements = [],
@@ -114,7 +84,6 @@ class SubEvent
     ) {
         $this->label = $label;
         $this->entity = $entity;
-        $this->fields = $fields;
         $this->allMode = $allMode;
         $this->requirements = $requirements;
         $this->types = $types;

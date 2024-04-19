@@ -3,6 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model;
 
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 
 /**
  * @internal
@@ -138,6 +139,23 @@ final class SubEventConfiguration extends AbstractEventConfiguration
         bool $afterFlush
     ): static {
         $this->afterFlush = $afterFlush;
+
+        return $this;
+    }
+
+    /**
+     * @throws SubEventRequiredFieldsException
+     */
+    public function validate(
+        string $class
+    ): static {
+        if (empty($this->getChanges()) && empty($this->getRequirements())) {
+            throw SubEventRequiredFieldsException::new([
+                $this->getLabel(),
+                $class,
+            ]);
+        }
+
         return $this;
     }
 

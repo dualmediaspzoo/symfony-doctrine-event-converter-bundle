@@ -2,7 +2,6 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Model;
 
-use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\Undefined;
 use JetBrains\PhpStorm\Immutable;
 
 /**

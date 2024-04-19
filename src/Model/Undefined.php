@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model;
+namespace DualMedia\DoctrineEventConverterBundle\Model;
 
 /**
  * Helper class to check for real undefined state of model

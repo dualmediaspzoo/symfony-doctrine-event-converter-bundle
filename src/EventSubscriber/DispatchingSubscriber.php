@@ -4,9 +4,13 @@ namespace DualMedia\DoctrineEventConverterBundle\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\PostPersistEventArgs;
+use Doctrine\ORM\Event\PostRemoveEventArgs;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\PersistentCollection;
@@ -172,12 +176,10 @@ class DispatchingSubscriber implements EventSubscriber
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @internal
      */
     public function prePersist(
-        LifecycleEventArgs $args
+        PrePersistEventArgs $args
     ): void {
         if ($args->getObject() instanceof EntityInterface) {
             $this->preRunEvents(Events::prePersist, $args->getObject());
@@ -207,67 +209,67 @@ class DispatchingSubscriber implements EventSubscriber
      * @internal
      */
     public function postPersist(
-        LifecycleEventArgs $args
+        PostPersistEventArgs $args
     ): void {
         $this->preRunEvents(Events::postPersist, $args->getObject());
     }
 
     /**
-     * @param PreUpdateEventArgs $args
-     *
      * @internal
      */
     public function preUpdate(
         PreUpdateEventArgs $args
     ): void {
         $changes = [];
-        if ($args->getObject() instanceof EntityInterface) {
-            $changes = $this->updateObjectCache[spl_object_hash($args->getObject())] = $args->getEntityChangeSet();
+        $object = $args->getObject();
+
+        if ($object instanceof EntityInterface) {
+            $changes = $this->updateObjectCache[spl_object_hash($object)] = $args->getEntityChangeSet();
         }
-        $this->preRunEvents(Events::preUpdate, $args->getObject(), null, $changes);
+        $this->preRunEvents(Events::preUpdate, $object, null, $changes);
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @internal
      */
     public function postUpdate(
-        LifecycleEventArgs $args
+        PostUpdateEventArgs $args
     ): void {
-        $hash = spl_object_hash($args->getObject());
+        $object = $args->getObject();
+        $hash = spl_object_hash($object);
         $changes = $this->updateObjectCache[$hash] ?? [];
         unset($this->updateObjectCache[$hash]);
-        $this->preRunEvents(Events::postUpdate, $args->getObject(), null, $changes);
+
+        $this->preRunEvents(Events::postUpdate, $object, null, $changes);
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @internal
      */
     public function preRemove(
-        LifecycleEventArgs $args
+        PreRemoveEventArgs $args
     ): void {
+        $object = $args->getObject();
+
         if ($args->getObject() instanceof EntityInterface) {
-            $this->removeIdCache[spl_object_hash($args->getObject())] = $args->getObject()->getId(); // @phpstan-ignore-line
+            $this->removeIdCache[spl_object_hash($object)] = $object->getId(); // @phpstan-ignore-line
         }
-        $this->preRunEvents(Events::preRemove, $args->getObject());
+        $this->preRunEvents(Events::preRemove, $object);
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @internal
      */
     public function postRemove(
-        LifecycleEventArgs $args
+        PostRemoveEventArgs $args
     ): void {
-        $hash = spl_object_hash($args->getObject());
+        $object = $args->getObject();
+        $hash = spl_object_hash($object);
+
         if (isset($this->removeIdCache[$hash])) {
             $id = $this->removeIdCache[$hash];
             unset($this->removeIdCache[$hash]);
-            $this->preRunEvents(Events::postRemove, $args->getObject(), $id);
+            $this->preRunEvents(Events::postRemove, $object, $id);
         }
     }
 

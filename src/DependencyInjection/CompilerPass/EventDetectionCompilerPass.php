@@ -13,7 +13,6 @@ use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\EventConfiguration;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\SubEventConfiguration;
-use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
@@ -30,6 +29,8 @@ use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSche
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\SubEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Model\Change;
+use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -154,14 +155,13 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $config = (new SubEventConfiguration())
                         ->setEntities($entities)
                         ->setEvents($this->getSubEventTypes($attribute, $class))
-                        ->setChanges($this->getOldFields($attribute, $class)); // todo: remove call in 2.2
-                    //
-                    $config->setChanges(array_merge($config->getChanges(), $this->getChanges($attribute, $class, $config)))
+                        ->setChanges($this->getChanges($attribute->changes))
                         ->setLabel($attribute->label)
                         ->setRequirements($attribute->requirements)
                         ->setPriority($attribute->priority)
                         ->setAllMode($attribute->allMode)
-                        ->setAfterFlush($attribute->afterFlush);
+                        ->setAfterFlush($attribute->afterFlush)
+                        ->validate($class);
 
                     if (!array_key_exists($class, $subEvents)) {
                         $subEvents[$class] = [];
@@ -357,57 +357,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param SubEvent $event
-     * @param string $class
+     * @param list<Change> $changes
      *
      * @return array<string, null|array{0?: mixed, 1: mixed}>
-     */
-    private function getOldFields(
-        SubEvent $event,
-        string $class
-    ): array {
-        $input = is_array($event->fields) ? $event->fields : [$event->fields];
-        $out = [];
-
-        foreach ($input as $possibleName => $possibleValues) {
-            if (is_numeric($possibleName) && is_string($possibleValues)) {
-                $out[$possibleValues] = null;
-            } elseif (is_array($possibleValues)) {
-                $out[$possibleName] = 2 === count($possibleValues) ? $possibleValues : [1 => $possibleValues[0]];
-            }
-        }
-
-        if (!empty($out)) {
-            trigger_deprecation(
-                'dualmedia/symfony-doctrine-event-converter-bundle',
-                '2.1.2',
-                'Using "%s" is deprecated and will be removed in 2.2.0, move to using "%s" instead in class "%s"',
-                'fields',
-                'changes',
-                $class
-            );
-        }
-
-        return $out;
-    }
-
-    /**
-     * @param SubEvent $event
-     * @param string $class
-     * @param SubEventConfiguration $configuration temporary parameter up for removal in 2.2
-     *
-     * @return array<string, null|array{0?: mixed, 1: mixed}>
-     *
-     * @throws SubEventRequiredFieldsException
      */
     private function getChanges(
-        SubEvent $event,
-        string $class,
-        SubEventConfiguration $configuration
+        array $changes,
     ): array {
+        /** @var array<string, null|array{0?: mixed, 1: mixed}> $out */
         $out = [];
 
-        foreach ($event->changes as $change) {
+        foreach ($changes as $change) {
             if ($change->from instanceof Undefined && $change->to instanceof Undefined) {
                 $out[$change->name] = null;
             } else {
@@ -416,13 +376,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     ($change->from instanceof Undefined ? [] : [0 => $change->from]) +
                     ($change->to instanceof Undefined ? [] : [1 => $change->to]);
             }
-        }
-        /** @var array<string, null|array{0?: mixed, 1: mixed}> $out */
-        if ((empty($out) && empty($configuration->getChanges())) && empty($event->requirements)) {
-            throw SubEventRequiredFieldsException::new([
-                $event->label,
-                $class,
-            ]);
         }
 
         return $out;
