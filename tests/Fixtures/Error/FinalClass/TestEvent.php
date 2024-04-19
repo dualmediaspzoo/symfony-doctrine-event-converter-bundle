@@ -13,10 +13,6 @@ use JetBrains\PhpStorm\Pure;
 #[PostPersistEvent]
 final class TestEvent extends AbstractEntityEvent
 {
-    /**
-     * @psalm-pure
-     */
-    #[Pure]
     public static function getEntityClass(): string|null
     {
         return Item::class;

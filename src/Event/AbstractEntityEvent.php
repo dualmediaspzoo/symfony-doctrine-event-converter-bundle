@@ -34,10 +34,7 @@ abstract class AbstractEntityEvent extends Event
      * This will be used only if your annotations don't specify an entity or entity list outright.
      *
      * @return class-string<T>|null
-     *
-     * @psalm-pure
      */
-    #[Pure]
     public static function getEntityClass(): string|null
     {
         return null;
