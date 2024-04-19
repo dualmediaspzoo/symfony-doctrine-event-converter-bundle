@@ -15,7 +15,6 @@ use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\EventConfig
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\SubEventConfiguration;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\NoValidEntityFoundException;
@@ -32,6 +31,8 @@ use DualMedia\DoctrineEventConverterBundle\Interfaces\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\Service\EventService;
+use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
@@ -70,13 +71,15 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     ): void {
         if (!$container->hasDefinition(Generator::class)
             || !$container->has(Generator::class)
-            || !$container->hasDefinition(DispatchingSubscriber::class)) {
+            || !$container->hasDefinition(EventService::class)
+            || !$container->hasDefinition(SubEventService::class)) {
             return;
         }
 
         /** @var Generator $generator */
         $generator = $container->get(Generator::class);
-        $subscriber = $container->getDefinition(DispatchingSubscriber::class);
+        $mainEventService = $container->getDefinition(EventService::class);
+        $subEventService = $container->getDefinition(SubEventService::class);
 
         /** @var array<class-string<AbstractEntityEvent>, non-empty-list<EventConfiguration>> $events */
         $events = [];
@@ -202,6 +205,11 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             unlink($file->getRealPath());
         }
 
+        /**
+         * @var array<int, list<array<int, mixed>>> $subEventConstruct
+         */
+        $subEventConstruct = [];
+
         // we're starting with sub events because those might need an implicit creation of main events
         /** @var class-string<AbstractEntityEvent> $class */
         foreach ($subEvents as $class => $configurations) {
@@ -236,19 +244,35 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $configuration->getLabel(),
                     [SubEventInterface::class]
                 );
-                /** @see DispatchingSubscriber::registerSubEvent() */
-                $subscriber->addMethodCall('registerSubEvent', [
+
+                if (!array_key_exists($configuration->getPriority(), $subEventConstruct)) {
+                    $subEventConstruct[$configuration->getPriority()] = [];
+                }
+
+                $subEventConstruct[$configuration->getPriority()][] = [
                     $out,
                     $configuration->getEntities(),
                     $configuration->isAllMode(),
                     $configuration->getChanges(),
                     $configuration->getRequirements(),
                     $configuration->getEvents(),
-                    $configuration->getPriority(),
                     $configuration->isAfterFlush(),
-                ]);
+                ];
             }
         }
+
+        /** @var list<array<int, mixed>> $output */
+        $output = [];
+        krsort($subEventConstruct, SORT_NUMERIC); // sort by priorities (200 -> 0 -> -200)
+
+        foreach ($subEventConstruct as $data) {
+            $output[] = $data;
+        }
+
+        $subEventService->setArgument('$entries', $output);
+
+        /** @var list<array<int, string>> $construct */
+        $construct = [];
 
         // create and add main events
         /** @var class-string<AbstractEntityEvent> $class */
@@ -259,15 +283,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $configuration->getType(),
                     [MainEventInterface::class]
                 );
-                /** @see DispatchingSubscriber::registerEvent() */
-                $subscriber->addMethodCall('registerEvent', [
+                $construct[] = [
                     $out,
                     $configuration->getEntities(),
                     $configuration->getType(),
                     $configuration->isAfterFlush(),
-                ]);
+                ];
             }
         }
+
+        /** @see EventService::__construct() */
+        $mainEventService->setArgument('$entries', $construct);
     }
 
     /**

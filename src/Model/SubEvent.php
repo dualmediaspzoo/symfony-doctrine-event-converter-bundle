@@ -16,7 +16,7 @@ class SubEvent
 {
     /**
      * @param bool $allMode If all the fields must be meeting the requirements of the event
-     * @param array<string, null|array{0?: mixed, 1: mixed}> $fieldList The fields that must be changed, null means that any change is required, 0 and 1 indexes match before/after
+     * @param array<string, null|array{0?: mixed, 1?: mixed}> $fieldList The fields that must be changed, null means that any change is required, 0 and 1 indexes match before/after
      * @param array<string, mixed> $requirements Required field states for this event to fire
      * @param list<string> $types Event types in which this event may be triggered
      */

@@ -2,8 +2,6 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Tests\DependencyInjection;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\Reader;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
@@ -17,6 +15,8 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetC
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\Service\EventService;
+use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\InvalidEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\FinalClass\TestEvent as FinalClass;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\InvalidBaseEntity\TestEvent as InvalidBaseEntity;
@@ -142,14 +142,12 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
     private function loadRequiredServices(): void
     {
         $this->container->setParameter('kernel.cache_dir', $cache = '/'.self::getAbsolutePath(__DIR__.'/../../var/cache/test'));
-        $this->setDefinition(Reader::class, new Definition(AnnotationReader::class));
         $this->setDefinition(Generator::class, new Definition(Generator::class, [
             $cache.'/'.DoctrineEventConverterBundle::CACHE_DIRECTORY,
         ]));
         $this->setDefinition('event_dispatcher', new Definition(EventDispatcher::class));
-        $this->setDefinition(DispatchingSubscriber::class, new Definition(DispatchingSubscriber::class, [
-            new Reference('event_dispatcher'),
-        ]));
+        $this->setDefinition(EventService::class, new Definition(EventService::class));
+        $this->setDefinition(SubEventService::class, new Definition(SubEventService::class));
     }
 
     private function setDINamespace(

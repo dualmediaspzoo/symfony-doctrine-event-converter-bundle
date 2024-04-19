@@ -5,16 +5,20 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Service;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
 use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
-use DualMedia\DoctrineEventConverterBundle\Tests\KernelTestCase;
+use PHPUnit\Framework\TestCase;
+use Pkly\ServiceMockHelperTrait;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class DelayableEventDispatcherTest extends KernelTestCase
+class DelayableEventDispatcherTest extends TestCase
 {
-    public function testService()
-    {
-        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+    use ServiceMockHelperTrait;
 
-        $dispatcher->expects($this->exactly(2))
+    public function testService(): void
+    {
+        $service = $this->createRealMockedServiceInstance(DelayableEventDispatcher::class);
+
+        $this->getMockedService(EventDispatcherInterface::class)
+            ->expects($this->exactly(2))
             ->method('dispatch')
             ->willReturnCallback(function ($arg) {
                 if ($arg instanceof DispatchEvent) {
@@ -25,8 +29,6 @@ class DelayableEventDispatcherTest extends KernelTestCase
 
                 return $arg;
             });
-
-        $service = new DelayableEventDispatcher($dispatcher);
 
         $event = $this->createMock(AbstractEntityEvent::class);
         $event->method('getEntityId')->willReturn(123456);
