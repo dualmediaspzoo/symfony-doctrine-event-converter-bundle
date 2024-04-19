@@ -265,8 +265,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $output = [];
         krsort($subEventConstruct, SORT_NUMERIC); // sort by priorities (200 -> 0 -> -200)
 
-        foreach ($subEventConstruct as $data) {
-            $output[] = $data;
+        foreach ($subEventConstruct as $prioritySortedList) {
+            foreach ($prioritySortedList as $data) {
+                $output[] = $data;
+            }
         }
 
         $subEventService->setArgument('$entries', $output);

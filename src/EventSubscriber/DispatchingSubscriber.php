@@ -2,7 +2,6 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\EventSubscriber;
 
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -22,7 +21,7 @@ use DualMedia\DoctrineEventConverterBundle\Service\EventService;
 use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
 use DualMedia\DoctrineEventConverterBundle\Service\VerifierService;
 
-class DispatchingSubscriber implements EventSubscriber
+class DispatchingSubscriber
 {
     private bool $preFlush = false;
 
@@ -48,25 +47,9 @@ class DispatchingSubscriber implements EventSubscriber
     ) {
     }
 
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::prePersist,
-            Events::postPersist,
-            Events::preUpdate,
-            Events::postUpdate,
-            Events::preRemove,
-            Events::postRemove,
-            Events::preFlush,
-            Events::postFlush,
-        ];
-    }
-
     public function prePersist(
         PrePersistEventArgs $args
     ): void {
-        echo 'DISPATCHED!!!!!!!!!!!';
-
         if ($args->getObject() instanceof EntityInterface) {
             $this->process(Events::prePersist, $args->getObject());
         }
@@ -196,7 +179,7 @@ class DispatchingSubscriber implements EventSubscriber
                 $subEvent->setEntity($entity)
                     ->setChanges(array_intersect_key(
                         $event->getChanges(),
-                        $model->fieldList
+                        $model->fields
                     )) // save only fields that the event requested, ignore rest
                     ->setEventType($event->getEventType());
 

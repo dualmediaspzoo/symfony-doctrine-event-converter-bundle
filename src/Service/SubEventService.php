@@ -34,7 +34,7 @@ class SubEventService
             [$eventClass, $entities, $allMode, $fieldList, $requirements, $types, $afterFlush] = $entry;
 
             foreach ($entities as $entity) {
-                if (!array_key_exists($entity, $this->events[$entity])) {
+                if (!array_key_exists($entity, $this->events)) {
                     $this->events[$entity] = [];
                 }
 

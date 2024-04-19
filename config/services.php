@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
@@ -27,12 +28,35 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(VerifierService::class);
 
-    $services->set(DispatchingSubscriber::class)
+    $def = $services->set(DispatchingSubscriber::class)
         ->arg('$eventService', new Reference(EventService::class))
         ->arg('$subEventService', new Reference(SubEventService::class))
         ->arg('$verifierService', new Reference(VerifierService::class))
         ->arg('$dispatcher', new Reference(DelayableEventDispatcher::class))
-        ->tag('doctrine.event_subscriber');
+        ->tag('doctrine.event_listener', [
+            'event' => Events::prePersist,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::postPersist,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::preUpdate,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::postUpdate,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::preRemove,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::postRemove,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::preFlush,
+        ])
+        ->tag('doctrine.event_listener', [
+            'event' => Events::postFlush,
+        ]);
 
     $services->set(Generator::class)
         ->arg(0, '%kernel.cache_dir%/dm-smd-event-distributor-bundle')

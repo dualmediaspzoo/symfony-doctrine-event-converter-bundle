@@ -15,7 +15,7 @@ class VerifierService
     }
 
     /**
-     * @param array<string, array<int, mixed>> $changes
+     * @param array<string, array{0: mixed, 1: mixed}> $changes
      */
     public function validate(
         array $changes,
@@ -49,7 +49,7 @@ class VerifierService
     }
 
     /**
-     * @param array<string, array<int, mixed>> $changes
+     * @param array<string, array{0: mixed, 1: mixed}> $changes
      */
     public function validateFields(
         array $changes,
@@ -57,40 +57,50 @@ class VerifierService
         string $type
     ): bool {
         if (!in_array($type, [Events::postUpdate, Events::preUpdate], true)) {
-            return false;
+            return true;
         }
 
-        if ($model->allMode && count(array_diff_key($model->fieldList, $changes))) { // Event contains keys that haven't changed
+        if ($model->allMode && count(array_diff_key($model->fields, $changes))) { // Event contains keys that haven't changed
             return false;
-        } elseif (!$model->allMode && !count(array_intersect_key($changes, $model->fieldList))) { // Event doesn't contain any of the required keys
+        } elseif (!$model->allMode && !count(array_intersect_key($changes, $model->fields))) { // Event doesn't contain any of the required keys
             return false;
         }
 
         $validFields = [];
 
         foreach ($changes as $field => $fields) {
-            if (!array_key_exists($field, $model->fieldList)) {
-                continue;
-            } elseif (null === ($modelWantedState = $model->fieldList[$field])) {
-                // if you set null instead of setting null for key 0 you're dumb and #wontfix
-                $validFields[$field] = true;
+            if (!array_key_exists($field, $model->fields)) {
                 continue;
             }
 
-            $count = count($modelWantedState);
-
-            if (1 === $count) {
-                $existingCounter = array_key_exists(0, $modelWantedState) ? 0 : 1;
-                $validFields[$field] = $this->equals($fields[$existingCounter], $modelWantedState[$existingCounter]); // @phpstan-ignore-line
-            } elseif (2 === $count) {
-                /** @var array{0: mixed, 1: mixed} $modelWantedState */
-                $validFields[$field] = $this->equals($fields[0], $modelWantedState[0]) && $this->equals($fields[1], $modelWantedState[1]);
-            }
+            $validFields[$field] = null === ($modelWantedState = $model->fields[$field])
+                || $this->validateField($fields, $modelWantedState);
         }
 
         $reduced = array_reduce($validFields, fn ($carry, $data) => $carry + ((int)$data));
 
-        return !$model->allMode ? $reduced > 0 : $reduced === count($model->fieldList);
+        return !$model->allMode ? $reduced > 0 : $reduced === count($model->fields);
+    }
+
+    /**
+     * @param array{0: mixed, 1: mixed} $changes
+     * @param array{0?: mixed, 1?: mixed} $wantedState
+     */
+    public function validateField(
+        array $changes,
+        array $wantedState
+    ): bool {
+        $count = count($wantedState);
+
+        if (1 === $count) {
+            $existingCounter = array_key_exists(0, $wantedState) ? 0 : 1;
+            return $this->equals($changes[$existingCounter], $wantedState[$existingCounter]); // @phpstan-ignore-line
+        } elseif (2 === $count) {
+            /** @var array{0: mixed, 1: mixed} $wantedState */
+            return $this->equals($changes[0], $wantedState[0]) && $this->equals($changes[1], $wantedState[1]);
+        }
+
+        return false;
     }
 
     /**
