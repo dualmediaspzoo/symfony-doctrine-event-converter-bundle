@@ -43,7 +43,7 @@ jobs:
         env:
           SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
         run: |
-          composer update --no-interaction --no-scripts --ansi --no-progress --prefer-dist
+          composer update --no-interaction --no-scripts --ansi --no-progress --prefer-dist --with-all-dependencies
 
   phpstan:
     strategy:
