@@ -94,6 +94,7 @@ class VerifierService
 
         if (1 === $count) {
             $existingCounter = array_key_exists(0, $wantedState) ? 0 : 1;
+
             return $this->equals($changes[$existingCounter], $wantedState[$existingCounter]); // @phpstan-ignore-line
         } elseif (2 === $count) {
             /** @var array{0: mixed, 1: mixed} $wantedState */
