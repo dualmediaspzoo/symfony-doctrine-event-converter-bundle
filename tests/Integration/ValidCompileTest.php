@@ -4,7 +4,6 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Integration;
 
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
-use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
 use DualMedia\DoctrineEventConverterBundle\Service\EventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
@@ -105,7 +104,6 @@ class ValidCompileTest extends KernelTestCase
     {
         $service = $this->getContainer()->get(EventService::class);
         /** @var EventService $service */
-
         $list = [
             Events::postPersist => [
                 Item::class => [
