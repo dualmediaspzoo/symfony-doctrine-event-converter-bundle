@@ -58,6 +58,7 @@ class TestKernel extends Kernel
             'dbal' => [
                 'driver' => 'pdo_sqlite',
                 'path' => '%kernel.cache_dir%/test_db.sqlite',
+                'use_savepoints' => true,
             ],
 
             'orm' => [
