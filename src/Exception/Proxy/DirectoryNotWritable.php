@@ -5,7 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Exception\Proxy;
 use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorException;
 
 /**
- * Thrown if a proxy directory is not writable
+ * Thrown if a proxy directory is not writable.
  */
 final class DirectoryNotWritable extends AbstractEventDistributorException
 {

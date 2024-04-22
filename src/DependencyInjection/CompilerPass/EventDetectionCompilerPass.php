@@ -13,10 +13,8 @@ use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
 use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\EventConfiguration;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\SubEventConfiguration;
-use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\NoValidEntityFoundException;
@@ -30,7 +28,11 @@ use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSche
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\SubEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Model\Change;
+use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\Service\EventService;
+use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
@@ -38,7 +40,7 @@ use Symfony\Component\Finder\Finder;
 class EventDetectionCompilerPass implements CompilerPassInterface
 {
     /**
-     * Array of maps of the doctrine events to something we can actually find quickly
+     * Array of maps of the doctrine events to something we can actually find quickly.
      *
      * @var array<string, class-string<Event>>
      */
@@ -52,8 +54,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     ];
 
     /**
-     * @param ContainerBuilder $container
-     *
      * @throws AbstractEntityEventNotExtendedException
      * @throws TargetClassFinalException
      * @throws DirectoryNotWritable
@@ -69,15 +69,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     public function process(
         ContainerBuilder $container
     ): void {
-        if (!$container->hasDefinition(Generator::class) ||
-            !$container->has(Generator::class) ||
-            !$container->hasDefinition(DispatchingSubscriber::class)) {
+        if (!$container->hasDefinition(Generator::class)
+            || !$container->has(Generator::class)
+            || !$container->hasDefinition(EventService::class)
+            || !$container->hasDefinition(SubEventService::class)) {
             return;
         }
 
         /** @var Generator $generator */
         $generator = $container->get(Generator::class);
-        $subscriber = $container->getDefinition(DispatchingSubscriber::class);
+        $mainEventService = $container->getDefinition(EventService::class);
+        $subEventService = $container->getDefinition(SubEventService::class);
 
         /** @var array<class-string<AbstractEntityEvent>, non-empty-list<EventConfiguration>> $events */
         $events = [];
@@ -95,6 +97,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         // attempt to expand paths
         $match = [];
         preg_match_all('/%(.+)%/', $path, $match);
+
         if (count($match[0] ?? [])) {
             foreach ($match[0] as $i => $item) {
                 /** @var string $param */
@@ -104,15 +107,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         /**
-         * This just lets us see if some name will be taken at any point, since SubEvents are created from a single class, they could collide
+         * This just lets us see if some name will be taken at any point, since SubEvents are created from a single class, they could collide.
          *
          * @var string[] $uniqueSubEventNames
          */
         $uniqueSubEventNames = [];
 
-        $nonGlobPath = rtrim($path, "*\\/");
+        $nonGlobPath = rtrim($path, '*\\/');
+
         foreach ($finder->files()->in($path)->name('*.php') as $file) {
             $class = $namespace.'\\'.str_replace(['.php', '/'], ['', '\\'], mb_substr($file->getRealPath(), mb_strpos($file->getRealPath(), $nonGlobPath) + mb_strlen($nonGlobPath) + 1));
+
             /** @var class-string $class */
             try {
                 $reflection = new \ReflectionClass($class);
@@ -135,6 +140,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $this->validateEventReflection($class, $reflection);
                     $entities = $this->getEntityClasses($attribute, $reflection);
                     $this->validateEntityClasses($entities, $class);
+
                     /** @var non-empty-list<class-string<EntityInterface>> $entities */
                     if (!array_key_exists($class, $events)) {
                         $events[$class] = [];
@@ -154,14 +160,13 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $config = (new SubEventConfiguration())
                         ->setEntities($entities)
                         ->setEvents($this->getSubEventTypes($attribute, $class))
-                        ->setChanges($this->getOldFields($attribute, $class)); // todo: remove call in 2.2
-                    //
-                    $config->setChanges(array_merge($config->getChanges(), $this->getChanges($attribute, $class, $config)))
+                        ->setChanges($this->getChanges($attribute->changes))
                         ->setLabel($attribute->label)
                         ->setRequirements($attribute->requirements)
                         ->setPriority($attribute->priority)
                         ->setAllMode($attribute->allMode)
-                        ->setAfterFlush($attribute->afterFlush);
+                        ->setAfterFlush($attribute->afterFlush)
+                        ->validate($class);
 
                     if (!array_key_exists($class, $subEvents)) {
                         $subEvents[$class] = [];
@@ -170,6 +175,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $subEvents[$class][] = $config;
 
                     $uniq = $class.ucfirst($attribute->label);
+
                     if (in_array($uniq, $uniqueSubEventNames)) {
                         throw SubEventNameCollisionException::new([
                             $class,
@@ -183,6 +189,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         $cacheDir = $container->getParameter('kernel.cache_dir').DIRECTORY_SEPARATOR.DoctrineEventConverterBundle::CACHE_DIRECTORY; // @phpstan-ignore-line
+
         if (!is_dir($cacheDir) && (false === @mkdir($cacheDir, 0775, true))) {
             throw DirectoryNotWritable::new([$cacheDir]);
         }
@@ -192,10 +199,16 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         $finder = new Finder();
+
         // clear old event files for regeneration
         foreach ($finder->files()->in($cacheDir)->name('*.php') as $file) {
             unlink($file->getRealPath());
         }
+
+        /**
+         * @var array<int, list<array<int, mixed>>> $subEventConstruct
+         */
+        $subEventConstruct = [];
 
         // we're starting with sub events because those might need an implicit creation of main events
         /** @var class-string<AbstractEntityEvent> $class */
@@ -208,6 +221,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                 foreach ($configuration->getEvents() as $type) {
                     $found = false;
+
                     for ($i = 0; $i < count($events[$class]); $i++) {
                         if ($type === $events[$class][$i]->getType()) {
                             $found = true;
@@ -230,19 +244,37 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $configuration->getLabel(),
                     [SubEventInterface::class]
                 );
-                /** @see DispatchingSubscriber::registerSubEvent() */
-                $subscriber->addMethodCall('registerSubEvent', [
+
+                if (!array_key_exists($configuration->getPriority(), $subEventConstruct)) {
+                    $subEventConstruct[$configuration->getPriority()] = [];
+                }
+
+                $subEventConstruct[$configuration->getPriority()][] = [
                     $out,
                     $configuration->getEntities(),
                     $configuration->isAllMode(),
                     $configuration->getChanges(),
                     $configuration->getRequirements(),
                     $configuration->getEvents(),
-                    $configuration->getPriority(),
                     $configuration->isAfterFlush(),
-                ]);
+                ];
             }
         }
+
+        /** @var list<array<int, mixed>> $output */
+        $output = [];
+        krsort($subEventConstruct, SORT_NUMERIC); // sort by priorities (200 -> 0 -> -200)
+
+        foreach ($subEventConstruct as $prioritySortedList) {
+            foreach ($prioritySortedList as $data) {
+                $output[] = $data;
+            }
+        }
+
+        $subEventService->setArgument('$entries', $output);
+
+        /** @var list<array<int, string>> $construct */
+        $construct = [];
 
         // create and add main events
         /** @var class-string<AbstractEntityEvent> $class */
@@ -253,21 +285,20 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $configuration->getType(),
                     [MainEventInterface::class]
                 );
-                /** @see DispatchingSubscriber::registerEvent() */
-                $subscriber->addMethodCall('registerEvent', [
+                $construct[] = [
                     $out,
                     $configuration->getEntities(),
                     $configuration->getType(),
                     $configuration->isAfterFlush(),
-                ]);
+                ];
             }
         }
+
+        /** @see EventService::__construct() */
+        $mainEventService->setArgument('$entries', $construct);
     }
 
     /**
-     * @param string $class
-     * @param \ReflectionClass $reflection
-     *
      * @throws AbstractEntityEventNotExtendedException
      * @throws TargetClassFinalException
      */
@@ -329,9 +360,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param SubEvent $event
-     * @param string $class
-     *
      * @return non-empty-list<string>
      *
      * @throws UnknownEventTypeException
@@ -357,57 +385,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * @param SubEvent $event
-     * @param string $class
+     * @param list<Change> $changes
      *
-     * @return array<string, null|array{0?: mixed, 1: mixed}>
-     */
-    private function getOldFields(
-        SubEvent $event,
-        string $class
-    ): array {
-        $input = is_array($event->fields) ? $event->fields : [$event->fields];
-        $out = [];
-
-        foreach ($input as $possibleName => $possibleValues) {
-            if (is_numeric($possibleName) && is_string($possibleValues)) {
-                $out[$possibleValues] = null;
-            } elseif (is_array($possibleValues)) {
-                $out[$possibleName] = 2 === count($possibleValues) ? $possibleValues : [1 => $possibleValues[0]];
-            }
-        }
-
-        if (!empty($out)) {
-            trigger_deprecation(
-                'dualmedia/symfony-doctrine-event-converter-bundle',
-                '2.1.2',
-                'Using "%s" is deprecated and will be removed in 2.2.0, move to using "%s" instead in class "%s"',
-                'fields',
-                'changes',
-                $class
-            );
-        }
-
-        return $out;
-    }
-
-    /**
-     * @param SubEvent $event
-     * @param string $class
-     * @param SubEventConfiguration $configuration temporary parameter up for removal in 2.2
-     *
-     * @return array<string, null|array{0?: mixed, 1: mixed}>
-     *
-     * @throws SubEventRequiredFieldsException
+     * @return array<string, null|array{0?: mixed, 1?: mixed}>
      */
     private function getChanges(
-        SubEvent $event,
-        string $class,
-        SubEventConfiguration $configuration
+        array $changes,
     ): array {
+        /** @var array<string, null|array{0?: mixed, 1: mixed}> $out */
         $out = [];
 
-        foreach ($event->changes as $change) {
+        foreach ($changes as $change) {
             if ($change->from instanceof Undefined && $change->to instanceof Undefined) {
                 $out[$change->name] = null;
             } else {
@@ -416,13 +404,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     ($change->from instanceof Undefined ? [] : [0 => $change->from]) +
                     ($change->to instanceof Undefined ? [] : [1 => $change->to]);
             }
-        }
-        /** @var array<string, null|array{0?: mixed, 1: mixed}> $out */
-        if ((empty($out) && empty($configuration->getChanges())) && empty($event->requirements)) {
-            throw SubEventRequiredFieldsException::new([
-                $event->label,
-                $class,
-            ]);
         }
 
         return $out;

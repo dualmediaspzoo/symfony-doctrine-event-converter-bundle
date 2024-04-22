@@ -25,33 +25,31 @@ class KernelTestCase extends SymfonyKernelTestCase
         string $class,
         string $eventType
     ): string {
-        return $this->getContainer()->get(Generator::class)->resolveFilePath(Generator::getProxyFqcn($class, $eventType));
+        return $this->getContainer()->get(Generator::class)->resolveFilePath(Generator::getProxyFqcn($class, $eventType)); // @phpstan-ignore-line
     }
 
     protected function getItemRepo(): EntityRepository
     {
-        return $this->getContainer()->get('doctrine')->getManager()->getRepository(Item::class);
+        return $this->getContainer()->get('doctrine')->getManager()->getRepository(Item::class); // @phpstan-ignore-line
     }
 
     protected function getComplexRepo(): EntityRepository
     {
-        return $this->getContainer()->get('doctrine')->getManager()->getRepository(ComplexEntity::class);
+        return $this->getContainer()->get('doctrine')->getManager()->getRepository(ComplexEntity::class); // @phpstan-ignore-line
     }
 
     protected function getManager(): ObjectManager
     {
-        return $this->getContainer()->get('doctrine')->getManager();
+        return $this->getContainer()->get('doctrine')->getManager(); // @phpstan-ignore-line
     }
 
     protected function getEventDispatcher(): EventDispatcherInterface
     {
-        return $this->getContainer()->get('event_dispatcher');
+        return $this->getContainer()->get('event_dispatcher'); // @phpstan-ignore-line
     }
 
     /**
      * @param DispatchEvent[]|AbstractEntityEvent[] $events
-     * @param array $expected
-     * @param $entity
      */
     protected function assertEntityEventList(
         array $events,
@@ -68,7 +66,7 @@ class KernelTestCase extends SymfonyKernelTestCase
         for ($i = 0; $i < count($events); $i++) {
             if ($events[$i] instanceof DispatchEvent) {
                 $this->assertSame(
-                    $events[$i-1],
+                    $events[$i - 1],
                     $events[$i]->getEvent()
                 );
                 $this->assertSame(
@@ -96,17 +94,13 @@ class KernelTestCase extends SymfonyKernelTestCase
             $this->listeners[$event][] = $this->getSimpleCallable($out);
             $this->getEventDispatcher()->addListener(
                 $event,
-                $this->listeners[$event][count($this->listeners[$event])-1]
+                $this->listeners[$event][count($this->listeners[$event]) - 1]
             );
         }
     }
 
     protected function clearListeners(): void
     {
-        if (null === $this->getEventDispatcher()) {
-            return;
-        }
-
         foreach ($this->listeners as $event => $listeners) {
             foreach ($listeners as $listener) {
                 $this->getEventDispatcher()->removeListener(

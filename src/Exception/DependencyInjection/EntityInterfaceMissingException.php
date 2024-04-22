@@ -6,7 +6,7 @@ use DualMedia\DoctrineEventConverterBundle\Exception\AbstractEventDistributorExc
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 
 /**
- * Thrown during compiler pass processing if a class does not implement {@link EntityInterface}
+ * Thrown during compiler pass processing if a class does not implement {@link EntityInterface}.
  */
 final class EntityInterfaceMissingException extends AbstractEventDistributorException
 {

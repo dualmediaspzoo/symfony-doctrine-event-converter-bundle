@@ -12,7 +12,6 @@ class DoctrineEventConverterExtension extends SymfonyExtension
 {
     /**
      * @param array<string, mixed> $configs
-     * @param ContainerBuilder $container
      *
      * @throws \Exception
      *

@@ -3,11 +3,11 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Model;
 
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
-use DualMedia\DoctrineEventConverterBundle\Tests\KernelTestCase;
+use PHPUnit\Framework\TestCase;
 
-class ChangeTest extends KernelTestCase
+class ChangeTest extends TestCase
 {
-    public function test()
+    public function test(): void
     {
         $change = new Change('status', 1, 2);
 
@@ -15,5 +15,4 @@ class ChangeTest extends KernelTestCase
         $this->assertSame(1, $change->from);
         $this->assertSame(2, $change->to);
     }
-
 }

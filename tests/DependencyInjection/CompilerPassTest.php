@@ -2,12 +2,9 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Tests\DependencyInjection;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\Reader;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\AbstractEntityEventNotExtendedException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\NoValidEntityFoundException;
@@ -17,6 +14,8 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetC
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
 use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
+use DualMedia\DoctrineEventConverterBundle\Service\EventService;
+use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\InvalidEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\FinalClass\TestEvent as FinalClass;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\InvalidBaseEntity\TestEvent as InvalidBaseEntity;
@@ -28,20 +27,13 @@ use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\UnknownEventType
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * This test must not modify setup, as that's later tested for checking if the compiler pass will work without services
+ * This test must not modify setup, as that's later tested for checking if the compiler pass will work without services.
  */
 class CompilerPassTest extends AbstractCompilerPassTestCase
 {
-    protected function registerCompilerPass(
-        ContainerBuilder $container
-    ): void {
-        $container->addCompilerPass(new EventDetectionCompilerPass());
-    }
-
     public function testInvalidBaseEntity(): void
     {
         $this->setDINamespace('InvalidBaseEntity');
@@ -104,7 +96,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->expectException(UnknownEventTypeException::class);
         $this->expectExceptionMessage(UnknownEventTypeException::formatMessage([
-            "invalid",
+            'invalid',
             UnknownEventType::class,
         ]));
 
@@ -119,7 +111,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         $this->expectException(SubEventNameCollisionException::class);
         $this->expectExceptionMessage(SubEventNameCollisionException::formatMessage([
             SubEventNameCollision::class,
-            "ExistingName",
+            'ExistingName',
         ]));
 
         $this->compile();
@@ -132,24 +124,28 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->expectException(SubEventRequiredFieldsException::class);
         $this->expectExceptionMessage(SubEventRequiredFieldsException::formatMessage([
-            "SomeName",
+            'SomeName',
             SubEventRequiredFields::class,
         ]));
 
         $this->compile();
     }
 
+    protected function registerCompilerPass(
+        ContainerBuilder $container
+    ): void {
+        $container->addCompilerPass(new EventDetectionCompilerPass());
+    }
+
     private function loadRequiredServices(): void
     {
         $this->container->setParameter('kernel.cache_dir', $cache = '/'.self::getAbsolutePath(__DIR__.'/../../var/cache/test'));
-        $this->setDefinition(Reader::class, new Definition(AnnotationReader::class));
         $this->setDefinition(Generator::class, new Definition(Generator::class, [
             $cache.'/'.DoctrineEventConverterBundle::CACHE_DIRECTORY,
         ]));
         $this->setDefinition('event_dispatcher', new Definition(EventDispatcher::class));
-        $this->setDefinition(DispatchingSubscriber::class, new Definition(DispatchingSubscriber::class, [
-            new Reference('event_dispatcher'),
-        ]));
+        $this->setDefinition(EventService::class, new Definition(EventService::class));
+        $this->setDefinition(SubEventService::class, new Definition(SubEventService::class));
     }
 
     private function setDINamespace(
@@ -171,16 +167,19 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
         $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
         $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
         $absolutes = [];
+
         foreach ($parts as $part) {
             if ('.' == $part) {
                 continue;
             }
+
             if ('..' == $part) {
                 array_pop($absolutes);
             } else {
                 $absolutes[] = $part;
             }
         }
+
         return implode(DIRECTORY_SEPARATOR, $absolutes);
     }
 }

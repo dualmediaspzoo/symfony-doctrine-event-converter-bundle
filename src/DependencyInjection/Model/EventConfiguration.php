@@ -12,7 +12,7 @@ final class EventConfiguration extends AbstractEventConfiguration
     private string $type = Events::postPersist;
 
     private bool $afterFlush = false;
-    
+
     public function getType(): string
     {
         return $this->type;
@@ -35,8 +35,7 @@ final class EventConfiguration extends AbstractEventConfiguration
         bool $afterFlush
     ): static {
         $this->afterFlush = $afterFlush;
-        
+
         return $this;
     }
-
 }

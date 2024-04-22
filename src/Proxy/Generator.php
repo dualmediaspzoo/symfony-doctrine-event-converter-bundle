@@ -9,7 +9,7 @@ use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassFinalExcep
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
 
 /**
- * Loosely based on Doctrine's EntityGenerator
+ * Loosely based on Doctrine's EntityGenerator.
  */
 class Generator
 {
@@ -41,7 +41,6 @@ EOF;
      * @template T of AbstractEntityEvent
      *
      * @param class-string<T> $class
-     * @param string $eventName
      * @param list<string> $interfaces
      *
      * @return class-string<T>
@@ -59,6 +58,7 @@ EOF;
         array $interfaces = []
     ): string {
         $reflection = new \ReflectionClass($class);
+
         if ($reflection->isFinal()) {
             throw TargetClassFinalException::new([$class]);
         }
@@ -82,12 +82,13 @@ EOF;
 
         /**
          * @var class-string<T> $fqcn
+         *
          * @noinspection PhpRedundantVariableDocTypeInspection
          */
-        $fqcn = $namespace . '\\' . $classNew;
-        $fileName = $this->proxyDirectory . DIRECTORY_SEPARATOR . str_replace('\\', '', mb_substr($fqcn, mb_strlen(self::PROXY_NS))) . '.php';
+        $fqcn = $namespace.'\\'.$classNew;
+        $fileName = $this->proxyDirectory.DIRECTORY_SEPARATOR.str_replace('\\', '', mb_substr($fqcn, mb_strlen(self::PROXY_NS))).'.php';
 
-        $parameters['<doc>'] = ' *'.implode(' *', array_map(static fn (string $s) => mb_strlen($s) ? " ".$s."\n" : "\n", $doc));
+        $parameters['<doc>'] = ' *'.implode(' *', array_map(static fn (string $s) => mb_strlen($s) ? ' '.$s."\n" : "\n", $doc));
         $parameters['<doc>'] = str_replace('<event>', $eventName, $parameters['<doc>']);
         $parentDirectory = dirname($fileName);
 
@@ -108,10 +109,6 @@ EOF;
     }
 
     /**
-     * @param string $class
-     * @param string $eventName
-     *
-     * @return string
      * @throws TargetClassNamingSchemeInvalidException
      */
     public static function getProxyFqcn(
@@ -124,12 +121,10 @@ EOF;
         $name = self::splitClassName(current($exploded));
         $namespace = self::getNamespace($class);
 
-        return $namespace . '\\' . $name[0].ucfirst($eventName).$name[1];
+        return $namespace.'\\'.$name[0].ucfirst($eventName).$name[1];
     }
 
     /**
-     * @param string $classShort
-     *
      * @return string[]
      *
      * @throws TargetClassNamingSchemeInvalidException
@@ -148,10 +143,6 @@ EOF;
     }
 
     /**
-     * @param string $class
-     *
-     * @return string
-     *
      * @throws NotProxyClassException
      */
     public function resolveFilePath(
@@ -162,20 +153,16 @@ EOF;
         }
 
         $classRelative = mb_substr($class, mb_strlen(self::PROXY_NS));
-        return $this->proxyDirectory . DIRECTORY_SEPARATOR . str_replace('\\', '', $classRelative) . '.php';
+
+        return $this->proxyDirectory.DIRECTORY_SEPARATOR.str_replace('\\', '', $classRelative).'.php';
     }
 
-    /**
-     * @param string $class
-     *
-     * @return string
-     */
     public static function getNamespace(
         string $class
     ): string {
         $exploded = explode('\\', $class);
         array_pop($exploded);
 
-        return self::PROXY_NS . '\\' . implode('\\', $exploded);
+        return self::PROXY_NS.'\\'.implode('\\', $exploded);
     }
 }

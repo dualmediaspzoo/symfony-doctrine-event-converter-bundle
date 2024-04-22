@@ -7,10 +7,9 @@ use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 
 /**
- * Base class for main events, the other annotations should be used in your code
+ * Base class for main events, the other annotations should be used in your code.
  *
  * @see DispatchingSubscriber
- *
  * @see PrePersistEvent
  * @see PostPersistEvent
  * @see PreUpdateEvent
@@ -21,7 +20,7 @@ use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber
 abstract class Event
 {
     /**
-     * This value is not required assuming you override the {@link AbstractEntityEvent::getEntityClass()} method
+     * This value is not required assuming you override the {@link AbstractEntityEvent::getEntityClass()} method.
      *
      * @var non-empty-list<class-string>|null
      */
@@ -46,5 +45,4 @@ abstract class Event
     {
         return $this->type;
     }
-
 }
