@@ -74,9 +74,6 @@ use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 #[PrePersistEvent]
 abstract class ItemEvent extends AbstractEntityEvent
 {
-    /**
-     * @psalm-pure
-     */
     public static function getEntityClass(): ?string
     {
         return Item::class;
