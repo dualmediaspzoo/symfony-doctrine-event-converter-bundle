@@ -128,3 +128,44 @@ The following will generate an `ItemCompleteEvent`.
 ```php
 #[SubEvent("Complete", changes: [new Change('status', to: ItemStatusEnum::Complete)])]
 ```
+
+### PHPStan and Psalm issue ignoring
+
+Ready-to-use templates are available below to make your lives a bit easier.
+
+Plugins may be provided at a later time, but it's not certain.
+
+#### PHPStan
+
+> Note: in future a phpstan.neon file will be provided to ignore these issues, for the time being simply add the following lines into your file.
+
+```
+parameters:
+  ignoreErrors:
+    - '#Class DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+ not found#'
+    - '#Parameter \$[a-zA-Z0-9\\_]+ of method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]+\(\) has invalid type DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+#'
+    - '#Instantiated class DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+ not found.#'
+    - '#Call to method [a-zA-Z0-9\\_]+\(\) on an unknown class DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+.#'
+```
+
+I also suggest disabling `reportUnmatchedIgnoredErrors` in your config, but it's not strictly necessary.
+
+#### Psalm
+
+This configuration needs to be copied over as psalm does not allow including files.
+
+```xml
+<issueHandlers>
+  <UndefinedClass>
+    <errorLevel type="suppress">
+      <referencedClass name="DualMedia\DoctrineEventConverterProxy\*"/>
+    </errorLevel>
+  </UndefinedClass>
+
+  <UndefinedDocblockClass>
+    <errorLevel type="suppress">
+      <referencedClass name="DualMedia\DoctrineEventConverterProxy\*"/>
+    </errorLevel>
+  </UndefinedDocblockClass>
+</issueHandlers>
+```
