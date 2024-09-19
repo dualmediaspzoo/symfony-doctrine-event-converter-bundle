@@ -31,7 +31,7 @@ class EventService
      * }> $entries list of events to be later used by the service
      */
     public function __construct(
-        array $entries
+        array $entries,
     ) {
         foreach ($entries as $entry) {
             [$eventClass, $entities, $event, $afterFlush] = $entry;
@@ -57,7 +57,7 @@ class EventService
      */
     public function get(
         string $event,
-        string $class
+        string $class,
     ): array {
         return $this->events[$event][$class] ?? [];
     }

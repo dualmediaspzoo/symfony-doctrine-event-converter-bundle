@@ -47,7 +47,7 @@ abstract class AbstractEntityEvent extends Event
      * @noinspection PhpDocSignatureInspection
      */
     public function setEntity(
-        EntityInterface $entity
+        EntityInterface $entity,
     ): self {
         $this->entity = $entity;
 
@@ -66,7 +66,7 @@ abstract class AbstractEntityEvent extends Event
      * @param array<string, mixed> $fields
      */
     public function setChanges(
-        array $fields
+        array $fields,
     ): static {
         $this->changes = $fields;
 
@@ -82,7 +82,7 @@ abstract class AbstractEntityEvent extends Event
     }
 
     public function setEventType(
-        string $enum
+        string $enum,
     ): static {
         $this->eventType = $enum;
 
@@ -95,7 +95,7 @@ abstract class AbstractEntityEvent extends Event
     }
 
     public function setDeletedId(
-        int|string|null $id
+        int|string|null $id,
     ): static {
         $this->id = $id;
 

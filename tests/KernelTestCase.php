@@ -23,7 +23,7 @@ class KernelTestCase extends SymfonyKernelTestCase
 
     protected function getProxyClassPath(
         string $class,
-        string $eventType
+        string $eventType,
     ): string {
         return $this->getContainer()->get(Generator::class)->resolveFilePath(Generator::getProxyFqcn($class, $eventType)); // @phpstan-ignore-line
     }
@@ -54,7 +54,7 @@ class KernelTestCase extends SymfonyKernelTestCase
     protected function assertEntityEventList(
         array $events,
         array $expected,
-        $entity
+        $entity,
     ): void {
         $classes = array_map(
             fn ($o) => get_class($o),
@@ -84,7 +84,7 @@ class KernelTestCase extends SymfonyKernelTestCase
 
     protected function addMappedListeners(
         array &$out,
-        array $events
+        array $events,
     ): void {
         foreach ($events as $event) {
             if (!array_key_exists($event, $this->listeners)) {
@@ -114,7 +114,7 @@ class KernelTestCase extends SymfonyKernelTestCase
     }
 
     protected function getSimpleCallable(
-        array &$events
+        array &$events,
     ): callable {
         return function ($e) use (&$events) {
             $events[] = $e;

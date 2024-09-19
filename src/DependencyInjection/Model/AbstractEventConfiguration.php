@@ -18,7 +18,7 @@ abstract class AbstractEventConfiguration
      * @param non-empty-list<class-string<EntityInterface>> $entities
      */
     public function setEntities(
-        array $entities
+        array $entities,
     ): static {
         $this->entities = $entities;
 

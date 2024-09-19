@@ -10,7 +10,7 @@ use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 class EntityFixtures extends Fixture
 {
     public function load(
-        ObjectManager $manager
+        ObjectManager $manager,
     ) {
         $item = new Item();
         $item->setStatus(1);

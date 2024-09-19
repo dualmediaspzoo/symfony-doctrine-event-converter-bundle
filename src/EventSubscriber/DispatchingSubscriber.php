@@ -43,12 +43,12 @@ class DispatchingSubscriber
         private readonly EventService $eventService,
         private readonly SubEventService $subEventService,
         private readonly VerifierService $verifierService,
-        private readonly DelayableEventDispatcher $dispatcher
+        private readonly DelayableEventDispatcher $dispatcher,
     ) {
     }
 
     public function prePersist(
-        PrePersistEventArgs $args
+        PrePersistEventArgs $args,
     ): void {
         if ($args->getObject() instanceof EntityInterface) {
             $this->process(Events::prePersist, $args->getObject());
@@ -56,26 +56,26 @@ class DispatchingSubscriber
     }
 
     public function preFlush(
-        PreFlushEventArgs $args
+        PreFlushEventArgs $args,
     ): void {
         $this->preFlush = true;
     }
 
     public function postFlush(
-        PostFlushEventArgs $args
+        PostFlushEventArgs $args,
     ): void {
         $this->dispatcher->submitDelayed();
         $this->preFlush = false;
     }
 
     public function postPersist(
-        PostPersistEventArgs $args
+        PostPersistEventArgs $args,
     ): void {
         $this->process(Events::postPersist, $args->getObject());
     }
 
     public function preUpdate(
-        PreUpdateEventArgs $args
+        PreUpdateEventArgs $args,
     ): void {
         $changes = [];
         $object = $args->getObject();
@@ -87,7 +87,7 @@ class DispatchingSubscriber
     }
 
     public function postUpdate(
-        PostUpdateEventArgs $args
+        PostUpdateEventArgs $args,
     ): void {
         $object = $args->getObject();
         $hash = spl_object_hash($object);
@@ -98,7 +98,7 @@ class DispatchingSubscriber
     }
 
     public function preRemove(
-        PreRemoveEventArgs $args
+        PreRemoveEventArgs $args,
     ): void {
         $object = $args->getObject();
 
@@ -109,7 +109,7 @@ class DispatchingSubscriber
     }
 
     public function postRemove(
-        PostRemoveEventArgs $args
+        PostRemoveEventArgs $args,
     ): void {
         $object = $args->getObject();
         $hash = spl_object_hash($object);
@@ -128,7 +128,7 @@ class DispatchingSubscriber
         string $type,
         object $obj,
         int|string|null $id = null,
-        array $changes = []
+        array $changes = [],
     ): void {
         $class = ClassUtils::getClass($obj);
 
@@ -162,7 +162,7 @@ class DispatchingSubscriber
     }
 
     private function subEvents(
-        AbstractEntityEvent $event
+        AbstractEntityEvent $event,
     ): void {
         $entity = $event->getEntity();
         $class = ClassUtils::getClass($entity);

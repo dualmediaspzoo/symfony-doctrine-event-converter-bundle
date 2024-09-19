@@ -27,7 +27,7 @@ class VerifierServiceTest extends TestCase
     public function testValidateType(
         bool $result,
         string $type,
-        array $types
+        array $types,
     ): void {
         $this->assertEquals(
             $result,
@@ -41,7 +41,7 @@ class VerifierServiceTest extends TestCase
     public function testEquals(
         bool $result,
         mixed $known,
-        mixed $expected
+        mixed $expected,
     ): void {
         $this->assertEquals(
             $result,

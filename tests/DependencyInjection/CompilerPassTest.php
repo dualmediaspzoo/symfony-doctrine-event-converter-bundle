@@ -132,7 +132,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
     }
 
     protected function registerCompilerPass(
-        ContainerBuilder $container
+        ContainerBuilder $container,
     ): void {
         $container->addCompilerPass(new EventDetectionCompilerPass());
     }
@@ -149,7 +149,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
     }
 
     private function setDINamespace(
-        string $namespace
+        string $namespace,
     ): void {
         $this->setParameter(
             DoctrineEventConverterBundle::CONFIGURATION_ROOT.'.parent_namespace',
@@ -162,7 +162,7 @@ class CompilerPassTest extends AbstractCompilerPassTestCase
     }
 
     private static function getAbsolutePath(
-        string $path
+        string $path,
     ): string {
         $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
         $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');

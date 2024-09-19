@@ -67,7 +67,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws \ReflectionException
      */
     public function process(
-        ContainerBuilder $container
+        ContainerBuilder $container,
     ): void {
         if (!$container->hasDefinition(Generator::class)
             || !$container->has(Generator::class)
@@ -98,12 +98,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $match = [];
         preg_match_all('/%(.+)%/', $path, $match);
 
-        if (count($match[0] ?? [])) {
-            foreach ($match[0] as $i => $item) {
-                /** @var string $param */
-                $param = $container->getParameter($match[1][$i]);
-                $path = str_replace($item, $param, $path);
-            }
+        foreach ($match[0] as $i => $item) {
+            /** @var string $param */
+            $param = $container->getParameter($match[1][$i]);
+            $path = str_replace($item, $param, $path);
         }
 
         /**
@@ -304,7 +302,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      */
     private function validateEventReflection(
         string $class,
-        \ReflectionClass $reflection
+        \ReflectionClass $reflection,
     ): void {
         if ($reflection->isFinal()) {
             throw TargetClassFinalException::new([$reflection->getName()]);
@@ -325,7 +323,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      */
     private function getEntityClasses(
         SubEvent|Event $annotation,
-        \ReflectionClass $reflection
+        \ReflectionClass $reflection,
     ): array {
         $entities = $annotation->entity;
 
@@ -348,7 +346,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      */
     private function validateEntityClasses(
         array $classes,
-        string $eventClass
+        string $eventClass,
     ): void {
         foreach ($classes as $cls) {
             if (is_subclass_of($cls, EntityInterface::class)) { // fits by inheritance
@@ -366,7 +364,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      */
     private function getSubEventTypes(
         SubEvent $event,
-        string $class
+        string $class,
     ): array {
         $types = $event->types;
 

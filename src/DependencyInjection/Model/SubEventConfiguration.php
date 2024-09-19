@@ -46,7 +46,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
      * @param non-empty-list<string> $events
      */
     public function setEvents(
-        array $events
+        array $events,
     ): static {
         $this->events = $events;
 
@@ -65,7 +65,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
      * @param array<string, null|array{0?: mixed, 1?: mixed}> $changes
      */
     public function setChanges(
-        array $changes
+        array $changes,
     ): static {
         $this->changes = $changes;
 
@@ -78,7 +78,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     }
 
     public function setLabel(
-        string $label
+        string $label,
     ): static {
         $this->label = $label;
 
@@ -97,7 +97,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
      * @param array<string, mixed> $requirements
      */
     public function setRequirements(
-        array $requirements
+        array $requirements,
     ): static {
         $this->requirements = $requirements;
 
@@ -110,7 +110,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     }
 
     public function setPriority(
-        int $priority
+        int $priority,
     ): static {
         $this->priority = $priority;
 
@@ -123,7 +123,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     }
 
     public function setAllMode(
-        bool $allMode
+        bool $allMode,
     ): static {
         $this->allMode = $allMode;
 
@@ -136,7 +136,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
     }
 
     public function setAfterFlush(
-        bool $afterFlush
+        bool $afterFlush,
     ): static {
         $this->afterFlush = $afterFlush;
 
@@ -147,7 +147,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
      * @throws SubEventRequiredFieldsException
      */
     public function validate(
-        string $class
+        string $class,
     ): static {
         if (empty($this->getChanges()) && empty($this->getRequirements())) {
             throw SubEventRequiredFieldsException::new([

@@ -17,7 +17,7 @@ abstract class AbstractEventDistributorException extends \Exception
      * @param list<mixed> $arguments
      */
     public static function new(
-        array $arguments = []
+        array $arguments = [],
     ): static {
         return new static(static::formatMessage($arguments)); // @phpstan-ignore-line
     }
@@ -28,7 +28,7 @@ abstract class AbstractEventDistributorException extends \Exception
      * @param list<mixed> $arguments
      */
     public static function formatMessage(
-        array $arguments = []
+        array $arguments = [],
     ): string {
         return sprintf(static::MESSAGE_TEMPLATE, ...$arguments); // @phpstan-ignore-line
     }

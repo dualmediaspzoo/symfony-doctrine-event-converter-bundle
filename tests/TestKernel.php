@@ -40,7 +40,7 @@ class TestKernel extends Kernel
     private function configureContainer(
         ContainerConfigurator $container,
         LoaderInterface $loader,
-        ContainerBuilder $builder
+        ContainerBuilder $builder,
     ): void {
         $loader->load(__DIR__.'/../config/services_test.php');
 

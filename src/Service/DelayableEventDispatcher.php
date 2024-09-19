@@ -21,7 +21,7 @@ class DelayableEventDispatcher
 
     public function dispatch(
         AbstractEntityEvent $event,
-        bool $delay = false
+        bool $delay = false,
     ): void {
         if ($delay) {
             $this->eventsToDispatchAfterFlush[] = $event;
