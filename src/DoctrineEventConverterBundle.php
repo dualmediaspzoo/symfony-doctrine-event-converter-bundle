@@ -19,7 +19,7 @@ class DoctrineEventConverterBundle extends Bundle
     private $autoloader;
 
     public function build(
-        ContainerBuilder $container
+        ContainerBuilder $container,
     ): void {
         $container->addCompilerPass(new EventDetectionCompilerPass());
     }

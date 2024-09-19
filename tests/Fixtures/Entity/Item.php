@@ -27,7 +27,7 @@ class Item implements EntityInterface
     }
 
     public function setStatus(
-        int $status
+        int $status,
     ): self {
         $this->status = $status;
 

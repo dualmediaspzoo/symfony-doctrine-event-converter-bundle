@@ -33,7 +33,7 @@ EOF;
     ];
 
     public function __construct(
-        private readonly string $proxyDirectory
+        private readonly string $proxyDirectory,
     ) {
     }
 
@@ -55,7 +55,7 @@ EOF;
     public function generateProxyClass(
         string $class,
         string $eventName,
-        array $interfaces = []
+        array $interfaces = [],
     ): string {
         $reflection = new \ReflectionClass($class);
 
@@ -113,7 +113,7 @@ EOF;
      */
     public static function getProxyFqcn(
         string $class,
-        string $eventName
+        string $eventName,
     ): string {
         $exploded = explode('\\', $class);
         end($exploded);
@@ -130,7 +130,7 @@ EOF;
      * @throws TargetClassNamingSchemeInvalidException
      */
     public static function splitClassName(
-        string $classShort
+        string $classShort,
     ): array {
         if (false === ($pos = mb_strpos($classShort, 'Event'))) {
             throw TargetClassNamingSchemeInvalidException::new([$classShort]);
@@ -146,7 +146,7 @@ EOF;
      * @throws NotProxyClassException
      */
     public function resolveFilePath(
-        string $class
+        string $class,
     ): string {
         if (!str_starts_with($class, self::PROXY_NS)) {
             throw NotProxyClassException::new([$class]);
@@ -158,7 +158,7 @@ EOF;
     }
 
     public static function getNamespace(
-        string $class
+        string $class,
     ): string {
         $exploded = explode('\\', $class);
         array_pop($exploded);

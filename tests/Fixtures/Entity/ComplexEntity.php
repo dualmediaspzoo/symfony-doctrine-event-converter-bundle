@@ -33,7 +33,7 @@ class ComplexEntity implements EntityInterface
     }
 
     public function setStatus(
-        int $status
+        int $status,
     ): self {
         $this->status = $status;
 
@@ -46,7 +46,7 @@ class ComplexEntity implements EntityInterface
     }
 
     public function setName(
-        string $name
+        string $name,
     ): self {
         $this->name = $name;
 
@@ -59,7 +59,7 @@ class ComplexEntity implements EntityInterface
     }
 
     public function setUnimportant(
-        string|null $unimportant
+        string|null $unimportant,
     ): self {
         $this->unimportant = $unimportant;
 

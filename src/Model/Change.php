@@ -15,7 +15,7 @@ class Change
     public function __construct(
         public readonly string $name,
         public readonly mixed $from = new Undefined(),
-        public readonly mixed $to = new Undefined()
+        public readonly mixed $to = new Undefined(),
     ) {
     }
 }

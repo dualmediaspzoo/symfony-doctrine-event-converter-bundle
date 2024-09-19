@@ -12,7 +12,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 final class DispatchEvent extends Event
 {
     public function __construct(
-        private readonly AbstractEntityEvent $event
+        private readonly AbstractEntityEvent $event,
     ) {
     }
 

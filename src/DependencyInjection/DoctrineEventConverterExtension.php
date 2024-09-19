@@ -19,7 +19,7 @@ class DoctrineEventConverterExtension extends SymfonyExtension
      */
     public function load(
         array $configs,
-        ContainerBuilder $container
+        ContainerBuilder $container,
     ): void {
         $loader = new PhpFileLoader(
             $container,

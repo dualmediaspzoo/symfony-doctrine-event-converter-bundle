@@ -10,7 +10,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 class VerifierService
 {
     public function __construct(
-        private readonly PropertyAccessor $propertyAccess = new PropertyAccessor()
+        private readonly PropertyAccessor $propertyAccess = new PropertyAccessor(),
     ) {
     }
 
@@ -21,7 +21,7 @@ class VerifierService
         array $changes,
         SubEvent $model,
         EntityInterface $entity,
-        string $event
+        string $event,
     ): bool {
         return $this->validateType($event, $model->types)
             && $this->validateRequirements($model->requirements, $entity)
@@ -33,7 +33,7 @@ class VerifierService
      */
     public function validateRequirements(
         array $requirements,
-        EntityInterface $entity
+        EntityInterface $entity,
     ): bool {
         foreach ($requirements as $fieldName => $value) {
             try {
@@ -54,7 +54,7 @@ class VerifierService
     public function validateFields(
         array $changes,
         SubEvent $model,
-        string $type
+        string $type,
     ): bool {
         if (!in_array($type, [Events::postUpdate, Events::preUpdate], true)) {
             return true;
@@ -88,7 +88,7 @@ class VerifierService
      */
     public function validateField(
         array $changes,
-        array $wantedState
+        array $wantedState,
     ): bool {
         $count = count($wantedState);
 
@@ -109,14 +109,14 @@ class VerifierService
      */
     public function validateType(
         string $type,
-        array $types
+        array $types,
     ): bool {
         return in_array($type, $types, true);
     }
 
     public function equals(
         mixed $known,
-        mixed $expected
+        mixed $expected,
     ): bool {
         if ($known === $expected) {
             return true;

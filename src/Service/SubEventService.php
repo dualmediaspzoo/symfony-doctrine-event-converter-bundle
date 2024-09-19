@@ -28,7 +28,7 @@ class SubEventService
      * }> $entries
      */
     public function __construct(
-        array $entries
+        array $entries,
     ) {
         foreach ($entries as $entry) {
             [$eventClass, $entities, $allMode, $fieldList, $requirements, $types, $afterFlush] = $entry;
@@ -51,7 +51,7 @@ class SubEventService
      * @return array<class-string<AbstractEntityEvent>, non-empty-list<SubEvent>>
      */
     public function get(
-        string $class
+        string $class,
     ): array {
         return $this->events[$class] ?? [];
     }

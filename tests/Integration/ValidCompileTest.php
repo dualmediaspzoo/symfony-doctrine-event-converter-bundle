@@ -155,7 +155,7 @@ class ValidCompileTest extends KernelTestCase
 
     private function checkArrayWithoutOrderImportance(
         array $expected,
-        array $actual
+        array $actual,
     ): void {
         usort($expected, function (Event $a, Event $b) {
             return strcmp($a->eventClass, $b->eventClass);

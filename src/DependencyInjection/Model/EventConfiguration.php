@@ -19,7 +19,7 @@ final class EventConfiguration extends AbstractEventConfiguration
     }
 
     public function setType(
-        string $type
+        string $type,
     ): static {
         $this->type = $type;
 
@@ -32,7 +32,7 @@ final class EventConfiguration extends AbstractEventConfiguration
     }
 
     public function setAfterFlush(
-        bool $afterFlush
+        bool $afterFlush,
     ): static {
         $this->afterFlush = $afterFlush;
 
