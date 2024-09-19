@@ -12,6 +12,7 @@ class DelayableEventDispatcher
      * @var list<AbstractEntityEvent>
      */
     private array $eventsToDispatchAfterFlush = [];
+    private bool $dispatchingDelayed = false;
 
     public function __construct(
         private readonly EventDispatcherInterface $eventDispatcher,
@@ -32,11 +33,18 @@ class DelayableEventDispatcher
 
     public function submitDelayed(): void
     {
+        if ($this->dispatchingDelayed) {
+            return; // prevent infinite loop with afterFlush events
+        }
+
+        $this->dispatchingDelayed = true;
+
         foreach ($this->eventsToDispatchAfterFlush as $event) {
             $this->eventDispatcher->dispatch($event);
             $this->eventDispatcher->dispatch(new DispatchEvent($event));
         }
 
+        $this->dispatchingDelayed = false;
         $this->eventsToDispatchAfterFlush = [];
     }
 
