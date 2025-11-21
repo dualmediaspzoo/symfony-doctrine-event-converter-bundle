@@ -26,9 +26,9 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\Unknown
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\DirectoryNotWritable;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassFinalException as ProxyTargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\MainEventInterface;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\SubEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;

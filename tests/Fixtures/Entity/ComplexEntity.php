@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 
 #[ORM\Entity]
 class ComplexEntity implements EntityInterface

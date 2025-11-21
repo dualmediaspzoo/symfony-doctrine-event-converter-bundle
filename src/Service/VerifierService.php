@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Service;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 

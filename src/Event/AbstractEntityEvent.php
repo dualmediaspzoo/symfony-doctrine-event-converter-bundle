@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Event;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**

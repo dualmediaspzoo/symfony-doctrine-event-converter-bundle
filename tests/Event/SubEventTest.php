@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Event;
 
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\MainEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\KernelTestCase;
 use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ComplexEntityPostUpdateEvent;
