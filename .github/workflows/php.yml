@@ -10,8 +10,6 @@ jobs:
             php-version: 8.3
           - symfony-version: 6.4
             php-version: 8.4
-          - symfony-version: 7.3
-            php-version: 8.3
           - symfony-version: 7.4
             php-version: 8.3
           - symfony-version: 8.0
@@ -156,8 +154,6 @@ jobs:
             php-version: 8.3
           - symfony-version: 6.4
             php-version: 8.4
-          - symfony-version: 7.3
-            php-version: 8.3
           - symfony-version: 7.4
             php-version: 8.3
           - symfony-version: 8.0
