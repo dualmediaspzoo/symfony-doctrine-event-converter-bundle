@@ -9,21 +9,23 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class DoctrineEventConverterBundle extends Bundle
 {
-    public const CACHE_DIRECTORY = 'dm-smd-event-distributor-bundle';
+    public const string CACHE_DIRECTORY = 'dm-smd-event-distributor-bundle';
 
-    public const CONFIGURATION_ROOT = 'doctrine_event_converter';
+    public const string CONFIGURATION_ROOT = 'doctrine_event_converter';
 
     /**
      * @var callable|null
      */
     private $autoloader;
 
+    #[\Override]
     public function build(
         ContainerBuilder $container,
     ): void {
         $container->addCompilerPass(new EventDetectionCompilerPass());
     }
 
+    #[\Override]
     public function boot(): void
     {
         $this->autoloader = function ($class) {
@@ -43,6 +45,7 @@ class DoctrineEventConverterBundle extends Bundle
         spl_autoload_register($this->autoloader);
     }
 
+    #[\Override]
     public function shutdown(): void
     {
         if (null !== $this->autoloader) {

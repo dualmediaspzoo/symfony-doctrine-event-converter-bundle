@@ -2,17 +2,12 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Model;
 
-use JetBrains\PhpStorm\Immutable;
-
 /**
  * This class contains the basic fields required for sub events to work properly.
  *
- * @psalm-immutable
- *
  * @interal
  */
-#[Immutable]
-class SubEvent
+readonly class SubEvent
 {
     /**
      * @param bool $allMode If all the fields must be meeting the requirements of the event
@@ -21,11 +16,11 @@ class SubEvent
      * @param list<string> $types Event types in which this event may be triggered
      */
     public function __construct(
-        public readonly bool $allMode,
-        public readonly array $fields,
-        public readonly array $requirements,
-        public readonly array $types,
-        public readonly bool $afterFlush,
+        public bool $allMode,
+        public array $fields,
+        public array $requirements,
+        public array $types,
+        public bool $afterFlush,
     ) {
     }
 }
