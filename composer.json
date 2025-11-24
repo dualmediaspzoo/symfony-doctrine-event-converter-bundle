@@ -27,7 +27,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "doctrine/doctrine-bundle": "^1.12|^2.0",
+        "doctrine/doctrine-bundle": "^2.0",
         "doctrine/orm": "^2.14|^3",
         "symfony/framework-bundle": "^6.4|^7.3|^8.0",
         "symfony/event-dispatcher": "^6.4|^7.3|^8.0",
