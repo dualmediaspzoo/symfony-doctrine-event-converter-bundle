@@ -41,39 +41,39 @@ class SubEventServiceTest extends TestCase
 
     public function test(): void
     {
-        $this->assertNotEmpty(
+        static::assertNotEmpty(
             $events = $this->service->get(ComplexEntity::class),
             'There should be exactly 1 event for specified inputs'
         );
-        $this->assertCount(1, $events, 'There should be exactly 1 event for specified inputs');
+        static::assertCount(1, $events, 'There should be exactly 1 event for specified inputs');
 
-        $this->assertArrayHasKey(
+        static::assertArrayHasKey(
             ComplexEntityEvent::class,
             $events
         );
-        $this->assertCount(1, $events[ComplexEntityEvent::class]);
+        static::assertCount(1, $events[ComplexEntityEvent::class]);
         $event = $events[ComplexEntityEvent::class][0];
 
-        $this->assertFalse(
+        static::assertFalse(
             $event->allMode
         );
-        $this->assertEquals([
+        static::assertEquals([
             'stuff' => null,
         ], $event->fields);
-        $this->assertEquals([
+        static::assertEquals([
             'requirement' => 42,
         ], $event->requirements);
-        $this->assertEquals([
+        static::assertEquals([
             Events::prePersist,
         ], $event->types);
-        $this->assertTrue(
+        static::assertTrue(
             $event->afterFlush
         );
     }
 
     public function testEmpty(): void
     {
-        $this->assertEmpty(
+        static::assertEmpty(
             $this->service->get(Item::class),
             'There should be sub events for specified entity'
         );

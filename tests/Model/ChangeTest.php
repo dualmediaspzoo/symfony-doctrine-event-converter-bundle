@@ -11,8 +11,8 @@ class ChangeTest extends TestCase
     {
         $change = new Change('status', 1, 2);
 
-        $this->assertSame('status', $change->name);
-        $this->assertSame(1, $change->from);
-        $this->assertSame(2, $change->to);
+        static::assertSame('status', $change->name);
+        static::assertSame(1, $change->from);
+        static::assertSame(2, $change->to);
     }
 }

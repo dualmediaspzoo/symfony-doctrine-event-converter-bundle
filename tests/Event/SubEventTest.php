@@ -41,7 +41,7 @@ class SubEventTest extends KernelTestCase
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
 
-        $this->assertEmpty(
+        static::assertEmpty(
             array_filter(
                 $events,
                 fn (DispatchEvent $o) => !($o->getEvent() instanceof MainEventInterface)
@@ -188,7 +188,7 @@ class SubEventTest extends KernelTestCase
 
         $events = [];
 
-        $this->assertEquals(10, $entity->getStatus(), 'Status right now should be 10');
+        static::assertEquals(10, $entity->getStatus(), 'Status right now should be 10');
 
         $this->addMappedListeners(
             $events,

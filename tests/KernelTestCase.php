@@ -61,20 +61,20 @@ class KernelTestCase extends SymfonyKernelTestCase
             $events
         );
 
-        $this->assertEquals($expected, $classes);
+        static::assertEquals($expected, $classes);
 
         for ($i = 0; $i < count($events); $i++) {
             if ($events[$i] instanceof DispatchEvent) {
-                $this->assertSame(
+                static::assertSame(
                     $events[$i - 1],
                     $events[$i]->getEvent()
                 );
-                $this->assertSame(
+                static::assertSame(
                     $entity,
                     $events[$i]->getEvent()->getEntity()
                 );
             } elseif ($events[$i] instanceof AbstractEntityEvent) {
-                $this->assertSame(
+                static::assertSame(
                     $entity,
                     $events[$i]->getEntity()
                 );
