@@ -11,7 +11,7 @@ class EntityFixtures extends Fixture
 {
     public function load(
         ObjectManager $manager,
-    ) {
+    ): void {
         $item = new Item();
         $item->setStatus(1);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\Interfaces;
+namespace DualMedia\DoctrineEventConverterBundle\Interface;
 
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 

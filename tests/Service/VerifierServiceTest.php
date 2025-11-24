@@ -29,7 +29,7 @@ class VerifierServiceTest extends TestCase
         string $type,
         array $types,
     ): void {
-        $this->assertEquals(
+        static::assertEquals(
             $result,
             $this->service->validateType($type, $types)
         );
@@ -43,7 +43,7 @@ class VerifierServiceTest extends TestCase
         mixed $known,
         mixed $expected,
     ): void {
-        $this->assertEquals(
+        static::assertEquals(
             $result,
             $this->service->equals($known, $expected)
         );

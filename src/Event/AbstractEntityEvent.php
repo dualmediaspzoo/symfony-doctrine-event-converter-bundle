@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Event;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -17,8 +17,6 @@ abstract class AbstractEntityEvent extends Event
 
     /**
      * @var T
-     *
-     * @noinspection PhpDocFieldTypeMismatchInspection
      */
     protected EntityInterface $entity;
 
@@ -29,22 +27,9 @@ abstract class AbstractEntityEvent extends Event
     protected string $eventType;
 
     /**
-     * Override if you don't want to specify entities inside of annotations each time for an event
-     * This will be used only if your annotations don't specify an entity or entity list outright.
-     *
-     * @return class-string<T>|null
-     */
-    public static function getEntityClass(): string|null
-    {
-        return null;
-    }
-
-    /**
      * @param T $entity
      *
      * @return static
-     *
-     * @noinspection PhpDocSignatureInspection
      */
     public function setEntity(
         EntityInterface $entity,

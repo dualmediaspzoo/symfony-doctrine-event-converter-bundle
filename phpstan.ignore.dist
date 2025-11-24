@@ -1,0 +1,6 @@
+parameters:
+  ignoreErrors:
+    - '#Class DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+ not found#'
+    - '#Parameter \$[a-zA-Z0-9\\_]+ of method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]+\(\) has invalid type DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+#'
+    - '#Instantiated class DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+ not found.#'
+    - '#Call to method [a-zA-Z0-9\\_]+\(\) on an unknown class DualMedia\\DoctrineEventConverterProxy\\[a-zA-Z0-9\\_]+.#'

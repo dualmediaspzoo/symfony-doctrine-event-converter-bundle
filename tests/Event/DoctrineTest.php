@@ -17,7 +17,7 @@ class DoctrineTest extends KernelTestCase
     public function testItemLoad(): void
     {
         $items = $this->getItemRepo()->findAll();
-        $this->assertCount(1, $items);
+        static::assertCount(1, $items);
     }
 
     public function testPersistEvents(): void

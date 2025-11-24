@@ -12,7 +12,7 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEven
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use DualMedia\DoctrineEventConverterBundle\Service\EventService;
 use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;

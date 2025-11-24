@@ -29,27 +29,27 @@ class ValidCompileTest extends KernelTestCase
 {
     public function testGeneration(): void
     {
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::prePersist),
             'PrePersist Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::postPersist),
             'PostPersist Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::preUpdate),
             'PreUpdate Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::postUpdate),
             'PostUpdate Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::preRemove),
             'PreUpdate Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ItemEvent::class, Events::postRemove),
             'PreUpdate Event should have been generated'
         );
@@ -61,21 +61,21 @@ class ValidCompileTest extends KernelTestCase
             ->name('*SomeOther*Event*.php')
             ->files();
 
-        $this->assertEquals(0, $finder->count(), 'No events should be created for SomeOtherEvent');
+        static::assertEquals(0, $finder->count(), 'No events should be created for SomeOtherEvent');
 
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, ComplexEntityEvent::STATUS_CHANGED),
             ComplexEntityEvent::STATUS_CHANGED.' Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, Events::postUpdate),
             'PostUpdate Event should have been generated implicitly'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST),
             ComplexEntityEvent::STATUS_CHANGED_PRE_PERSIST.' Event should have been generated'
         );
-        $this->assertFileExists(
+        static::assertFileExists(
             $this->getProxyClassPath(ComplexEntityEvent::class, Events::prePersist),
             'PrePersist Event should have been generated implicitly'
         );
@@ -85,18 +85,18 @@ class ValidCompileTest extends KernelTestCase
     public function testAutoload(): void
     {
         // ItemEvent
-        $this->assertTrue(class_exists(ItemPrePersistEvent::class));
-        $this->assertTrue(class_exists(ItemPostPersistEvent::class));
-        $this->assertTrue(class_exists(ItemPreUpdateEvent::class));
-        $this->assertTrue(class_exists(ItemPostUpdateEvent::class));
-        $this->assertTrue(class_exists(ItemPreRemoveEvent::class));
-        $this->assertTrue(class_exists(ItemPostRemoveEvent::class));
+        static::assertTrue(class_exists(ItemPrePersistEvent::class));
+        static::assertTrue(class_exists(ItemPostPersistEvent::class));
+        static::assertTrue(class_exists(ItemPreUpdateEvent::class));
+        static::assertTrue(class_exists(ItemPostUpdateEvent::class));
+        static::assertTrue(class_exists(ItemPreRemoveEvent::class));
+        static::assertTrue(class_exists(ItemPostRemoveEvent::class));
 
         // ComplexEntityEvent
-        $this->assertTrue(class_exists(ComplexEntityPrePersistEvent::class));
-        $this->assertTrue(class_exists(ComplexEntityPostUpdateEvent::class));
-        $this->assertTrue(class_exists(ComplexEntityStatusChangedEvent::class));
-        $this->assertTrue(class_exists(ComplexEntityStatusChangedPrePersistEvent::class));
+        static::assertTrue(class_exists(ComplexEntityPrePersistEvent::class));
+        static::assertTrue(class_exists(ComplexEntityPostUpdateEvent::class));
+        static::assertTrue(class_exists(ComplexEntityStatusChangedEvent::class));
+        static::assertTrue(class_exists(ComplexEntityStatusChangedPrePersistEvent::class));
     }
 
     #[Depends('testGeneration')]
@@ -165,11 +165,11 @@ class ValidCompileTest extends KernelTestCase
             return strcmp($a->eventClass, $b->eventClass);
         });
 
-        $this->assertSame(count($expected), count($actual));
+        static::assertSame(count($expected), count($actual));
 
         for ($i = 0; $i < count($expected); $i++) {
-            $this->assertSame($expected[$i]->eventClass, $actual[$i]->eventClass);
-            $this->assertSame($expected[$i]->afterFlush, $actual[$i]->afterFlush);
+            static::assertSame($expected[$i]->eventClass, $actual[$i]->eventClass);
+            static::assertSame($expected[$i]->afterFlush, $actual[$i]->afterFlush);
         }
     }
 }

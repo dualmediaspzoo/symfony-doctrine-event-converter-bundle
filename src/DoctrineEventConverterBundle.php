@@ -9,9 +9,9 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class DoctrineEventConverterBundle extends Bundle
 {
-    public const CACHE_DIRECTORY = 'dm-smd-event-distributor-bundle';
+    public const string CACHE_DIRECTORY = 'dm-smd-event-distributor-bundle';
 
-    public const CONFIGURATION_ROOT = 'doctrine_event_converter';
+    public const string CONFIGURATION_ROOT = 'doctrine_event_converter';
 
     /**
      * @var callable|null

@@ -18,7 +18,7 @@ class DelayableEventDispatcherTest extends TestCase
         $service = $this->createRealMockedServiceInstance(DelayableEventDispatcher::class);
 
         $this->getMockedService(EventDispatcherInterface::class)
-            ->expects($this->exactly(2))
+            ->expects(static::exactly(2))
             ->method('dispatch')
             ->willReturnCallback(function ($arg) {
                 if ($arg instanceof DispatchEvent) {

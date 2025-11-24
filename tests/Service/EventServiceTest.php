@@ -32,22 +32,22 @@ class EventServiceTest extends TestCase
 
     public function test(): void
     {
-        $this->assertNotEmpty(
+        static::assertNotEmpty(
             $events = $this->service->get(Events::prePersist, ComplexEntity::class),
             'There should be exactly 1 event for specified inputs'
         );
-        $this->assertCount(1, $events, 'There should be exactly 1 event for specified inputs');
+        static::assertCount(1, $events, 'There should be exactly 1 event for specified inputs');
 
-        $this->assertEquals(
+        static::assertEquals(
             ComplexEntityEvent::class,
             $events[0]->eventClass
         );
-        $this->assertTrue($events[0]->afterFlush);
+        static::assertTrue($events[0]->afterFlush);
     }
 
     public function testNotFound(): void
     {
-        $this->assertEmpty(
+        static::assertEmpty(
             $this->service->get(Events::postRemove, Item::class),
             'No events should be returned from service'
         );

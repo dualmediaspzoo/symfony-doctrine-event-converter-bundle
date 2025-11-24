@@ -2,7 +2,7 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model;
 
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 
 /**
  * @interal

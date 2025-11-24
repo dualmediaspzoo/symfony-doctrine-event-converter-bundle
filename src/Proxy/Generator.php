@@ -13,9 +13,9 @@ use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSche
  */
 class Generator
 {
-    public const PROXY_NS = 'DualMedia\\DoctrineEventConverterProxy';
+    public const string PROXY_NS = 'DualMedia\\DoctrineEventConverterProxy';
 
-    public const TEMPLATE = <<<EOF
+    public const string TEMPLATE = <<<EOF
 <?php
 
 namespace <namespace>;
@@ -25,7 +25,7 @@ namespace <namespace>;
 class <class> extends \<parent> <interfaces> {}
 EOF;
 
-    public const DOC_TEMPLATE = [
+    public const array DOC_TEMPLATE = [
         'WARNING! Proxy class generated automatically, Do not modify!',
         '',
         'Event class for event <event>',
@@ -82,8 +82,6 @@ EOF;
 
         /**
          * @var class-string<T> $fqcn
-         *
-         * @noinspection PhpRedundantVariableDocTypeInspection
          */
         $fqcn = $namespace.'\\'.$classNew;
         $fileName = $this->proxyDirectory.DIRECTORY_SEPARATOR.str_replace('\\', '', mb_substr($fqcn, mb_strlen(self::PROXY_NS))).'.php';

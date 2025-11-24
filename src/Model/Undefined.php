@@ -7,6 +7,6 @@ namespace DualMedia\DoctrineEventConverterBundle\Model;
  *
  * @interal
  */
-final class Undefined
+final readonly class Undefined
 {
 }

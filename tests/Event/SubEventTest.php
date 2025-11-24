@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Event;
 
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\MainEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\KernelTestCase;
 use DualMedia\DoctrineEventConverterProxy\DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ComplexEntityPostUpdateEvent;
@@ -41,7 +41,7 @@ class SubEventTest extends KernelTestCase
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
 
-        $this->assertEmpty(
+        static::assertEmpty(
             array_filter(
                 $events,
                 fn (DispatchEvent $o) => !($o->getEvent() instanceof MainEventInterface)
@@ -188,7 +188,7 @@ class SubEventTest extends KernelTestCase
 
         $events = [];
 
-        $this->assertEquals(10, $entity->getStatus(), 'Status right now should be 10');
+        static::assertEquals(10, $entity->getStatus(), 'Status right now should be 10');
 
         $this->addMappedListeners(
             $events,

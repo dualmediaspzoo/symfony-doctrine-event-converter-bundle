@@ -26,31 +26,40 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "doctrine/doctrine-bundle": "^1.12|^2.0",
+        "php": "^8.3",
+        "doctrine/doctrine-bundle": "^2.0",
         "doctrine/orm": "^2.14|^3",
-        "symfony/framework-bundle": "^5.4|^6.2|^7",
-        "symfony/event-dispatcher": "^5.4|^6.2|^7",
-        "symfony/property-access": "^5.4|^6.2|^7",
-        "symfony/http-kernel": "^5.4|^6.2|^7",
-        "doctrine/common": "^2|^3"
+        "symfony/framework-bundle": "^6.4|^7.3",
+        "symfony/event-dispatcher": "^6.4|^7.3",
+        "symfony/property-access": "^6.4|^7.3",
+        "symfony/http-kernel": "^6.4|^7.3",
+        "doctrine/common": "^3"
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^8|^7",
+        "dama/doctrine-test-bundle": "^8",
         "doctrine/doctrine-fixtures-bundle": "^3",
         "friendsofphp/php-cs-fixer": "^3",
         "pedrotroller/php-cs-custom-fixer": "^2",
         "phpunit/phpunit": "^10",
-        "vimeo/psalm": "^5",
-        "phpstan/phpstan": "^1",
-        "matthiasnoback/symfony-dependency-injection-test": "^5",
-        "jetbrains/phpstorm-attributes": "^1.0",
-        "pkly/phpunit-service-create-trait": "^1.0"
+        "vimeo/psalm": "^6",
+        "phpstan/phpstan": "^2",
+        "matthiasnoback/symfony-dependency-injection-test": "^6",
+        "jetbrains/phpstorm-attributes": "^1",
+        "pkly/phpunit-service-create-trait": "^1",
+        "phpstan/phpstan-strict-rules": "^2.0"
     },
     "extra": {
         "symfony": {
             "require": "5.4.*",
             "allow-contrib": false
         }
+    },
+    "scripts": {
+        "baseline-psalm": "vendor/bin/psalm --set-baseline=psalm-baseline.xml",
+        "baseline-phpstan": "vendor/bin/phpstan --generate-baseline",
+        "update-baseline": [
+            "@baseline-phpstan",
+            "@baseline-psalm"
+        ]
     }
 }

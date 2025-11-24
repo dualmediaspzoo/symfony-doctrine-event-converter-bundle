@@ -4,7 +4,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Service;
 
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
 
 /**

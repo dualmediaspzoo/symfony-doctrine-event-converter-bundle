@@ -68,16 +68,14 @@ Create an event class (not final), and then at some point extend `DualMedia\Doct
 mark this class with your appropriate event annotation, either one of the base ones or SubEvent
 
 ```php
-use DualMedia\DoctrineEventDistributorBundle\Attributes\PrePersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\EventEntity;
+use DualMedia\DoctrineEventDistributorBundle\Attribute\PrePersistEvent;
 use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
 
-#[PrePersistEvent]
+#[EventEntity(Item::class)] // specifies what Doctrine Entity this event is for, you can use the same event class for multiple
+#[PrePersistEvent] // specifies what events will fire
 abstract class ItemEvent extends AbstractEntityEvent
 {
-    public static function getEntityClass(): ?string
-    {
-        return Item::class;
-    }
 }
 ```
 
@@ -103,7 +101,7 @@ Because of how Doctrine passes changes unfortunately changes to collections are 
 The following will generate an `ItemPendingToCompleteEvent` class (under the default proxy namespace).
 
 ```php
-use \DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use \DualMedia\DoctrineEventConverterBundle\Attribute\SubEvent;
 use \DualMedia\DoctrineEventConverterBundle\Model\Change;
 
 #[SubEvent("PendingToComplete", changes: [new Change('status', ItemStatusEnum::Pending, ItemStatusEnum::Complete)])]
@@ -137,7 +135,7 @@ Plugins may be provided at a later time, but it's not certain.
 
 #### PHPStan
 
-> Note: in future a phpstan.neon file will be provided to ignore these issues, for the time being simply add the following lines into your file.
+Either include the file from vendor/dualmedia/symfony-doctrine-event-converter-bundle/phpstan.ignore.dist or use the following settings
 
 ```
 parameters:

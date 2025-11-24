@@ -2,18 +2,20 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event;
 
-use DualMedia\DoctrineEventConverterBundle\Attributes\PostPersistEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PostRemoveEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PostUpdateEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PrePersistEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PreRemoveEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\EventEntity;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PostPersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PostRemoveEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PostUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PrePersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PreRemoveEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PreUpdateEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 
 /**
  * @extends AbstractEntityEvent<Item>
  */
+#[EventEntity(Item::class)]
 #[PrePersistEvent]
 #[PostPersistEvent]
 #[PreUpdateEvent]
@@ -22,8 +24,4 @@ use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 #[PostRemoveEvent]
 abstract class ItemEvent extends AbstractEntityEvent
 {
-    public static function getEntityClass(): string|null
-    {
-        return Item::class;
-    }
 }

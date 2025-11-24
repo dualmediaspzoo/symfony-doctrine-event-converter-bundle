@@ -3,14 +3,15 @@
 namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\CompilerPass;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Attributes\Event;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PostPersistEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PostRemoveEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PostUpdateEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PrePersistEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PreRemoveEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\PreUpdateEvent;
-use DualMedia\DoctrineEventConverterBundle\Attributes\SubEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\Event;
+use DualMedia\DoctrineEventConverterBundle\Attribute\EventEntity;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PostPersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PostRemoveEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PostUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PrePersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PreRemoveEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PreUpdateEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\EventConfiguration;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model\SubEventConfiguration;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
@@ -25,9 +26,9 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\Unknown
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\DirectoryNotWritable;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassFinalException as ProxyTargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\MainEventInterface;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\SubEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
+use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
@@ -133,11 +134,12 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                 continue;
             }
 
+            $entities = $this->getEntityClasses($reflection);
+            $this->validateEntityClasses($entities, $class);
+
             foreach ($attributes as $attribute) {
                 if ($attribute instanceof Event) {
                     $this->validateEventReflection($class, $reflection);
-                    $entities = $this->getEntityClasses($attribute, $reflection);
-                    $this->validateEntityClasses($entities, $class);
 
                     /** @var non-empty-list<class-string<EntityInterface>> $entities */
                     if (!array_key_exists($class, $events)) {
@@ -146,14 +148,12 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                     $config = (new EventConfiguration())
                         ->setEntities($entities)
-                        ->setType($attribute->getType())
+                        ->setType($attribute::EVENT_TYPE)
                         ->setAfterFlush($attribute->afterFlush);
 
                     $events[$class][] = $config;
                 } elseif ($attribute instanceof SubEvent) {
                     $this->validateEventReflection($class, $reflection);
-                    $entities = $this->getEntityClasses($attribute, $reflection);
-                    $this->validateEntityClasses($entities, $class);
                     /** @var non-empty-list<class-string<EntityInterface>> $entities */
                     $config = (new SubEventConfiguration())
                         ->setEntities($entities)
@@ -174,7 +174,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                     $uniq = $class.ucfirst($attribute->label);
 
-                    if (in_array($uniq, $uniqueSubEventNames)) {
+                    if (in_array($uniq, $uniqueSubEventNames, true)) {
                         throw SubEventNameCollisionException::new([
                             $class,
                             $attribute->label,
@@ -322,21 +322,23 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws NoValidEntityFoundException
      */
     private function getEntityClasses(
-        SubEvent|Event $annotation,
-        \ReflectionClass $reflection,
+        \ReflectionClass $reflection
     ): array {
-        $entities = $annotation->entity;
+        $classes = [];
 
-        if (!is_array($entities)) {
-            if (!mb_strlen($class = call_user_func($reflection->getName().'::getEntityClass') ?? '')) { // @phpstan-ignore-line
-                throw NoValidEntityFoundException::new([$reflection->getName()]);
-            }
-
-            /** @var class-string $class */
-            $entities = [$class];
+        foreach ($reflection->getAttributes(EventEntity::class) as $attribute) {
+            /** @var EventEntity $real */
+            $real = $attribute->newInstance();
+            $classes[] = $real->class;
         }
 
-        return $entities;
+        $classes = array_values(array_filter(array_unique($classes))); // @phpstan-ignore-line
+
+        if (empty($classes)) {
+            throw NoValidEntityFoundException::new([$reflection->getName()]);
+        }
+
+        return $classes;
     }
 
     /**
