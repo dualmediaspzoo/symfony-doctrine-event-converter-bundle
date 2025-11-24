@@ -41,7 +41,7 @@ jobs:
         env:
           SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
         run: |
-          COMPOSER_NO_SECURITY_BLOCKING=1 composer update --no-interaction --no-scripts --ansi --no-progress --prefer-dist
+          COMPOSER_NO_SECURITY_BLOCKING=1 composer update -W --no-interaction --no-scripts --ansi --no-progress --prefer-dist
 
   phpstan:
     strategy:
