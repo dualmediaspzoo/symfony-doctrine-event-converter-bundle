@@ -120,18 +120,23 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             /** @var class-string $class */
             try {
                 $reflection = new \ReflectionClass($class);
-                /** @var list<Event|SubEvent> $attributes */
-                $attributes = [];
-
-                foreach ($reflection->getAttributes() as $attribute) {
-                    $instance = $attribute->newInstance();
-
-                    if ($instance instanceof Event || $instance instanceof SubEvent) {
-                        $attributes[] = $instance;
-                    }
-                }
             } catch (\ReflectionException) {
                 continue;
+            }
+
+            /** @var list<Event|SubEvent> $attributes */
+            $attributes = [];
+
+            foreach ($reflection->getAttributes() as $attribute) {
+                $instance = $attribute->newInstance();
+
+                if ($instance instanceof Event || $instance instanceof SubEvent) {
+                    $attributes[] = $instance;
+                }
+            }
+
+            if (empty($attributes)) {
+                continue; // likely not our event class
             }
 
             $entities = $this->getEntityClasses($reflection);

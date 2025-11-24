@@ -1,6 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Dead catch \- ReflectionException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php
+
+		-
 			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\DependencyInjection\\CompilerPass\\EventDetectionCompilerPass\:\:getEntityClasses\(\) has parameter \$reflection with generic class ReflectionClass but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
