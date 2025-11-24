@@ -334,7 +334,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
         $classes = array_values(array_filter(array_unique($classes))); // @phpstan-ignore-line
 
-        if (!empty($classes)) {
+        if (empty($classes)) {
             throw NoValidEntityFoundException::new([$reflection->getName()]);
         }
 
