@@ -18,14 +18,12 @@ class DoctrineEventConverterBundle extends Bundle
      */
     private $autoloader;
 
-    #[\Override]
     public function build(
         ContainerBuilder $container,
     ): void {
         $container->addCompilerPass(new EventDetectionCompilerPass());
     }
 
-    #[\Override]
     public function boot(): void
     {
         $this->autoloader = function ($class) {
@@ -45,7 +43,6 @@ class DoctrineEventConverterBundle extends Bundle
         spl_autoload_register($this->autoloader);
     }
 
-    #[\Override]
     public function shutdown(): void
     {
         if (null !== $this->autoloader) {

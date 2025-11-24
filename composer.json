@@ -53,5 +53,13 @@
             "require": "5.4.*",
             "allow-contrib": false
         }
+    },
+    "scripts": {
+        "baseline-psalm": "vendor/bin/psalm --set-baseline=psalm-baseline.xml",
+        "baseline-phpstan": "vendor/bin/phpstan --generate-baseline",
+        "update-baseline": [
+            "@baseline-phpstan",
+            "@baseline-psalm"
+        ]
     }
 }

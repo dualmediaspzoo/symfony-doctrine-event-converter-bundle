@@ -1,0 +1,121 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\DependencyInjection\\CompilerPass\\EventDetectionCompilerPass\:\:getEntityClasses\(\) has parameter \$reflection with generic class ReflectionClass but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\DependencyInjection\\CompilerPass\\EventDetectionCompilerPass\:\:validateEventReflection\(\) has parameter \$reflection with generic class ReflectionClass but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$class contains generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 2
+			path: src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$events contains generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$subEvents contains generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php
+
+		-
+			message: '#^Parameter \#1 \$configs \(array\<string, mixed\>\) of method DualMedia\\DoctrineEventConverterBundle\\DependencyInjection\\DoctrineEventConverterExtension\:\:load\(\) should be contravariant with parameter \$configs \(array\<array\<mixed\>\>\) of method Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface\:\:load\(\)$#'
+			identifier: method.childParameterType
+			count: 2
+			path: src/DependencyInjection/DoctrineEventConverterExtension.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\Event\\DispatchEvent\:\:__construct\(\) has parameter \$event with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Event/DispatchEvent.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\Event\\DispatchEvent\:\:getEvent\(\) return type with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Event/DispatchEvent.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\EventSubscriber\\DispatchingSubscriber\:\:process\(\) has parameter \$changes with generic class Doctrine\\ORM\\PersistentCollection but does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/EventSubscriber/DispatchingSubscriber.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\EventSubscriber\\DispatchingSubscriber\:\:subEvents\(\) has parameter \$event with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/EventSubscriber/DispatchingSubscriber.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$event contains generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/EventSubscriber/DispatchingSubscriber.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$subEvent contains generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/EventSubscriber/DispatchingSubscriber.php
+
+		-
+			message: '#^Property DualMedia\\DoctrineEventConverterBundle\\EventSubscriber\\DispatchingSubscriber\:\:\$updateObjectCache with generic class Doctrine\\ORM\\PersistentCollection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/EventSubscriber/DispatchingSubscriber.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\Service\\DelayableEventDispatcher\:\:dispatch\(\) has parameter \$event with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/DelayableEventDispatcher.php
+
+		-
+			message: '#^Property DualMedia\\DoctrineEventConverterBundle\\Service\\DelayableEventDispatcher\:\:\$eventsToDispatchAfterFlush with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/DelayableEventDispatcher.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\Service\\EventService\:\:__construct\(\) has parameter \$entries with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/EventService.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\Service\\SubEventService\:\:__construct\(\) has parameter \$entries with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/SubEventService.php
+
+		-
+			message: '#^Method DualMedia\\DoctrineEventConverterBundle\\Service\\SubEventService\:\:get\(\) return type with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/SubEventService.php
+
+		-
+			message: '#^Property DualMedia\\DoctrineEventConverterBundle\\Service\\SubEventService\:\:\$events \(array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Interface\\EntityInterface\>, array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent\>, non\-empty\-list\<DualMedia\\DoctrineEventConverterBundle\\Model\\SubEvent\>\>\>\) does not accept non\-empty\-array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Interface\\EntityInterface\>, array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent\>, list\<DualMedia\\DoctrineEventConverterBundle\\Model\\SubEvent\>\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/SubEventService.php
+
+		-
+			message: '#^Property DualMedia\\DoctrineEventConverterBundle\\Service\\SubEventService\:\:\$events with generic class DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/SubEventService.php

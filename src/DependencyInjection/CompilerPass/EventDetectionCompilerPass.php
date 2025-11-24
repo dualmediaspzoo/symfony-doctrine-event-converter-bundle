@@ -67,7 +67,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws SubEventRequiredFieldsException
      * @throws \ReflectionException
      */
-    #[\Override]
     public function process(
         ContainerBuilder $container,
     ): void {
@@ -175,7 +174,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
                     $uniq = $class.ucfirst($attribute->label);
 
-                    if (in_array($uniq, $uniqueSubEventNames)) {
+                    if (in_array($uniq, $uniqueSubEventNames, true)) {
                         throw SubEventNameCollisionException::new([
                             $class,
                             $attribute->label,
@@ -333,7 +332,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             $classes[] = $real->class;
         }
 
-        $classes = array_values(array_filter(array_unique($classes)));
+        $classes = array_values(array_filter(array_unique($classes))); // @phpstan-ignore-line
 
         if (!empty($classes)) {
             throw NoValidEntityFoundException::new([$reflection->getName()]);
