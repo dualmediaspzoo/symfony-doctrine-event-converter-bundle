@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\Service;
+namespace DualMedia\DoctrineEventConverterBundle\Storage;
 
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;

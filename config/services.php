@@ -3,12 +3,17 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle as Bundle;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
-use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
-use DualMedia\DoctrineEventConverterBundle\Service\EventService;
-use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
-use DualMedia\DoctrineEventConverterBundle\Service\VerifierService;
+use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
+use DualMedia\DoctrineEventConverterBundle\Verifier\FieldVerifier;
+use DualMedia\DoctrineEventConverterBundle\Verifier\RequirementVerifier;
+use DualMedia\DoctrineEventConverterBundle\Verifier\SubEventVerifier;
+use DualMedia\DoctrineEventConverterBundle\Verifier\TypeVerifier;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\Reference;
 
 return static function (ContainerConfigurator $container) {
@@ -26,13 +31,23 @@ return static function (ContainerConfigurator $container) {
     $services->set(SubEventService::class)
         ->lazy();
 
-    $services->set(VerifierService::class);
+    $services->set(FieldVerifier::class)
+        ->tag(Bundle::TAG_VERIFIER);
 
-    $def = $services->set(DispatchingSubscriber::class)
+    $services->set(RequirementVerifier::class)
+        ->tag(Bundle::TAG_VERIFIER, ['priority' => 70]);
+
+    $services->set(TypeVerifier::class)
+        ->tag(Bundle::TAG_VERIFIER, ['priority' => 100]);
+
+    $services->set(SubEventVerifier::class)
+        ->arg('$verifiers', new TaggedIteratorArgument(Bundle::TAG_VERIFIER));
+
+    $services->set(DispatchingSubscriber::class)
         ->arg('$eventService', new Reference(EventService::class))
         ->arg('$subEventService', new Reference(SubEventService::class))
-        ->arg('$verifierService', new Reference(VerifierService::class))
         ->arg('$dispatcher', new Reference(DelayableEventDispatcher::class))
+        ->arg('$subEventVerifier', new Reference(SubEventVerifier::class))
         ->tag('doctrine.event_listener', [
             'event' => Events::prePersist,
         ])

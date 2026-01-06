@@ -12,15 +12,17 @@ use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\PersistentCollection;
+use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
-use DualMedia\DoctrineEventConverterBundle\Model\Event;
-use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
-use DualMedia\DoctrineEventConverterBundle\Service\EventService;
-use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
-use DualMedia\DoctrineEventConverterBundle\Service\VerifierService;
+use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
+use DualMedia\DoctrineEventConverterBundle\Verifier\SubEventVerifier;
 
+/**
+ * @phpstan-import-type DoctrineChangeArray from DoctrineEventConverterBundle
+ */
 class DispatchingSubscriber
 {
     private bool $preFlush = false;
@@ -35,15 +37,15 @@ class DispatchingSubscriber
     /**
      * Entity change sets.
      *
-     * @var array<string, array<string, array<int, mixed>|PersistentCollection>>
+     * @var array<string, DoctrineChangeArray>
      */
     private array $updateObjectCache = [];
 
     public function __construct(
         private readonly EventService $eventService,
         private readonly SubEventService $subEventService,
-        private readonly VerifierService $verifierService,
         private readonly DelayableEventDispatcher $dispatcher,
+        private readonly SubEventVerifier $subEventVerifier
     ) {
     }
 
@@ -122,7 +124,8 @@ class DispatchingSubscriber
     }
 
     /**
-     * @param array<string, array<int, mixed>|PersistentCollection> $changes
+     * @param string $type one of {@link Events}
+     * @param DoctrineChangeArray $changes
      */
     private function process(
         string $type,
@@ -140,8 +143,7 @@ class DispatchingSubscriber
              */
 
             /**
-             * @var AbstractEntityEvent $event
-             * @var Event $model
+             * @var AbstractEntityEvent<EntityInterface> $event
              */
             $event = (new $model->eventClass());
 
@@ -151,7 +153,7 @@ class DispatchingSubscriber
                 ->setDeletedId($id);
 
             if ($this->preFlush) {
-                $this->dispatcher->clearEvents();
+                $this->dispatcher->clear();
                 $this->preFlush = false;
             }
 
@@ -161,27 +163,31 @@ class DispatchingSubscriber
         }
     }
 
+    /**
+     * @param AbstractEntityEvent<EntityInterface> $event
+     */
     private function subEvents(
         AbstractEntityEvent $event,
     ): void {
         $entity = $event->getEntity();
         $class = ClassUtils::getClass($entity);
+        $changes = $event->getChanges();
+        $type = $event->getEventType();
 
         foreach ($this->subEventService->get($class) as $eventClass => $models) {
             foreach ($models as $model) {
-                if (!$this->verifierService->validate($event->getChanges(), $model, $entity, $event->getEventType())) { // @phpstan-ignore-line
+                if (!$this->subEventVerifier->verify($entity, $model, $changes, $type)) {
                     continue;
                 }
 
-                /** @var AbstractEntityEvent $subEvent */
                 $subEvent = (new $eventClass());
 
                 $subEvent->setEntity($entity)
                     ->setChanges(array_intersect_key(
-                        $event->getChanges(),
+                        $changes,
                         $model->fields
                     )) // save only fields that the event requested, ignore rest
-                    ->setEventType($event->getEventType());
+                    ->setEventType($type);
 
                 $this->dispatcher->dispatch($subEvent, $model->afterFlush);
 

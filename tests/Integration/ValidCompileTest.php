@@ -5,7 +5,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Tests\Integration;
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
-use DualMedia\DoctrineEventConverterBundle\Service\EventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ComplexEntityEvent;

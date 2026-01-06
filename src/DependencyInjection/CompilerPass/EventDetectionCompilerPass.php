@@ -32,8 +32,8 @@ use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
-use DualMedia\DoctrineEventConverterBundle\Service\EventService;
-use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
@@ -45,7 +45,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      *
      * @var array<string, class-string<Event>>
      */
-    public const DOCTRINE_TO_ANNOTATION_MAP = [
+    public const array DOCTRINE_TO_ANNOTATION_MAP = [
         Events::prePersist => PrePersistEvent::class,
         Events::postPersist => PostPersistEvent::class,
         Events::preUpdate => PreUpdateEvent::class,
@@ -82,10 +82,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $mainEventService = $container->getDefinition(EventService::class);
         $subEventService = $container->getDefinition(SubEventService::class);
 
-        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<EventConfiguration>> $events */
+        /** @var array<class-string<AbstractEntityEvent<EntityInterface>>, non-empty-list<EventConfiguration>> $events */
         $events = [];
 
-        /** @var array<class-string<AbstractEntityEvent>, non-empty-list<SubEventConfiguration>> $subEvents */
+        /** @var array<class-string<AbstractEntityEvent<EntityInterface>>, non-empty-list<SubEventConfiguration>> $subEvents */
         $subEvents = [];
 
         $finder = new Finder();
@@ -117,12 +117,12 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         foreach ($finder->files()->in($path)->name('*.php') as $file) {
             $class = $namespace.'\\'.str_replace(['.php', '/'], ['', '\\'], mb_substr($file->getRealPath(), mb_strpos($file->getRealPath(), $nonGlobPath) + mb_strlen($nonGlobPath) + 1));
 
-            /** @var class-string $class */
             try {
                 $reflection = new \ReflectionClass($class);
             } catch (\ReflectionException) {
                 continue;
             }
+            /** @var class-string $class */
 
             /** @var list<Event|SubEvent> $attributes */
             $attributes = [];
@@ -214,7 +214,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $subEventConstruct = [];
 
         // we're starting with sub events because those might need an implicit creation of main events
-        /** @var class-string<AbstractEntityEvent> $class */
+        /** @var class-string<AbstractEntityEvent<EntityInterface>> $class */
         foreach ($subEvents as $class => $configurations) {
             foreach ($configurations as $configuration) {
                 /** @psalm-suppress InvalidArgument */
@@ -280,7 +280,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $construct = [];
 
         // create and add main events
-        /** @var class-string<AbstractEntityEvent> $class */
+        /** @var class-string<AbstractEntityEvent<EntityInterface>> $class */
         foreach ($events as $class => $configurations) {
             foreach ($configurations as $configuration) {
                 $out = $generator->generateProxyClass(
@@ -302,6 +302,8 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
+     * @param \ReflectionClass<object> $reflection
+     *
      * @throws AbstractEntityEventNotExtendedException
      * @throws TargetClassFinalException
      */

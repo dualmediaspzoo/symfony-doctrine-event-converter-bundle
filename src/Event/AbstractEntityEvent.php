@@ -24,6 +24,10 @@ abstract class AbstractEntityEvent extends Event
      * @var array<string, mixed>
      */
     protected array $changes = [];
+
+    /**
+     * One of {@link Events}.
+     */
     protected string $eventType;
 
     /**
@@ -64,6 +68,12 @@ abstract class AbstractEntityEvent extends Event
     public function getChanges(): array
     {
         return $this->changes;
+    }
+
+    public function hasChanged(
+        string $field
+    ): bool {
+        return array_key_exists($field, $this->changes);
     }
 
     public function setEventType(

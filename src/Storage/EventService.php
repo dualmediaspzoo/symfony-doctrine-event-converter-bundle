@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\Service;
+namespace DualMedia\DoctrineEventConverterBundle\Storage;
 
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;

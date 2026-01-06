@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Service;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\ComplexEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\Item;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Event\ComplexEntityEvent;
