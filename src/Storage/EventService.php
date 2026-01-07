@@ -3,7 +3,6 @@
 namespace DualMedia\DoctrineEventConverterBundle\Storage;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
 
@@ -13,41 +12,13 @@ use DualMedia\DoctrineEventConverterBundle\Model\Event;
 class EventService
 {
     /**
-     * List of events to be dispatched after entity changes.
-     *
-     * @var non-empty-array<string, array<class-string<EntityInterface>, list<Event>>>
-     */
-    private array $events = [
-        Events::postPersist => [], Events::postUpdate => [], Events::postRemove => [],
-        Events::prePersist => [], Events::preUpdate => [], Events::preRemove => [],
-    ];
-
-    /**
-     * @param list<array{
-     *     0: class-string<AbstractEntityEvent>,
-     *     1: non-empty-list<class-string<EntityInterface>>,
-     *     2: string,
-     *     3: bool
-     * }> $entries list of events to be later used by the service
+     * @param array<string, non-empty-array<class-string<EntityInterface>, list<string>>> $mappedEvents list of events, mapped with {@link Events}->class->list<id> of models (in instances)
+     * @param array<string, Event> $instances
      */
     public function __construct(
-        array $entries,
+        private readonly array $mappedEvents,
+        private readonly array $instances
     ) {
-        foreach ($entries as $entry) {
-            [$eventClass, $entities, $event, $afterFlush] = $entry;
-
-            if (!array_key_exists($event, $this->events)) {
-                continue;
-            }
-
-            foreach ($entities as $entityClass) {
-                if (!array_key_exists($entityClass, $this->events[$event])) {
-                    $this->events[$event][$entityClass] = [];
-                }
-
-                $this->events[$event][$entityClass][] = new Event($eventClass, $afterFlush);
-            }
-        }
     }
 
     /**
@@ -59,6 +30,9 @@ class EventService
         string $event,
         string $class,
     ): array {
-        return $this->events[$event][$class] ?? [];
+        return array_map(
+            fn (string $id) => $this->instances[$id],
+            $this->mappedEvents[$event][$class] ?? []
+        );
     }
 }

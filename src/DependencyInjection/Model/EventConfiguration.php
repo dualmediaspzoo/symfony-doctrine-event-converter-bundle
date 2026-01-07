@@ -38,4 +38,15 @@ final class EventConfiguration extends AbstractEventConfiguration
 
         return $this;
     }
+
+    public function getDefinitionKey(): string
+    {
+        return implode(
+            '.',
+            [
+                $this->type,
+                (int)$this->afterFlush,
+            ]
+        );
+    }
 }

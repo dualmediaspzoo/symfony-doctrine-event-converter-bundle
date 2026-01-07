@@ -30,12 +30,14 @@ use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
+use DualMedia\DoctrineEventConverterBundle\Model\Event as EventModel;
 use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
 use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\Finder\Finder;
 
 class EventDetectionCompilerPass implements CompilerPassInterface
@@ -67,6 +69,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws SubEventRequiredFieldsException
      * @throws \ReflectionException
      */
+    #[\Override]
     public function process(
         ContainerBuilder $container,
     ): void {
@@ -79,8 +82,6 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
         /** @var Generator $generator */
         $generator = $container->get(Generator::class);
-        $mainEventService = $container->getDefinition(EventService::class);
-        $subEventService = $container->getDefinition(SubEventService::class);
 
         /** @var array<class-string<AbstractEntityEvent<EntityInterface>>, non-empty-list<EventConfiguration>> $events */
         $events = [];
@@ -274,10 +275,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             }
         }
 
-        $subEventService->setArgument('$entries', $output);
+        $container->getDefinition(SubEventService::class)->setArgument('$entries', $output);
 
-        /** @var list<array<int, string>> $construct */
-        $construct = [];
+        /** @var array<string, list<array{proxyClass: class-string, configuration: EventConfiguration}>> $eventMapped */
+        $eventMapped = [];
 
         // create and add main events
         /** @var class-string<AbstractEntityEvent<EntityInterface>> $class */
@@ -288,17 +289,67 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $configuration->getType(),
                     [MainEventInterface::class]
                 );
-                $construct[] = [
-                    $out,
-                    $configuration->getEntities(),
-                    $configuration->getType(),
-                    $configuration->isAfterFlush(),
+
+                if (!array_key_exists($doctrineEventType = $configuration->getType(), $eventMapped)) {
+                    $eventMapped[$doctrineEventType] = [];
+                }
+
+                $eventMapped[$doctrineEventType][] = [
+                    'proxyClass' => $out,
+                    'configuration' => $configuration,
                 ];
             }
         }
 
-        /** @see EventService::__construct() */
-        $mainEventService->setArgument('$entries', $construct);
+        $this->setEventServiceDefinition($container, $eventMapped);
+    }
+
+    /**
+     * @param array<string, list<array{proxyClass: class-string, configuration: EventConfiguration}>> $configuration
+     */
+    private function setEventServiceDefinition(
+        ContainerBuilder $container,
+        array $configuration
+    ): void {
+        /** @var array<string, Definition> $definitions */
+        $definitions = [];
+        /** @var array<string, array<class-string<EntityInterface>, list<string>>> $output */
+        $output = [];
+
+        foreach ($configuration as $doctrineEventType => $data) {
+            if (!array_key_exists($doctrineEventType, self::DOCTRINE_TO_ANNOTATION_MAP)) {
+                continue;
+            }
+
+            if (!array_key_exists($doctrineEventType, $output)) {
+                $output[$doctrineEventType] = [];
+            }
+
+            foreach ($data as $item) {
+                $config = $item['configuration'];
+                $key = $config->getDefinitionKey();
+
+                if (!array_key_exists($key, $definitions)) {
+                    $definitions[$key] = new Definition(EventModel::class, [
+                        $item['proxyClass'],
+                        $config->isAfterFlush(),
+                    ]);
+                }
+
+                foreach ($config->getEntities() as $entityClass) {
+                    if (!array_key_exists($entityClass, $output[$doctrineEventType])) {
+                        $output[$doctrineEventType][$entityClass] = [];
+                    }
+
+                    $output[$doctrineEventType][$entityClass][] = $key;
+                }
+            }
+        }
+
+        $definition = $container->getDefinition(EventService::class);
+
+        $definition->setArgument('$mappedEvents', $output);
+        $definition->setArgument('$instances', $definitions);
     }
 
     /**
@@ -324,6 +375,8 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
+     * @param \ReflectionClass<object> $reflection
+     *
      * @return list<class-string>
      *
      * @throws NoValidEntityFoundException
