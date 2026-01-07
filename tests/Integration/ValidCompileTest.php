@@ -102,7 +102,7 @@ class ValidCompileTest extends KernelTestCase
     #[Depends('testGeneration')]
     public function testCorrectContainerDefinitions(): void
     {
-        $service = $this->getContainer()->get(EventService::class);
+        $service = static::getContainer()->get(EventService::class);
         /** @var EventService $service */
         $list = [
             Events::postPersist => [
