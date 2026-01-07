@@ -15,40 +15,28 @@
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
   </file>
+  <file src="src/DelayableEventDispatcher.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+    </PossiblyUnusedMethod>
+  </file>
   <file src="src/DependencyInjection/CompilerPass/EventDetectionCompilerPass.php">
     <InvalidOperand>
       <code><![CDATA[$container->getParameter('kernel.cache_dir')]]></code>
     </InvalidOperand>
-    <MissingOverrideAttribute>
-      <code><![CDATA[public function process(]]></code>
-    </MissingOverrideAttribute>
     <UnnecessaryVarAnnotation>
       <code><![CDATA[EventEntity]]></code>
     </UnnecessaryVarAnnotation>
   </file>
-  <file src="src/DependencyInjection/Configuration.php">
-    <MissingOverrideAttribute>
-      <code><![CDATA[public function getConfigTreeBuilder(): TreeBuilder]]></code>
-    </MissingOverrideAttribute>
-  </file>
-  <file src="src/DependencyInjection/DoctrineEventConverterExtension.php">
-    <MissingOverrideAttribute>
-      <code><![CDATA[public function load(]]></code>
-    </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[DoctrineEventConverterExtension]]></code>
-    </UnusedClass>
-  </file>
   <file src="src/DoctrineEventConverterBundle.php">
-    <MissingOverrideAttribute>
-      <code><![CDATA[public function boot(): void]]></code>
-      <code><![CDATA[public function build(]]></code>
-      <code><![CDATA[public function shutdown(): void]]></code>
-    </MissingOverrideAttribute>
+    <UndefinedMethod>
+      <code><![CDATA[children]]></code>
+    </UndefinedMethod>
   </file>
   <file src="src/Event/AbstractEntityEvent.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[getEntityId]]></code>
+      <code><![CDATA[hasChanged]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="src/Event/DispatchEvent.php">
@@ -57,18 +45,28 @@
     </PossiblyUnusedMethod>
   </file>
   <file src="src/EventSubscriber/DispatchingSubscriber.php">
+    <InvalidPropertyAssignmentValue>
+      <code><![CDATA[$this->updateObjectCache]]></code>
+    </InvalidPropertyAssignmentValue>
     <PossiblyUnusedParam>
       <code><![CDATA[$args]]></code>
       <code><![CDATA[$args]]></code>
     </PossiblyUnusedParam>
-    <UnnecessaryVarAnnotation>
-      <code><![CDATA[Event]]></code>
-    </UnnecessaryVarAnnotation>
     <UnusedClass>
       <code><![CDATA[DispatchingSubscriber]]></code>
     </UnusedClass>
   </file>
   <file src="src/Model/Change.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/Event.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/SubEvent.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
@@ -79,24 +77,34 @@
       <code><![CDATA[getProxyFqcn]]></code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Service/DelayableEventDispatcher.php">
+  <file src="src/Storage/EventService.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Service/EventService.php">
+  <file src="src/Util/ObjectUtil.php">
+    <UnusedConstructor>
+      <code><![CDATA[__construct]]></code>
+    </UnusedConstructor>
+  </file>
+  <file src="src/Verifier/FieldVerifier.php">
+    <UnusedClass>
+      <code><![CDATA[FieldVerifier]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Verifier/RequirementVerifier.php">
+    <UnusedClass>
+      <code><![CDATA[RequirementVerifier]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Verifier/SubEventVerifier.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Service/SubEventService.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Service/VerifierService.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-    </PossiblyUnusedMethod>
+  <file src="src/Verifier/TypeVerifier.php">
+    <UnusedClass>
+      <code><![CDATA[TypeVerifier]]></code>
+    </UnusedClass>
   </file>
 </files>
