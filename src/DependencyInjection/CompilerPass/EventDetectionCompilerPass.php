@@ -120,7 +120,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             $class = $namespace.'\\'.str_replace(['.php', '/'], ['', '\\'], mb_substr($file->getRealPath(), mb_strpos($file->getRealPath(), $nonGlobPath) + mb_strlen($nonGlobPath) + 1));
 
             try {
-                $reflection = new \ReflectionClass($class);
+                $reflection = new \ReflectionClass($class); // @phpstan-ignore-line
             } catch (\ReflectionException) {
                 continue;
             }

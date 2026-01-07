@@ -84,6 +84,7 @@ class DispatchingSubscriber
 
         if ($object instanceof EntityInterface) {
             $changes = $this->updateObjectCache[spl_object_hash($object)] = $args->getEntityChangeSet();
+            /** @var DoctrineChangeArray $changes */
         }
         $this->process(Events::preUpdate, $object, null, $changes);
     }

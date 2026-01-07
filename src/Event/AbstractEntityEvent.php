@@ -24,7 +24,7 @@ abstract class AbstractEntityEvent extends Event
     protected EntityInterface $entity;
 
     /**
-     * @var array<string, mixed>
+     * @var DoctrineChangeArray
      */
     protected array $changes = [];
 
