@@ -61,16 +61,6 @@
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Model/Event.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Model/SubEvent.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-    </PossiblyUnusedMethod>
-  </file>
   <file src="src/Proxy/Generator.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[__construct]]></code>
@@ -93,18 +83,8 @@
     </UnusedClass>
   </file>
   <file src="src/Verifier/RequirementVerifier.php">
-    <UnusedClass>
-      <code><![CDATA[RequirementVerifier]]></code>
-    </UnusedClass>
-  </file>
-  <file src="src/Verifier/SubEventVerifier.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Verifier/TypeVerifier.php">
-    <UnusedClass>
-      <code><![CDATA[TypeVerifier]]></code>
-    </UnusedClass>
   </file>
 </files>

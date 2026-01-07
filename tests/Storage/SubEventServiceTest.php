@@ -33,7 +33,7 @@ class SubEventServiceTest extends TestCase
 
         static::assertSame([
             $event1,
-            $event2
+            $event2,
         ], $service->get('class'));
     }
 }
