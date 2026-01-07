@@ -191,8 +191,6 @@ class DispatchingSubscriber
                 ->setEventType($type);
 
             $this->dispatcher->dispatch($subEvent, $model->afterFlush);
-
-            break;
         }
     }
 }
