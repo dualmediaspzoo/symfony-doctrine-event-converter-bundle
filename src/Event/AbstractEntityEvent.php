@@ -3,6 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Event;
 
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -10,6 +11,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  * Use this class as a base to creating EntityAware events.
  *
  * @template T of EntityInterface
+ *
+ * @phpstan-import-type DoctrineChangeArray from DoctrineEventConverterBundle
  */
 abstract class AbstractEntityEvent extends Event
 {
@@ -52,7 +55,7 @@ abstract class AbstractEntityEvent extends Event
     }
 
     /**
-     * @param array<string, mixed> $fields
+     * @param DoctrineChangeArray $fields
      */
     public function setChanges(
         array $fields,
@@ -63,7 +66,7 @@ abstract class AbstractEntityEvent extends Event
     }
 
     /**
-     * @return array<string, mixed>
+     * @return DoctrineChangeArray
      */
     public function getChanges(): array
     {

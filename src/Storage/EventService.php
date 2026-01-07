@@ -12,27 +12,20 @@ use DualMedia\DoctrineEventConverterBundle\Model\Event;
 class EventService
 {
     /**
-     * @param array<string, non-empty-array<class-string<EntityInterface>, list<string>>> $mappedEvents list of events, mapped with {@link Events}->class->list<id> of models (in instances)
-     * @param array<string, Event> $instances
+     * @param array<string, non-empty-array<class-string<EntityInterface>, Event>> $events list of events, mapped with {@link Events}->class->Event model
      */
     public function __construct(
-        private readonly array $mappedEvents,
-        private readonly array $instances
+        private readonly array $events
     ) {
     }
 
     /**
      * @param class-string $class
-     *
-     * @return list<Event>
      */
     public function get(
         string $event,
         string $class,
-    ): array {
-        return array_map(
-            fn (string $id) => $this->instances[$id],
-            $this->mappedEvents[$event][$class] ?? []
-        );
+    ): Event|null {
+        return $this->events[$event][$class] ?? null;
     }
 }

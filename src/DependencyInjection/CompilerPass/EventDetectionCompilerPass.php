@@ -31,6 +31,7 @@ use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
 use DualMedia\DoctrineEventConverterBundle\Model\Event as EventModel;
+use DualMedia\DoctrineEventConverterBundle\Model\SubEvent as SubEventModel;
 use DualMedia\DoctrineEventConverterBundle\Model\Undefined;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
@@ -210,7 +211,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         /**
-         * @var array<int, list<array<int, mixed>>> $subEventConstruct
+         * @var array<int, list<array{proxyClass: class-string, configuration: SubEventConfiguration}>> $subEventConstruct
          */
         $subEventConstruct = [];
 
@@ -254,18 +255,13 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                 }
 
                 $subEventConstruct[$configuration->getPriority()][] = [
-                    $out,
-                    $configuration->getEntities(),
-                    $configuration->isAllMode(),
-                    $configuration->getChanges(),
-                    $configuration->getRequirements(),
-                    $configuration->getEvents(),
-                    $configuration->isAfterFlush(),
+                    'proxyClass' => $out,
+                    'configuration' => $configuration,
                 ];
             }
         }
 
-        /** @var list<array<int, mixed>> $output */
+        /** @var list<array{proxyClass: class-string, configuration: SubEventConfiguration}> $output */
         $output = [];
         krsort($subEventConstruct, SORT_NUMERIC); // sort by priorities (200 -> 0 -> -200)
 
@@ -275,7 +271,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition(SubEventService::class)->setArgument('$entries', $output);
+        $this->setSubEventServiceDefinition($container, $output);
 
         /** @var array<string, list<array{proxyClass: class-string, configuration: EventConfiguration}>> $eventMapped */
         $eventMapped = [];
@@ -305,14 +301,45 @@ class EventDetectionCompilerPass implements CompilerPassInterface
     }
 
     /**
+     * @param list<array{proxyClass: class-string, configuration: SubEventConfiguration}> $configuration
+     */
+    private function setSubEventServiceDefinition(
+        ContainerBuilder $container,
+        array $configuration
+    ): void {
+        /** @var array<class-string<EntityInterface>, list<SubEventModel>> $output */
+        $output = [];
+
+        foreach ($configuration as $data) {
+            $config = $data['configuration'];
+            $proxyClass = $data['proxyClass'];
+
+            foreach ($config->getEntities() as $entityClass) {
+                if (!array_key_exists($entityClass, $output)) {
+                    $output[$entityClass] = [];
+                }
+
+                $output[$entityClass][] = new Definition(SubEventModel::class, [
+                    $proxyClass,
+                    $config->isAllMode(),
+                    $config->getChanges(),
+                    $config->getRequirements(),
+                    $config->getEvents(),
+                    $config->isAfterFlush(),
+                ]);
+            }
+        }
+
+        $container->getDefinition(SubEventService::class)->setArgument('$events', $output);
+    }
+
+    /**
      * @param array<string, list<array{proxyClass: class-string, configuration: EventConfiguration}>> $configuration
      */
     private function setEventServiceDefinition(
         ContainerBuilder $container,
         array $configuration
     ): void {
-        /** @var array<string, Definition> $definitions */
-        $definitions = [];
         /** @var array<string, array<class-string<EntityInterface>, list<string>>> $output */
         $output = [];
 
@@ -327,29 +354,17 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
             foreach ($data as $item) {
                 $config = $item['configuration'];
-                $key = $config->getDefinitionKey();
 
-                if (!array_key_exists($key, $definitions)) {
-                    $definitions[$key] = new Definition(EventModel::class, [
+                foreach ($config->getEntities() as $entityClass) {
+                    $output[$doctrineEventType][$entityClass] = new Definition(EventModel::class, [
                         $item['proxyClass'],
                         $config->isAfterFlush(),
                     ]);
                 }
-
-                foreach ($config->getEntities() as $entityClass) {
-                    if (!array_key_exists($entityClass, $output[$doctrineEventType])) {
-                        $output[$doctrineEventType][$entityClass] = [];
-                    }
-
-                    $output[$doctrineEventType][$entityClass][] = $key;
-                }
             }
         }
 
-        $definition = $container->getDefinition(EventService::class);
-
-        $definition->setArgument('$mappedEvents', $output);
-        $definition->setArgument('$instances', $definitions);
+        $container->getDefinition(EventService::class)->setArgument('$events', $output);
     }
 
     /**

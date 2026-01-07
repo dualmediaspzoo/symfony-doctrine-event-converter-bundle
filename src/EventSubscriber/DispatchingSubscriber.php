@@ -135,32 +135,34 @@ class DispatchingSubscriber
     ): void {
         $class = ClassUtils::getClass($obj);
 
-        foreach ($this->eventService->get($type, $class) as $model) {
-            /**
-             * As EntityInterface is validated during cache generation there is no point in checking it here again.
-             *
-             * @var EntityInterface $obj
-             */
-
-            /**
-             * @var AbstractEntityEvent<EntityInterface> $event
-             */
-            $event = (new $model->eventClass());
-
-            $event->setEntity($obj)
-                ->setEventType($type)
-                ->setChanges($changes)
-                ->setDeletedId($id);
-
-            if ($this->preFlush) {
-                $this->dispatcher->clear();
-                $this->preFlush = false;
-            }
-
-            $this->dispatcher->dispatch($event, $model->afterFlush);
-
-            $this->subEvents($event);
+        if (null === ($model = $this->eventService->get($type, $class))) {
+            return;
         }
+
+        /**
+         * As EntityInterface is validated during cache generation there is no point in checking it here again.
+         *
+         * @var EntityInterface $obj
+         */
+
+        /**
+         * @var AbstractEntityEvent<EntityInterface> $event
+         */
+        $event = (new $model->eventClass());
+
+        $event->setEntity($obj)
+            ->setEventType($type)
+            ->setChanges($changes)
+            ->setDeletedId($id);
+
+        if ($this->preFlush) {
+            $this->dispatcher->clear();
+            $this->preFlush = false;
+        }
+
+        $this->dispatcher->dispatch($event, $model->afterFlush);
+
+        $this->subEvents($event);
     }
 
     /**
@@ -174,25 +176,23 @@ class DispatchingSubscriber
         $changes = $event->getChanges();
         $type = $event->getEventType();
 
-        foreach ($this->subEventService->get($class) as $eventClass => $models) {
-            foreach ($models as $model) {
-                if (!$this->subEventVerifier->verify($entity, $model, $changes, $type)) {
-                    continue;
-                }
-
-                $subEvent = (new $eventClass());
-
-                $subEvent->setEntity($entity)
-                    ->setChanges(array_intersect_key(
-                        $changes,
-                        $model->fields
-                    )) // save only fields that the event requested, ignore rest
-                    ->setEventType($type);
-
-                $this->dispatcher->dispatch($subEvent, $model->afterFlush);
-
-                break;
+        foreach ($this->subEventService->get($class) as $model) {
+            if (!$this->subEventVerifier->verify($entity, $model, $changes, $type)) {
+                continue;
             }
+
+            $subEvent = (new $model->eventClass());
+
+            $subEvent->setEntity($entity)
+                ->setChanges(array_intersect_key(
+                    $changes,
+                    $model->fields
+                )) // save only fields that the event requested, ignore rest
+                ->setEventType($type);
+
+            $this->dispatcher->dispatch($subEvent, $model->afterFlush);
+
+            break;
         }
     }
 }
