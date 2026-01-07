@@ -106,70 +106,34 @@ class ValidCompileTest extends KernelTestCase
         /** @var EventService $service */
         $list = [
             Events::postPersist => [
-                Item::class => [
-                    new Event(ItemPostPersistEvent::class),
-                ],
+                Item::class => new Event(ItemPostPersistEvent::class),
             ],
             Events::postUpdate => [
-                Item::class => [
-                    new Event(ItemPostUpdateEvent::class),
-                ],
-                ComplexEntity::class => [
-                    new Event(ComplexEntityPostUpdateEvent::class),
-                ],
+                Item::class => new Event(ItemPostUpdateEvent::class),
+                ComplexEntity::class => new Event(ComplexEntityPostUpdateEvent::class),
             ],
             Events::postRemove => [
-                Item::class => [
-                    new Event(ItemPostRemoveEvent::class),
-                ],
+                Item::class => new Event(ItemPostRemoveEvent::class),
             ],
             Events::prePersist => [
-                Item::class => [
-                    new Event(ItemPrePersistEvent::class),
-                ],
-                ComplexEntity::class => [
-                    new Event(ComplexEntityPrePersistEvent::class),
-                ],
+                Item::class => new Event(ItemPrePersistEvent::class),
+                ComplexEntity::class => new Event(ComplexEntityPrePersistEvent::class),
             ],
             Events::preUpdate => [
-                Item::class => [
-                    new Event(ItemPreUpdateEvent::class),
-                ],
+                Item::class => new Event(ItemPreUpdateEvent::class),
             ],
             Events::preRemove => [
-                Item::class => [
-                    new Event(ItemPreRemoveEvent::class),
-                ],
+                Item::class => new Event(ItemPreRemoveEvent::class),
             ],
         ];
 
         foreach ($list as $event => $entityList) {
             foreach ($entityList as $entity => $events) {
-                $this->checkArrayWithoutOrderImportance(
+                static::assertEquals(
                     $events,
                     $service->get($event, $entity)
                 );
             }
-        }
-    }
-
-    private function checkArrayWithoutOrderImportance(
-        array $expected,
-        array $actual,
-    ): void {
-        usort($expected, function (Event $a, Event $b) {
-            return strcmp($a->eventClass, $b->eventClass);
-        });
-
-        usort($actual, function (Event $a, Event $b) {
-            return strcmp($a->eventClass, $b->eventClass);
-        });
-
-        static::assertSame(count($expected), count($actual));
-
-        for ($i = 0; $i < count($expected); $i++) {
-            static::assertSame($expected[$i]->eventClass, $actual[$i]->eventClass);
-            static::assertSame($expected[$i]->afterFlush, $actual[$i]->afterFlush);
         }
     }
 }
