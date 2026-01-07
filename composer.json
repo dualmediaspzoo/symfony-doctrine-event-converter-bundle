@@ -41,7 +41,6 @@
         "friendsofphp/php-cs-fixer": "^3",
         "pedrotroller/php-cs-custom-fixer": "^2",
         "phpunit/phpunit": "^10",
-        "vimeo/psalm": "^6",
         "phpstan/phpstan": "^2",
         "matthiasnoback/symfony-dependency-injection-test": "^6",
         "jetbrains/phpstorm-attributes": "^1",
@@ -55,11 +54,9 @@
         }
     },
     "scripts": {
-        "baseline-psalm": "vendor/bin/psalm --set-baseline=psalm-baseline.xml",
         "baseline-phpstan": "vendor/bin/phpstan --generate-baseline",
         "update-baseline": [
-            "@baseline-phpstan",
-            "@baseline-psalm"
+            "@baseline-phpstan"
         ]
     }
 }
