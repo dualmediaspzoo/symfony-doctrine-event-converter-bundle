@@ -56,7 +56,7 @@ class DoctrineEventConverterBundle extends AbstractBundle
     ): void {
         $loader = new PhpFileLoader(
             $builder,
-            new FileLocator(__DIR__.'/../../config')
+            new FileLocator(__DIR__.'/../config')
         );
         $loader->load('services.php');
 
