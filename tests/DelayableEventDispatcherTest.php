@@ -1,6 +1,6 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\Tests\Service;
+namespace DualMedia\DoctrineEventConverterBundle\Tests;
 
 use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
