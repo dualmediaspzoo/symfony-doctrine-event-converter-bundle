@@ -83,7 +83,7 @@ class DispatchingSubscriber
         $object = $args->getObject();
 
         if ($object instanceof EntityInterface) {
-            $changes = $this->updateObjectCache[spl_object_hash($object)] = $args->getEntityChangeSet();
+            $changes = $this->updateObjectCache[spl_object_hash($object)] = $args->getEntityChangeSet(); // @phpstan-ignore-line
             /** @var DoctrineChangeArray $changes */
         }
         $this->process(Events::preUpdate, $object, null, $changes);
