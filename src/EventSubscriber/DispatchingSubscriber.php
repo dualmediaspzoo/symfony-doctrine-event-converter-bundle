@@ -149,7 +149,7 @@ class DispatchingSubscriber
         /**
          * @var AbstractEntityEvent<EntityInterface> $event
          */
-        $event = (new $model->eventClass());
+        $event = new $model->eventClass();
 
         $event->setEntity($obj)
             ->setEventType($type)
@@ -182,7 +182,7 @@ class DispatchingSubscriber
                 continue;
             }
 
-            $subEvent = (new $model->eventClass());
+            $subEvent = new $model->eventClass();
 
             $subEvent->setEntity($entity)
                 ->setChanges(array_intersect_key(
