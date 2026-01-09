@@ -14,8 +14,8 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetC
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
 use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
-use DualMedia\DoctrineEventConverterBundle\Service\EventService;
-use DualMedia\DoctrineEventConverterBundle\Service\SubEventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
+use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity\InvalidEntity;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\FinalClass\TestEvent as FinalClass;
 use DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Error\InvalidBaseEntity\TestEvent as InvalidBaseEntity;

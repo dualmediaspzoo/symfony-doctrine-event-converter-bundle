@@ -1,10 +1,10 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\Tests\Service;
+namespace DualMedia\DoctrineEventConverterBundle\Tests;
 
+use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventConverterBundle\Service\DelayableEventDispatcher;
 use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;

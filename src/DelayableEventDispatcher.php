@@ -1,24 +1,28 @@
 <?php
 
-namespace DualMedia\DoctrineEventConverterBundle\Service;
+namespace DualMedia\DoctrineEventConverterBundle;
 
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class DelayableEventDispatcher
 {
     /**
-     * @var list<AbstractEntityEvent>
+     * @var list<AbstractEntityEvent<EntityInterface>>
      */
     private array $eventsToDispatchAfterFlush = [];
     private bool $dispatchingDelayed = false;
 
     public function __construct(
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
     }
 
+    /**
+     * @param AbstractEntityEvent<EntityInterface> $event
+     */
     public function dispatch(
         AbstractEntityEvent $event,
         bool $delay = false,
@@ -48,7 +52,7 @@ class DelayableEventDispatcher
         $this->eventsToDispatchAfterFlush = [];
     }
 
-    public function clearEvents(): void
+    public function clear(): void
     {
         $this->eventsToDispatchAfterFlush = [];
     }

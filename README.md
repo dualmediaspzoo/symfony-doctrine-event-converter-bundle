@@ -19,18 +19,18 @@ Then add the bundle to your `config/bundles.php` file like so
 return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     // other bundles ...
-    DualMedia\DoctrineEventDistributorBundle\DoctrineEventConverterBundle::class => ['all' => true],
+    DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle::class => ['all' => true],
 ];
 ```
 
 ## Usage
 
 ### Entity
-Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface`
+Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface`
 
 ```php
 use Doctrine\ORM\Mapping as ORM;
-use DualMedia\DoctrineEventDistributorBundle\Interfaces\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
 
  #[ORM\Entity]
 class Item implements EntityInterface
@@ -64,13 +64,13 @@ class Item implements EntityInterface
 ```
 
 ### Event
-Create an event class (not final), and then at some point extend `DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent`, 
+Create an event class (not final), and then at some point extend `DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent`, 
 mark this class with your appropriate event annotation, either one of the base ones or SubEvent
 
 ```php
 use DualMedia\DoctrineEventConverterBundle\Attribute\EventEntity;
-use DualMedia\DoctrineEventDistributorBundle\Attribute\PrePersistEvent;
-use DualMedia\DoctrineEventDistributorBundle\Event\AbstractEntityEvent;
+use DualMedia\DoctrineEventConverterBundle\Attribute\PrePersistEvent;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 
 #[EventEntity(Item::class)] // specifies what Doctrine Entity this event is for, you can use the same event class for multiple
 #[PrePersistEvent] // specifies what events will fire

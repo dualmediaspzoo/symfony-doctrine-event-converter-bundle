@@ -2,6 +2,7 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Event;
 
+use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -11,11 +12,17 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class DispatchEvent extends Event
 {
+    /**
+     * @param AbstractEntityEvent<EntityInterface> $event
+     */
     public function __construct(
         private readonly AbstractEntityEvent $event,
     ) {
     }
 
+    /**
+     * @return AbstractEntityEvent<EntityInterface>
+     */
     public function getEvent(): AbstractEntityEvent
     {
         return $this->event;
