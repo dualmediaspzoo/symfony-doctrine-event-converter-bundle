@@ -200,7 +200,7 @@ class DispatchingSubscriber
             } else {
                 $this->dispatcher->delay(
                     new Delayed(
-                        $event,
+                        $subEvent,
                         $class,
                         spl_object_hash($entity),
                         $entity->getId()
