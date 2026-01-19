@@ -16,6 +16,8 @@ use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\DoctrineEventConverterBundle\Model\Delayed;
+use DualMedia\DoctrineEventConverterBundle\ObjectIdCache;
 use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
 use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
 use DualMedia\DoctrineEventConverterBundle\Verifier\SubEventVerifier;
@@ -25,14 +27,10 @@ use DualMedia\DoctrineEventConverterBundle\Verifier\SubEventVerifier;
  */
 class DispatchingSubscriber
 {
-    private bool $preFlush = false;
-
     /**
-     * ID cache for removed entities so their ids can be temporarily remembered.
-     *
-     * @var array<string, string|int>
+     * Depth marker for delayed events.
      */
-    private array $removeIdCache = [];
+    private int $depth = 0;
 
     /**
      * Entity change sets.
@@ -45,35 +43,42 @@ class DispatchingSubscriber
         private readonly EventService $eventService,
         private readonly SubEventService $subEventService,
         private readonly DelayableEventDispatcher $dispatcher,
-        private readonly SubEventVerifier $subEventVerifier
+        private readonly SubEventVerifier $subEventVerifier,
+        private readonly ObjectIdCache $objectIdCache
     ) {
-    }
-
-    public function prePersist(
-        PrePersistEventArgs $args,
-    ): void {
-        if ($args->getObject() instanceof EntityInterface) {
-            $this->process(Events::prePersist, $args->getObject());
-        }
     }
 
     public function preFlush(
         PreFlushEventArgs $args,
     ): void {
-        $this->preFlush = true;
+        $this->dispatcher->clear(++$this->depth);
     }
 
     public function postFlush(
         PostFlushEventArgs $args,
     ): void {
-        $this->dispatcher->submitDelayed();
-        $this->preFlush = false;
+        $this->dispatcher->submitDelayed($this->depth--);
+    }
+
+    public function prePersist(
+        PrePersistEventArgs $args,
+    ): void {
+        $object = $args->getObject();
+
+        if (!($object instanceof EntityInterface)) {
+            return;
+        }
+
+        $this->process(Events::prePersist, $object);
     }
 
     public function postPersist(
         PostPersistEventArgs $args,
     ): void {
-        $this->process(Events::postPersist, $args->getObject());
+        $object = $args->getObject();
+        $this->objectIdCache->set($object);
+
+        $this->process(Events::postPersist, $object);
     }
 
     public function preUpdate(
@@ -86,6 +91,7 @@ class DispatchingSubscriber
             $changes = $this->updateObjectCache[spl_object_hash($object)] = $args->getEntityChangeSet(); // @phpstan-ignore-line
             /** @var DoctrineChangeArray $changes */
         }
+
         $this->process(Events::preUpdate, $object, null, $changes);
     }
 
@@ -94,6 +100,7 @@ class DispatchingSubscriber
     ): void {
         $object = $args->getObject();
         $hash = spl_object_hash($object);
+
         $changes = $this->updateObjectCache[$hash] ?? [];
         unset($this->updateObjectCache[$hash]);
 
@@ -105,9 +112,10 @@ class DispatchingSubscriber
     ): void {
         $object = $args->getObject();
 
-        if ($args->getObject() instanceof EntityInterface) {
-            $this->removeIdCache[spl_object_hash($object)] = $object->getId(); // @phpstan-ignore-line
+        if ($object instanceof EntityInterface) {
+            $this->objectIdCache->set($object);
         }
+
         $this->process(Events::preRemove, $object);
     }
 
@@ -115,13 +123,12 @@ class DispatchingSubscriber
         PostRemoveEventArgs $args,
     ): void {
         $object = $args->getObject();
-        $hash = spl_object_hash($object);
 
-        if (isset($this->removeIdCache[$hash])) {
-            $id = $this->removeIdCache[$hash];
-            unset($this->removeIdCache[$hash]);
-            $this->process(Events::postRemove, $object, $id);
+        if (null === ($id = $this->objectIdCache->get($object))) {
+            return;
         }
+
+        $this->process(Events::postRemove, $object, $id);
     }
 
     /**
@@ -156,12 +163,7 @@ class DispatchingSubscriber
             ->setChanges($changes)
             ->setDeletedId($id);
 
-        if ($this->preFlush) {
-            $this->dispatcher->clear();
-            $this->preFlush = false;
-        }
-
-        $this->dispatcher->dispatch($event, $model->afterFlush);
+        $this->dispatcher->dispatch($event);
 
         $this->subEvents($event);
     }
@@ -182,16 +184,30 @@ class DispatchingSubscriber
                 continue;
             }
 
+            /** @var AbstractEntityEvent<EntityInterface> $subEvent */
             $subEvent = new $model->eventClass();
 
-            $subEvent->setEntity($entity)
-                ->setChanges(array_intersect_key(
-                    $changes,
-                    $model->fields
-                )) // save only fields that the event requested, ignore rest
+            $subEvent->setChanges(array_intersect_key(
+                $changes,
+                $model->fields
+            )) // save only fields that the event requested, ignore rest
                 ->setEventType($type);
 
-            $this->dispatcher->dispatch($subEvent, $model->afterFlush);
+            if (!$model->afterFlush) {
+                $this->dispatcher->dispatch(
+                    $subEvent->setEntity($entity)
+                );
+            } else {
+                $this->dispatcher->delay(
+                    new Delayed(
+                        $event,
+                        $class,
+                        spl_object_hash($entity),
+                        $entity->getId()
+                    ),
+                    $this->depth
+                );
+            }
         }
     }
 }

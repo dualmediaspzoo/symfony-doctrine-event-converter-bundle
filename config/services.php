@@ -6,6 +6,7 @@ use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle as Bundle;
 use DualMedia\DoctrineEventConverterBundle\EventSubscriber\DispatchingSubscriber;
+use DualMedia\DoctrineEventConverterBundle\ObjectIdCache;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
 use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;
@@ -22,7 +23,9 @@ return static function (ContainerConfigurator $container) {
         ->private();
 
     $services->set(DelayableEventDispatcher::class)
-        ->arg(0, new Reference('event_dispatcher'))
+        ->arg('$eventDispatcher', new Reference('event_dispatcher'))
+        ->arg('$registry', new Reference(\Doctrine\Persistence\ManagerRegistry::class))
+        ->arg('$objectIdCache', new Reference(ObjectIdCache::class))
         ->public();
 
     $services->set(EventService::class)
@@ -30,6 +33,8 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(SubEventService::class)
         ->lazy();
+
+    $services->set(ObjectIdCache::class);
 
     $services->set(FieldVerifier::class)
         ->tag(Bundle::TAG_VERIFIER);
@@ -48,6 +53,7 @@ return static function (ContainerConfigurator $container) {
         ->arg('$subEventService', new Reference(SubEventService::class))
         ->arg('$dispatcher', new Reference(DelayableEventDispatcher::class))
         ->arg('$subEventVerifier', new Reference(SubEventVerifier::class))
+        ->arg('$objectIdCache', new Reference(ObjectIdCache::class))
         ->tag('doctrine.event_listener', [
             'event' => Events::prePersist,
         ])

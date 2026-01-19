@@ -20,6 +20,7 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\Abstrac
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\EntityInterfaceMissingException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\NoValidEntityFoundException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventNameCollisionException;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRemoveEventAfterFlushException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
@@ -68,6 +69,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
      * @throws TargetClassNamingSchemeInvalidException
      * @throws SubEventNameCollisionException
      * @throws SubEventRequiredFieldsException
+     * @throws SubEventRemoveEventAfterFlushException
      * @throws \ReflectionException
      */
     #[\Override]
@@ -241,6 +243,25 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $events[$class][] = (new EventConfiguration())
                         ->setEntities($configuration->getEntities())
                         ->setType($type);
+                }
+
+                if ($configuration->isAfterFlush() && in_array(Events::prePersist, $configuration->getEvents())) {
+                    // we need to have a PostPersist event if we have a SubEvent with afterFlush and type PrePersist
+                    $found = false;
+
+                    foreach ($events[$class] as $eventConfig) {
+                        if (Events::postPersist === $eventConfig->getType()) {
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    // add the missing event
+                    if (!$found) {
+                        $events[$class][] = (new EventConfiguration())
+                            ->setEntities($configuration->getEntities())
+                            ->setType(Events::postPersist);
+                    }
                 }
 
                 // create and add sub events

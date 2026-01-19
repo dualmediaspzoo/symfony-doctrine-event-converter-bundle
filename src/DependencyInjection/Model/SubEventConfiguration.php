@@ -3,6 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model;
 
 use Doctrine\ORM\Events;
+use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRemoveEventAfterFlushException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 
 /**
@@ -145,6 +146,7 @@ final class SubEventConfiguration extends AbstractEventConfiguration
 
     /**
      * @throws SubEventRequiredFieldsException
+     * @throws SubEventRemoveEventAfterFlushException
      */
     public function validate(
         string $class,
@@ -153,6 +155,12 @@ final class SubEventConfiguration extends AbstractEventConfiguration
             throw SubEventRequiredFieldsException::new([
                 $this->getLabel(),
                 $class,
+            ]);
+        }
+
+        if ($this->isAfterFlush() && !empty(array_intersect($this->getEvents(), [Events::postRemove, Events::preRemove]))) {
+            throw SubEventRemoveEventAfterFlushException::new([
+                $this->getLabel(),
             ]);
         }
 
