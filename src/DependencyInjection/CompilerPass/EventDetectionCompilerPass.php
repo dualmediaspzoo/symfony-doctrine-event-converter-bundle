@@ -245,7 +245,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                         ->setType($type);
                 }
 
-                if ($configuration->isAfterFlush() && in_array(Events::prePersist, $configuration->getEvents())) {
+                if ($configuration->isAfterFlush() && in_array(Events::prePersist, $configuration->getEvents(), true)) {
                     // we need to have a PostPersist event if we have a SubEvent with afterFlush and type PrePersist
                     $found = false;
 
@@ -296,6 +296,30 @@ class EventDetectionCompilerPass implements CompilerPassInterface
 
         /** @var array<string, list<array{proxyClass: class-string, configuration: EventConfiguration}>> $eventMapped */
         $eventMapped = [];
+
+        // we also need to check this for main events (kinda lazy for now, should be cleaned up later)
+        foreach ($events as $class => $configurations) {
+            foreach ($configurations as $configuration) {
+                if ($configuration->isAfterFlush() && Events::prePersist === $configuration->getType()) {
+                    // we need to have a PostPersist event if we have a SubEvent with afterFlush and type PrePersist
+                    $found = false;
+
+                    foreach ($events[$class] as $eventConfig) {
+                        if (Events::postPersist === $eventConfig->getType()) {
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    // add the missing event
+                    if (!$found) {
+                        $events[$class][] = (new EventConfiguration())
+                            ->setEntities($configuration->getEntities())
+                            ->setType(Events::postPersist);
+                    }
+                }
+            }
+        }
 
         // create and add main events
         /** @var class-string<AbstractEntityEvent<EntityInterface>> $class */
