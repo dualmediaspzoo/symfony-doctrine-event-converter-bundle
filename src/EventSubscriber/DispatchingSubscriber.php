@@ -147,6 +147,7 @@ class DispatchingSubscriber
             return;
         }
 
+        /** @var class-string<EntityInterface> $class */
         /**
          * As EntityInterface is validated during cache generation there is no point in checking it here again.
          *
@@ -163,7 +164,19 @@ class DispatchingSubscriber
             ->setChanges($changes)
             ->setDeletedId($id);
 
-        $this->dispatcher->dispatch($event);
+        if (!$model->afterFlush) {
+            $this->dispatcher->dispatch($event);
+        } else {
+            $this->dispatcher->delay(
+                new Delayed(
+                    $event,
+                    $class,
+                    spl_object_hash($obj),
+                    $obj->getId()
+                ),
+                $this->depth
+            );
+        }
 
         $this->subEvents($event);
     }
