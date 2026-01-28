@@ -3,10 +3,10 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 
 #[ORM\Entity]
-class Item implements EntityInterface
+class Item implements IdentifiableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
@@ -16,7 +16,8 @@ class Item implements EntityInterface
     #[ORM\Column(type: 'smallint')]
     private int|null $status = null;
 
-    public function getId()
+    #[\Override]
+    public function getId(): int|null
     {
         return $this->id;
     }

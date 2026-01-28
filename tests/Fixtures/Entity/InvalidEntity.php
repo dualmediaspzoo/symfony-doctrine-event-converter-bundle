@@ -15,7 +15,7 @@ class InvalidEntity
     #[ORM\Column(type: 'smallint')]
     private int|null $status = null;
 
-    public function getId()
+    public function getId(): int|null
     {
         return $this->id;
     }

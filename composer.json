@@ -23,6 +23,11 @@
             "name": "Bartosz Urbaniak <barturb>",
             "homepage": "https://github.com/barturb",
             "role": "Bug fixes and general help"
+        },
+        {
+            "name": "JaWitold",
+            "homepage": "https://github.com/JaWitold",
+            "role": "Maintainer"
         }
     ],
     "require": {
@@ -33,7 +38,8 @@
         "symfony/event-dispatcher": "^6.4|^7.3",
         "symfony/property-access": "^6.4|^7.3",
         "symfony/http-kernel": "^6.4|^7.3",
-        "doctrine/common": "^3"
+        "doctrine/common": "^3",
+        "dualmedia/common": "^1.0"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^8",

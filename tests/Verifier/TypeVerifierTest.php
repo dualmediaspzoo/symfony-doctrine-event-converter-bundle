@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Verifier;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\Verifier\TypeVerifier;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -35,7 +35,7 @@ class TypeVerifierTest extends TestCase
         static::assertEquals(
             $expected,
             (new TypeVerifier())->verify(
-                $this->createMock(EntityInterface::class),
+                $this->createMock(IdentifiableInterface::class),
                 $event,
                 [],
                 $type

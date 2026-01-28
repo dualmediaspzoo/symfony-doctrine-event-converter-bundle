@@ -2,7 +2,7 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Storage;
 
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 
 /**
@@ -11,7 +11,7 @@ use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 class SubEventService
 {
     /**
-     * @param array<class-string<EntityInterface>, non-empty-list<SubEvent>> $events
+     * @param array<class-string<IdentifiableInterface>, non-empty-list<SubEvent>> $events
      */
     public function __construct(
         private readonly array $events
@@ -19,7 +19,7 @@ class SubEventService
     }
 
     /**
-     * @param class-string<EntityInterface> $class
+     * @param class-string<IdentifiableInterface> $class
      *
      * @return list<SubEvent>
      */

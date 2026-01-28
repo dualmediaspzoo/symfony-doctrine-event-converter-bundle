@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DualMedia\DoctrineEventConverterBundle\Interface;
 
 use Doctrine\ORM\Events;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 
@@ -18,7 +19,7 @@ interface VerifierInterface
      * @param string $eventType One of {@link Events}
      */
     public function verify(
-        EntityInterface $entity,
+        IdentifiableInterface $entity,
         SubEvent $subEvent,
         array $changes,
         string $eventType
