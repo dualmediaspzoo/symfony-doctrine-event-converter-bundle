@@ -27,7 +27,7 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\Unknown
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\DirectoryNotWritable;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassFinalException as ProxyTargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;
@@ -86,10 +86,10 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         /** @var Generator $generator */
         $generator = $container->get(Generator::class);
 
-        /** @var array<class-string<AbstractEntityEvent<EntityInterface>>, non-empty-list<EventConfiguration>> $events */
+        /** @var array<class-string<AbstractEntityEvent<IdentifiableInterface>>, non-empty-list<EventConfiguration>> $events */
         $events = [];
 
-        /** @var array<class-string<AbstractEntityEvent<EntityInterface>>, non-empty-list<SubEventConfiguration>> $subEvents */
+        /** @var array<class-string<AbstractEntityEvent<IdentifiableInterface>>, non-empty-list<SubEventConfiguration>> $subEvents */
         $subEvents = [];
 
         $finder = new Finder();
@@ -150,7 +150,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                 if ($attribute instanceof Event) {
                     $this->validateEventReflection($class, $reflection);
 
-                    /** @var non-empty-list<class-string<EntityInterface>> $entities */
+                    /** @var non-empty-list<class-string<IdentifiableInterface>> $entities */
                     if (!array_key_exists($class, $events)) {
                         $events[$class] = [];
                     }
@@ -163,7 +163,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
                     $events[$class][] = $config;
                 } elseif ($attribute instanceof SubEvent) {
                     $this->validateEventReflection($class, $reflection);
-                    /** @var non-empty-list<class-string<EntityInterface>> $entities */
+                    /** @var non-empty-list<class-string<IdentifiableInterface>> $entities */
                     $config = (new SubEventConfiguration())
                         ->setEntities($entities)
                         ->setEvents($this->getSubEventTypes($attribute, $class))
@@ -218,7 +218,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         $subEventConstruct = [];
 
         // we're starting with sub events because those might need an implicit creation of main events
-        /** @var class-string<AbstractEntityEvent<EntityInterface>> $class */
+        /** @var class-string<AbstractEntityEvent<IdentifiableInterface>> $class */
         foreach ($subEvents as $class => $configurations) {
             foreach ($configurations as $configuration) {
                 /** @psalm-suppress InvalidArgument */
@@ -322,7 +322,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         }
 
         // create and add main events
-        /** @var class-string<AbstractEntityEvent<EntityInterface>> $class */
+        /** @var class-string<AbstractEntityEvent<IdentifiableInterface>> $class */
         foreach ($events as $class => $configurations) {
             foreach ($configurations as $configuration) {
                 $out = $generator->generateProxyClass(
@@ -352,7 +352,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         ContainerBuilder $container,
         array $configuration
     ): void {
-        /** @var array<class-string<EntityInterface>, list<SubEventModel>> $output */
+        /** @var array<class-string<IdentifiableInterface>, list<SubEventModel>> $output */
         $output = [];
 
         foreach ($configuration as $data) {
@@ -385,7 +385,7 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         ContainerBuilder $container,
         array $configuration
     ): void {
-        /** @var array<string, array<class-string<EntityInterface>, list<string>>> $output */
+        /** @var array<string, array<class-string<IdentifiableInterface>, list<string>>> $output */
         $output = [];
 
         foreach ($configuration as $doctrineEventType => $data) {
@@ -471,11 +471,11 @@ class EventDetectionCompilerPass implements CompilerPassInterface
         string $eventClass,
     ): void {
         foreach ($classes as $cls) {
-            if (is_subclass_of($cls, EntityInterface::class)) { // fits by inheritance
+            if (is_subclass_of($cls, IdentifiableInterface::class)) { // fits by inheritance
                 return;
             }
 
-            throw EntityInterfaceMissingException::new([$cls, EntityInterface::class, $eventClass]);
+            throw EntityInterfaceMissingException::new([$cls, IdentifiableInterface::class, $eventClass]);
         }
     }
 

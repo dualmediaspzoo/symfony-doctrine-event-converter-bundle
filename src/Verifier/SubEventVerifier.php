@@ -6,7 +6,7 @@ namespace DualMedia\DoctrineEventConverterBundle\Verifier;
 
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\VerifierInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 
@@ -28,7 +28,7 @@ class SubEventVerifier
      * @param string $eventType One of {@link Events}
      */
     public function verify(
-        EntityInterface $entity,
+        IdentifiableInterface $entity,
         SubEvent $subEvent,
         array $changes,
         string $eventType

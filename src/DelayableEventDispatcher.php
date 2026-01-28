@@ -4,7 +4,7 @@ namespace DualMedia\DoctrineEventConverterBundle;
 
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Delayed;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -24,7 +24,7 @@ class DelayableEventDispatcher
     }
 
     /**
-     * @param AbstractEntityEvent<EntityInterface> $event
+     * @param AbstractEntityEvent<IdentifiableInterface> $event
      */
     public function dispatch(
         AbstractEntityEvent $event
@@ -55,7 +55,7 @@ class DelayableEventDispatcher
 
             $entity = $manager->find($delayed->class, $id);
 
-            assert($entity instanceof EntityInterface);
+            assert($entity instanceof IdentifiableInterface);
 
             $event->setEntity($entity);
 

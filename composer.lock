@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a719d49ce20ce3be423d39a9a85805de",
+    "content-hash": "690632b43816ae178aa9d16ffb76f4a7",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -1020,6 +1020,45 @@
                 "source": "https://github.com/doctrine/sql-formatter/tree/1.5.3"
             },
             "time": "2025-10-26T09:35:14+00:00"
+        },
+        {
+            "name": "dualmedia/common",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dualmediaspzoo/common.git",
+                "reference": "fdb2e99d09c4e75d1dc3b753a3d91ff888dbf21b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dualmediaspzoo/common/zipball/fdb2e99d09c4e75d1dc3b753a3d91ff888dbf21b",
+                "reference": "fdb2e99d09c4e75d1dc3b753a3d91ff888dbf21b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DualMedia\\Common\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "pkly"
+                }
+            ],
+            "description": "Shared interfaces and logic",
+            "support": {
+                "issues": "https://github.com/dualmediaspzoo/common/issues",
+                "source": "https://github.com/dualmediaspzoo/common/tree/1.0.0"
+            },
+            "time": "2026-01-27T11:52:48+00:00"
         },
         {
             "name": "psr/cache",

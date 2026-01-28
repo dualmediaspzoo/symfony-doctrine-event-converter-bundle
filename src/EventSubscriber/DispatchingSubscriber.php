@@ -15,7 +15,7 @@ use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Delayed;
 use DualMedia\DoctrineEventConverterBundle\ObjectIdCache;
 use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
@@ -65,7 +65,7 @@ class DispatchingSubscriber
     ): void {
         $object = $args->getObject();
 
-        if (!($object instanceof EntityInterface)) {
+        if (!($object instanceof IdentifiableInterface)) {
             return;
         }
 
@@ -87,7 +87,7 @@ class DispatchingSubscriber
         $changes = [];
         $object = $args->getObject();
 
-        if ($object instanceof EntityInterface) {
+        if ($object instanceof IdentifiableInterface) {
             $changes = $this->updateObjectCache[spl_object_hash($object)] = $args->getEntityChangeSet(); // @phpstan-ignore-line
             /** @var DoctrineChangeArray $changes */
         }
@@ -112,7 +112,7 @@ class DispatchingSubscriber
     ): void {
         $object = $args->getObject();
 
-        if ($object instanceof EntityInterface) {
+        if ($object instanceof IdentifiableInterface) {
             $this->objectIdCache->set($object);
         }
 
@@ -147,15 +147,15 @@ class DispatchingSubscriber
             return;
         }
 
-        /** @var class-string<EntityInterface> $class */
+        /** @var class-string<IdentifiableInterface> $class */
         /**
-         * As EntityInterface is validated during cache generation there is no point in checking it here again.
+         * As IdentifiableInterface is validated during cache generation there is no point in checking it here again.
          *
-         * @var EntityInterface $obj
+         * @var IdentifiableInterface $obj
          */
 
         /**
-         * @var AbstractEntityEvent<EntityInterface> $event
+         * @var AbstractEntityEvent<IdentifiableInterface> $event
          */
         $event = new $model->eventClass();
 
@@ -182,7 +182,7 @@ class DispatchingSubscriber
     }
 
     /**
-     * @param AbstractEntityEvent<EntityInterface> $event
+     * @param AbstractEntityEvent<IdentifiableInterface> $event
      */
     private function subEvents(
         AbstractEntityEvent $event,
@@ -197,7 +197,7 @@ class DispatchingSubscriber
                 continue;
             }
 
-            /** @var AbstractEntityEvent<EntityInterface> $subEvent */
+            /** @var AbstractEntityEvent<IdentifiableInterface> $subEvent */
             $subEvent = new $model->eventClass();
 
             $subEvent->setChanges(array_intersect_key(

@@ -4,13 +4,13 @@ namespace DualMedia\DoctrineEventConverterBundle\Event;
 
 use Doctrine\ORM\Events;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Use this class as a base to creating EntityAware events.
  *
- * @template T of EntityInterface
+ * @template T of IdentifiableInterface
  *
  * @phpstan-import-type DoctrineChangeArray from DoctrineEventConverterBundle
  */
@@ -21,7 +21,7 @@ abstract class AbstractEntityEvent extends Event
     /**
      * @var T
      */
-    protected EntityInterface $entity;
+    protected IdentifiableInterface $entity;
 
     /**
      * @var DoctrineChangeArray
@@ -39,7 +39,7 @@ abstract class AbstractEntityEvent extends Event
      * @return static
      */
     public function setEntity(
-        EntityInterface $entity,
+        IdentifiableInterface $entity,
     ): self {
         $this->entity = $entity;
 
@@ -49,7 +49,7 @@ abstract class AbstractEntityEvent extends Event
     /**
      * @return T
      */
-    public function getEntity(): EntityInterface
+    public function getEntity(): IdentifiableInterface
     {
         return $this->entity;
     }

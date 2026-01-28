@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Verifier;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\VerifierInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 use DualMedia\DoctrineEventConverterBundle\Verifier\SubEventVerifier;
@@ -32,7 +32,7 @@ class SubEventVerifierTest extends TestCase
         bool $expected,
         array $verifiers
     ): void {
-        $entity = $this->createMock(EntityInterface::class);
+        $entity = $this->createMock(IdentifiableInterface::class);
         $event = $this->createMock(SubEvent::class);
         $changes = ['stuff' => 'here'];
         $types = [

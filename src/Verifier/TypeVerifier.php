@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DualMedia\DoctrineEventConverterBundle\Verifier;
 
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\VerifierInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 
@@ -12,7 +12,7 @@ class TypeVerifier implements VerifierInterface
 {
     #[\Override]
     public function verify(
-        EntityInterface $entity,
+        IdentifiableInterface $entity,
         SubEvent $subEvent,
         array $changes,
         string $eventType

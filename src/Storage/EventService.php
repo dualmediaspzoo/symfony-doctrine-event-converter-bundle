@@ -3,7 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\Storage;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Event;
 
 /**
@@ -12,7 +12,7 @@ use DualMedia\DoctrineEventConverterBundle\Model\Event;
 class EventService
 {
     /**
-     * @param array<string, non-empty-array<class-string<EntityInterface>, Event>> $events list of events, mapped with {@link Events}->class->Event model
+     * @param array<string, non-empty-array<class-string<IdentifiableInterface>, Event>> $events list of events, mapped with {@link Events}->class->Event model
      */
     public function __construct(
         private readonly array $events
