@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DualMedia\DoctrineEventConverterBundle\Model;
 
-use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\Common\Interface\IdentifiableInterface;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 
 readonly class Delayed
 {

@@ -2,9 +2,9 @@
 
 namespace DualMedia\DoctrineEventConverterBundle;
 
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\DoctrineEventConverterBundle\Event\DispatchEvent;
-use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Delayed;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;

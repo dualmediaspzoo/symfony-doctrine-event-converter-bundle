@@ -3,6 +3,7 @@
 namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\CompilerPass;
 
 use Doctrine\ORM\Events;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Attribute\Event;
 use DualMedia\DoctrineEventConverterBundle\Attribute\EventEntity;
 use DualMedia\DoctrineEventConverterBundle\Attribute\PostPersistEvent;
@@ -27,7 +28,6 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\Unknown
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\DirectoryNotWritable;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassFinalException as ProxyTargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\Proxy\TargetClassNamingSchemeInvalidException;
-use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\MainEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Interface\SubEventInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\Change;

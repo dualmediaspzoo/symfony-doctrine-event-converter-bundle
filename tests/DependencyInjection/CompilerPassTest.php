@@ -2,6 +2,7 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Tests\DependencyInjection;
 
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\DependencyInjection\CompilerPass\EventDetectionCompilerPass;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
@@ -12,7 +13,6 @@ use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEven
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\SubEventRequiredFieldsException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\TargetClassFinalException;
 use DualMedia\DoctrineEventConverterBundle\Exception\DependencyInjection\UnknownEventTypeException;
-use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Proxy\Generator;
 use DualMedia\DoctrineEventConverterBundle\Storage\EventService;
 use DualMedia\DoctrineEventConverterBundle\Storage\SubEventService;

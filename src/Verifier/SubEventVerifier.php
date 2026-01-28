@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DualMedia\DoctrineEventConverterBundle\Verifier;
 
 use Doctrine\ORM\Events;
-use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\Common\Interface\IdentifiableInterface;
+use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use DualMedia\DoctrineEventConverterBundle\Interface\VerifierInterface;
 use DualMedia\DoctrineEventConverterBundle\Model\SubEvent;
 

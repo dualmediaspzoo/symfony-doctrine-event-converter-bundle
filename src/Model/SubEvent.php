@@ -2,8 +2,8 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Model;
 
-use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 use DualMedia\Common\Interface\IdentifiableInterface;
+use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
 
 /**
  * This class contains the basic fields required for sub events to work properly.
