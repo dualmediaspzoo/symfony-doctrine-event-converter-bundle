@@ -14,7 +14,7 @@ class ObjectIdCache
     public function set(
         object $object
     ): void {
-        if (!($object instanceof IdentifiableInterface)) {
+        if (!$object instanceof IdentifiableInterface) {
             return;
         }
 

@@ -65,7 +65,7 @@ class DispatchingSubscriber
     ): void {
         $object = $args->getObject();
 
-        if (!($object instanceof IdentifiableInterface)) {
+        if (!$object instanceof IdentifiableInterface) {
             return;
         }
 
