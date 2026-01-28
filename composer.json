@@ -23,6 +23,11 @@
             "name": "Bartosz Urbaniak <barturb>",
             "homepage": "https://github.com/barturb",
             "role": "Bug fixes and general help"
+        },
+        {
+            "name": "JaWitold",
+            "homepage": "https://github.com/JaWitold",
+            "role": "Maintainer"
         }
     ],
     "require": {
