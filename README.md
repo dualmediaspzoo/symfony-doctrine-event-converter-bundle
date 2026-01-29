@@ -7,7 +7,7 @@ This bundle is meant to convert between doctrine and symfony events seamlessly, 
 
 It allows you to streamline doctrine actions using symfony directly, without need of implementing doctrine's listeners and event logic.
 
-All of the hard work is already done, just declare your entities, implement `EntityInterface` on them, and create an abstract event class.
+All of the hard work is already done, just declare your entities, implement `IdentifiableInterface` on them, and create an abstract event class.
 
 ## Installation
 
@@ -26,14 +26,14 @@ return [
 ## Usage
 
 ### Entity
-Make a Doctrine-managed entity, that also implements the `DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface`
+Make a Doctrine-managed entity, that also implements the `DualMedia\Common\Interface\IdentifiableInterface`
 
 ```php
 use Doctrine\ORM\Mapping as ORM;
-use DualMedia\DoctrineEventConverterBundle\Interfaces\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 
  #[ORM\Entity]
-class Item implements EntityInterface
+class Item implements IdentifiableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]

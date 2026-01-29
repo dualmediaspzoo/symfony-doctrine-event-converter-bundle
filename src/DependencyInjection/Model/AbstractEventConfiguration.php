@@ -2,7 +2,7 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\DependencyInjection\Model;
 
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 
 /**
  * @interal
@@ -10,12 +10,12 @@ use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 abstract class AbstractEventConfiguration
 {
     /**
-     * @var non-empty-list<class-string<EntityInterface>>
+     * @var non-empty-list<class-string<IdentifiableInterface>>
      */
     private array $entities;
 
     /**
-     * @param non-empty-list<class-string<EntityInterface>> $entities
+     * @param non-empty-list<class-string<IdentifiableInterface>> $entities
      */
     public function setEntities(
         array $entities,
@@ -26,7 +26,7 @@ abstract class AbstractEventConfiguration
     }
 
     /**
-     * @return non-empty-list<class-string<EntityInterface>>
+     * @return non-empty-list<class-string<IdentifiableInterface>>
      */
     public function getEntities(): array
     {

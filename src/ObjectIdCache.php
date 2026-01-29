@@ -2,7 +2,7 @@
 
 namespace DualMedia\DoctrineEventConverterBundle;
 
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 
 class ObjectIdCache
 {
@@ -14,7 +14,7 @@ class ObjectIdCache
     public function set(
         object $object
     ): void {
-        if (!($object instanceof EntityInterface)) {
+        if (!$object instanceof IdentifiableInterface) {
             return;
         }
 

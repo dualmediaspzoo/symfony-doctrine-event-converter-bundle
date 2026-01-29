@@ -2,8 +2,8 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Model;
 
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 
 /**
  * This class contains the basic fields required for sub events to work properly.
@@ -13,7 +13,7 @@ use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
 readonly class SubEvent
 {
     /**
-     * @param class-string<AbstractEntityEvent<EntityInterface>> $eventClass
+     * @param class-string<AbstractEntityEvent<IdentifiableInterface>> $eventClass
      * @param bool $allMode If all the fields must be meeting the requirements of the event
      * @param array<string, null|array{0?: mixed, 1?: mixed}> $fields The fields that must be changed, null means that any change is required, 0 and 1 indexes match before/after
      * @param array<string, mixed> $requirements Required field states for this event to fire

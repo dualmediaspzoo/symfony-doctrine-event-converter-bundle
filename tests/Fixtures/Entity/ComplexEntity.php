@@ -3,10 +3,10 @@
 namespace DualMedia\DoctrineEventConverterBundle\Tests\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DualMedia\DoctrineEventConverterBundle\Interface\EntityInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 
 #[ORM\Entity]
-class ComplexEntity implements EntityInterface
+class ComplexEntity implements IdentifiableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
@@ -22,7 +22,8 @@ class ComplexEntity implements EntityInterface
     #[ORM\Column(type: 'string', length: 64)]
     private string|null $unimportant = null;
 
-    public function getId()
+    #[\Override]
+    public function getId(): int|null
     {
         return $this->id;
     }

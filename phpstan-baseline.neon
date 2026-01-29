@@ -115,7 +115,7 @@ parameters:
 			path: src/Service/SubEventService.php
 
 		-
-			message: '#^Property DualMedia\\DoctrineEventConverterBundle\\Service\\SubEventService\:\:\$events \(array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Interface\\EntityInterface\>, array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent\>, non\-empty\-list\<DualMedia\\DoctrineEventConverterBundle\\Model\\SubEvent\>\>\>\) does not accept non\-empty\-array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Interface\\EntityInterface\>, array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent\>, list\<DualMedia\\DoctrineEventConverterBundle\\Model\\SubEvent\>\>\>\.$#'
+			message: '#^Property DualMedia\\DoctrineEventConverterBundle\\Service\\SubEventService\:\:\$events \(array\<class\-string\<DualMedia\\Common\\Interface\\IdentifiableInterface\>, array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent\>, non\-empty\-list\<DualMedia\\DoctrineEventConverterBundle\\Model\\SubEvent\>\>\>\) does not accept non\-empty\-array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Interface\\EntityInterface\>, array\<class\-string\<DualMedia\\DoctrineEventConverterBundle\\Event\\AbstractEntityEvent\>, list\<DualMedia\\DoctrineEventConverterBundle\\Model\\SubEvent\>\>\>\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Service/SubEventService.php
