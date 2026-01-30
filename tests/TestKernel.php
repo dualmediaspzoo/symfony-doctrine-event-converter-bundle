@@ -58,11 +58,9 @@ class TestKernel extends Kernel
             'dbal' => [
                 'driver' => 'pdo_sqlite',
                 'path' => '%kernel.cache_dir%/test_db.sqlite',
-                'use_savepoints' => true,
             ],
 
             'orm' => [
-                'auto_generate_proxy_classes' => true,
                 'auto_mapping' => true,
                 'mappings' => [
                     'DualMedia\\DoctrineEventConverterBundle\\Tests\\Fixtures\\' => [
