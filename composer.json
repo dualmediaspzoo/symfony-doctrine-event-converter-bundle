@@ -60,9 +60,6 @@
         }
     },
     "scripts": {
-        "baseline-phpstan": "vendor/bin/phpstan --generate-baseline",
-        "update-baseline": [
-            "@baseline-phpstan"
-        ]
+        "baseline": "vendor/bin/phpstan --generate-baseline --memory-limit=512M"
     }
 }

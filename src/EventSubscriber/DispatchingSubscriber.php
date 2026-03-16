@@ -93,7 +93,7 @@ class DispatchingSubscriber
             /** @var DoctrineChangeArray $changes */
         }
 
-        $this->process($args->getObjectManager(),Events::preUpdate, $object, null, $changes);
+        $this->process($args->getObjectManager(), Events::preUpdate, $object, null, $changes);
     }
 
     public function postUpdate(
@@ -105,7 +105,7 @@ class DispatchingSubscriber
         $changes = $this->updateObjectCache[$hash] ?? [];
         unset($this->updateObjectCache[$hash]);
 
-        $this->process($args->getObjectManager(),Events::postUpdate, $object, null, $changes);
+        $this->process($args->getObjectManager(), Events::postUpdate, $object, null, $changes);
     }
 
     public function preRemove(
@@ -117,7 +117,7 @@ class DispatchingSubscriber
             $this->objectIdCache->set($object);
         }
 
-        $this->process($args->getObjectManager(),Events::preRemove, $object);
+        $this->process($args->getObjectManager(), Events::preRemove, $object);
     }
 
     public function postRemove(
