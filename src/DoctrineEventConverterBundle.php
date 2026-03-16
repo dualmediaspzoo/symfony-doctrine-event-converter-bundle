@@ -39,7 +39,7 @@ class DoctrineEventConverterBundle extends AbstractBundle
         DefinitionConfigurator $definition
     ): void {
         $definition->rootNode() // @phpstan-ignore-line
-            ->children()
+            ->children() // @phpstan-ignore-line
                 ->scalarNode('parent_directory')->defaultValue('%kernel.project_dir%/src/*')->end()
                 ->scalarNode('parent_namespace')->defaultValue('App')->end()
             ->end();

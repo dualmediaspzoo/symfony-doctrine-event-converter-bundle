@@ -2,7 +2,9 @@
 
 namespace DualMedia\DoctrineEventConverterBundle\Event;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\ObjectManager;
 use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -10,7 +12,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * Use this class as a base to creating EntityAware events.
  *
- * @template T of IdentifiableInterface
+ * @template TEntity of IdentifiableInterface
+ * @template TManager of ObjectManager = EntityManagerInterface
  *
  * @phpstan-import-type DoctrineChangeArray from DoctrineEventConverterBundle
  */
@@ -19,7 +22,7 @@ abstract class AbstractEntityEvent extends Event
     protected string|int|null $id = null;
 
     /**
-     * @var T
+     * @var TEntity
      */
     protected IdentifiableInterface $entity;
 
@@ -34,24 +37,46 @@ abstract class AbstractEntityEvent extends Event
     protected string $eventType;
 
     /**
-     * @param T $entity
-     *
-     * @return static
+     * @var TManager
+     */
+    protected ObjectManager $manager;
+
+    /**
+     * @param TEntity $entity
      */
     public function setEntity(
         IdentifiableInterface $entity,
-    ): self {
+    ): static {
         $this->entity = $entity;
 
         return $this;
     }
 
     /**
-     * @return T
+     * @return TEntity
      */
     public function getEntity(): IdentifiableInterface
     {
         return $this->entity;
+    }
+
+    /**
+     * @param TManager $manager
+     */
+    public function setManager(
+        ObjectManager $manager
+    ): static {
+        $this->manager = $manager;
+
+        return $this;
+    }
+
+    /**
+     * @return TManager
+     */
+    public function getManager(): ObjectManager
+    {
+        return $this->manager;
     }
 
     /**

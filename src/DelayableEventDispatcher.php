@@ -57,7 +57,8 @@ class DelayableEventDispatcher
 
             assert($entity instanceof IdentifiableInterface);
 
-            $event->setEntity($entity);
+            $event->setEntity($entity)
+                ->setManager($manager); // @phpstan-ignore-line
 
             $this->eventDispatcher->dispatch($event);
             $this->eventDispatcher->dispatch(new DispatchEvent($event));
