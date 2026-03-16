@@ -2,8 +2,9 @@
 
 namespace PHPSTORM_META;
 
-expectedReturnValues(
+override(
     \DualMedia\DoctrineEventConverterBundle\Event\AbstractEntityEvent::getManager(),
-    \Doctrine\ORM\EntityManagerInterface,
-    \Doctrine\Persistence\ObjectManager
+    map([
+        '' => '\Doctrine\ORM\EntityManagerInterface|\Doctrine\Persistence\ObjectManager'
+    ])
 );
