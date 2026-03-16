@@ -12,6 +12,7 @@ use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\ObjectManager;
 use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\DoctrineEventConverterBundle\DelayableEventDispatcher;
 use DualMedia\DoctrineEventConverterBundle\DoctrineEventConverterBundle;
@@ -69,7 +70,7 @@ class DispatchingSubscriber
             return;
         }
 
-        $this->process(Events::prePersist, $object);
+        $this->process($args->getObjectManager(), Events::prePersist, $object);
     }
 
     public function postPersist(
@@ -78,7 +79,7 @@ class DispatchingSubscriber
         $object = $args->getObject();
         $this->objectIdCache->set($object);
 
-        $this->process(Events::postPersist, $object);
+        $this->process($args->getObjectManager(), Events::postPersist, $object);
     }
 
     public function preUpdate(
@@ -92,7 +93,7 @@ class DispatchingSubscriber
             /** @var DoctrineChangeArray $changes */
         }
 
-        $this->process(Events::preUpdate, $object, null, $changes);
+        $this->process($args->getObjectManager(),Events::preUpdate, $object, null, $changes);
     }
 
     public function postUpdate(
@@ -104,7 +105,7 @@ class DispatchingSubscriber
         $changes = $this->updateObjectCache[$hash] ?? [];
         unset($this->updateObjectCache[$hash]);
 
-        $this->process(Events::postUpdate, $object, null, $changes);
+        $this->process($args->getObjectManager(),Events::postUpdate, $object, null, $changes);
     }
 
     public function preRemove(
@@ -116,7 +117,7 @@ class DispatchingSubscriber
             $this->objectIdCache->set($object);
         }
 
-        $this->process(Events::preRemove, $object);
+        $this->process($args->getObjectManager(),Events::preRemove, $object);
     }
 
     public function postRemove(
@@ -128,7 +129,7 @@ class DispatchingSubscriber
             return;
         }
 
-        $this->process(Events::postRemove, $object, $id);
+        $this->process($args->getObjectManager(), Events::postRemove, $object, $id);
     }
 
     /**
@@ -136,6 +137,7 @@ class DispatchingSubscriber
      * @param DoctrineChangeArray $changes
      */
     private function process(
+        ObjectManager $manager,
         string $type,
         object $obj,
         int|string|null $id = null,
@@ -162,7 +164,8 @@ class DispatchingSubscriber
         $event->setEntity($obj)
             ->setEventType($type)
             ->setChanges($changes)
-            ->setDeletedId($id);
+            ->setDeletedId($id)
+            ->setManager($manager);
 
         if (!$model->afterFlush) {
             $this->dispatcher->dispatch($event);
@@ -178,13 +181,14 @@ class DispatchingSubscriber
             );
         }
 
-        $this->subEvents($event);
+        $this->subEvents($manager, $event);
     }
 
     /**
      * @param AbstractEntityEvent<IdentifiableInterface> $event
      */
     private function subEvents(
+        ObjectManager $manager,
         AbstractEntityEvent $event,
     ): void {
         $entity = $event->getEntity();
@@ -204,7 +208,8 @@ class DispatchingSubscriber
                 $changes,
                 $model->fields
             )) // save only fields that the event requested, ignore rest
-                ->setEventType($type);
+                ->setEventType($type)
+                ->setManager($manager);
 
             if (!$model->afterFlush) {
                 $this->dispatcher->dispatch(
